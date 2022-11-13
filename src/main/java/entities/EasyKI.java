@@ -8,8 +8,8 @@ public class EasyKI extends Player{
      * class to define die first Level KI easy
      * @param name name of KI
      */
-    public EasyKI (String name){
-        super(name);
+    public EasyKI (String name, int sleepTime, boolean manualNextMsg){
+        super(name,sleepTime,manualNextMsg);
     }
 
     @Override

@@ -14,8 +14,8 @@ public class AIPLayer3 extends Player{
      *
      * @param name name of player
      */
-    public AIPLayer3(String name) {
-        super(name);
+    public AIPLayer3(String name,int sleepTime, boolean manualNextMsg) {
+        super(name,sleepTime,manualNextMsg);
     }
 
     boolean usecsum=true;

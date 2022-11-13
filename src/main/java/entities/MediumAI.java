@@ -10,8 +10,8 @@ public class MediumAI extends Player{
      *
      * @param name name of player
      */
-    public MediumAI(String name) {
-        super(name);
+    public MediumAI(String name,int sleepTime, boolean manualNextMsg ) {
+        super(name,sleepTime,manualNextMsg);
     }
 
     /**

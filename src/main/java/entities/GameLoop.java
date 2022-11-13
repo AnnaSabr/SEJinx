@@ -20,7 +20,7 @@ public class GameLoop {
     Player currentPlayer;
 
     //time between msgs and actions
-    protected int sleepTime = 2000;
+    protected int sleepTime = 0;
     protected boolean manualNextMsg = true;
 
     Player[] players;
@@ -224,17 +224,17 @@ public class GameLoop {
         aktuellerTisch.setLuckStack(table.getLuckStack());
 
         ArrayList<Player> aktuelleSpielerStaende= new ArrayList<>();
-        Player ak= new Player(aktiv.getName());
+        Player ak= new Player(aktiv.getName(),sleepTime,manualNextMsg);
         ak.setCards(aktiv.getCards());
         ak.setLuckCards(aktiv.getLuckCards());
         for (int i=cP; i<players.length; i++){
-            Player dummy= new Player(players[i].getName());
+            Player dummy= new Player(players[i].getName(),sleepTime,manualNextMsg);
             dummy.setCards(players[i].getCards());
             dummy.setLuckCards(players[i].getLuckCards());
             aktuelleSpielerStaende.add(dummy);
         }
         for (int i=0; i<cP; i++){
-            Player dummy= new Player(players[i].getName());
+            Player dummy= new Player(players[i].getName(),sleepTime,manualNextMsg);
             dummy.setCards(players[i].getCards());
             dummy.setLuckCards(players[i].getLuckCards());
             aktuelleSpielerStaende.add(dummy);
@@ -343,7 +343,7 @@ public class GameLoop {
                 //check confirmation
                 if (con.equals("y")) {
                     //created player with entered name
-                    players[i] = new Player(name);
+                    players[i] = new Player(name,sleepTime,manualNextMsg);
                     break;
                 }
             }
@@ -358,7 +358,7 @@ public class GameLoop {
      */
     private void getHighscore() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("entities/highscore.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/highscore.txt"));
 
             String line = br.readLine();
 
@@ -392,7 +392,7 @@ public class GameLoop {
      */
     private void saveHighscores() {
         try {
-            PrintWriter pw = new PrintWriter("entities/highscore.txt");
+            PrintWriter pw = new PrintWriter("src/main/java/entities/highscore.txt");
 
             for (String entry : this.highscores) {
                 pw.println(entry);
@@ -481,15 +481,15 @@ public class GameLoop {
                         "easy / medium / hard");
                 level=s.next();
                 if (level.equals("easy")){
-                    k = new EasyKI(name);
+                    k = new EasyKI(name,sleepTime,manualNextMsg);
                     break;
                 }
                 else if (level.equals("medium")){
-                    k = new MediumAI(name);
+                    k = new MediumAI(name,sleepTime,manualNextMsg);
                     break;
                 }
                 else if (level.equals("hard")){
-                    k=new AIPLayer3(name);
+                    k=new AIPLayer3(name,sleepTime,manualNextMsg);
                 }
                 else{
                     System.out.println("Not an option. Try again.");
