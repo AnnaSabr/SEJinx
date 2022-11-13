@@ -16,7 +16,7 @@ public class Player implements Cloneable{
     protected  ArrayList<LuckCard> luckCards;
 
     //time between msgs and actions
-    protected int sleepTime = 2000;
+    protected int sleepTime = 0;
     protected boolean manualNextMsg = true;
 
     protected int diceCount = 0;
@@ -801,7 +801,7 @@ public class Player implements Cloneable{
             s.nextLine();
         }else {
             try {
-                Thread.sleep(sleepTime);
+                //Thread.sleep(sleepTime);
             } catch (Exception e) {
                 System.out.println("Sleep exception!");
             }

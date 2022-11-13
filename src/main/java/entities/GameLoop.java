@@ -21,7 +21,7 @@ public class GameLoop {
 
     //time between msgs and actions
     protected int sleepTime = 0;
-    protected boolean manualNextMsg = true;
+    protected boolean manualNextMsg = false;
 
     Player[] players;
     Table table;
@@ -315,7 +315,7 @@ public class GameLoop {
             s.nextLine();
         }else {
             try {
-                Thread.sleep(sleepTime);
+               // Thread.sleep(sleepTime);
             } catch (Exception e) {
                 System.out.println("Sleep exception!");
             }
