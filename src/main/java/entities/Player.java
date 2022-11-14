@@ -19,6 +19,22 @@ public class Player implements Cloneable{
     protected int sleepTime = 0;
     protected boolean manualNextMsg = true;
 
+    public int getDiceCount() {
+        return diceCount;
+    }
+
+    public void setDiceCount(int diceCount) {
+        this.diceCount = diceCount;
+    }
+
+    public int getRolls() {
+        return rolls;
+    }
+
+    public void setRolls(int rolls) {
+        this.rolls = rolls;
+    }
+
     protected int diceCount = 0;
 
     //needs to be reset after each round
