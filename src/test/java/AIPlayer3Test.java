@@ -152,4 +152,30 @@ public class AIPlayer3Test {
         assertEquals(coord[7],expected[7]);
         assertEquals(coord[8],expected[8]);
     }
+
+    @Test
+    void oneToThree(){
+        ai.setRolls(1);
+        ai.setDiceCount(5);
+        ArrayList<LuckCard> luckCards = new ArrayList<>();
+        luckCards.add(new LuckCard(CardType.ONETOTHREE));
+        luckCards.add(new LuckCard(CardType.FOURTOSIX));
+        //get a card with value 2 by using 'onetothree' luckcard
+        ai.cardOnTable="2,1";
+        ai.setLuckCards(luckCards);
+        assertEquals(ai.selectLuckCard(table).getCardType(),CardType.ONETOTHREE);
+    }
+
+    @Test
+    void fourToSix(){
+        ai.setRolls(1);
+        ai.setDiceCount(1);
+        ArrayList<LuckCard> luckCards = new ArrayList<>();
+        luckCards.add(new LuckCard(CardType.ONETOTHREE));
+        luckCards.add(new LuckCard(CardType.FOURTOSIX));
+        //get a card with value 6 by using 'fourtosix' luckcard
+        ai.cardOnTable="1,1";
+        ai.setLuckCards(luckCards);
+        assertEquals(ai.selectLuckCard(table).getCardType(),CardType.FOURTOSIX);
+    }
 }
