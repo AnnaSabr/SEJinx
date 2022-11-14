@@ -146,6 +146,7 @@ public class MediumAI extends Player{
         for(int d = 0; d < this.cards.size(); d++){
             if(this.cards.get(d).getColor() == dropCard.getColor() && this.cards.get(d).getValue() == dropCard.getValue()){
                 this.cards.remove(d);
+                break;
             }
         }
 
