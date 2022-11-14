@@ -1,5 +1,6 @@
 import cards.Card;
 import cards.CardColor;
+import cards.CardType;
 import cards.LuckCard;
 import entities.Player;
 import entities.Table;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -18,7 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestPlayer {
 
     private Player player;
+    private Player[] players;
     private Card card;
+    private LuckCard luckCard;
     private ArrayList<Card> cardsHand;
     private ArrayList<LuckCard> luckysHand;
     private Table table;
@@ -42,7 +46,9 @@ public class TestPlayer {
     @BeforeEach
     public void create() {
         player = new Player("bob", 1, false);
+        players= new Player[1];
         card = new Card(CardColor.RED, 1);
+        luckCard= new LuckCard(CardType.PLUSONE);
         cardsHand = new ArrayList<>();
         luckysHand = new ArrayList<>();
         table = new Table(false);
@@ -80,14 +86,123 @@ public class TestPlayer {
         assertEquals(1, player.getScore());
     }
 
+    /**
     //chooseCard(Table)
     @Test
     public void chooseCardExists() {
+
+    }
+    @Test
+    public void chooseCardNonExisting() {
+
+    }
+    **/
+
+
+    //drawLuckyCard
+    @Test
+    public void drawLuckCardAvailable(){
+        players[0]=player;
+        cardsHand.add(card);
         System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
         scan= new Scanner(System.in);
-        player.setDiceCount(1);
-        //table.setField(field);
-        assertTrue(player.chooseCard(table));
+        player.setCards(cardsHand);
+        assertTrue(player.drawLuckCard(table,players));
+    }
+    @Test
+    public void drawLuckCardNotAvailable(){
+        players[0]= player;
+        System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
+        scan= new Scanner(System.in);
+        player.setCards(cardsHand);
+        assertFalse(player.drawLuckCard(table,players));
+    }
 
+
+    //selectCard(Player[])
+    @Test
+    public void selectCardAvailable(){
+        players[0]= player;
+        cardsHand.add(card);
+        player.setCards(cardsHand);
+        System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
+        scan= new Scanner(System.in);
+        assertNotNull(player.selectCard(players));
+    }
+    @Test
+    public void selectCardNonAvailable(){
+        players[0]= player;
+        player.setCards(cardsHand);
+        valueInput="0";
+        System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
+        scan= new Scanner(System.in);
+        assertNull(player.selectCard(players));
+    }
+
+
+    //selectHighCard()
+    @Test
+    public void selectHighCardAvailable(){
+        cardsHand.add(card);
+        player.setCards(cardsHand);
+        valueInput="0";
+        System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
+        scan= new Scanner(System.in);
+        assertTrue(player.selectHighCard());
+    }
+    @Test
+    public void selectHighCardNonAvailable(){
+        player.setCards(cardsHand);
+        assertFalse(player.selectHighCard());
+    }
+
+
+    //selectLuckCard(Table)
+    @Test
+    public void selectLuckCardAvailable(){
+        table.setField(field);
+        luckysHand.add(luckCard);
+        player.setLuckCards(luckysHand);
+        System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
+        scan= new Scanner(System.in);
+        assertNotNull(player.selectLuckCard(table));
+    }
+    @Test
+    public void selectLuckCardNotAvailable(){
+        table.setField(field);
+        player.setLuckCards(luckysHand);
+        System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
+        scan= new Scanner(System.in);
+        assertNull(player.selectLuckCard(table));
+    }
+
+
+    //chooseAction()
+    @Test
+    public void chooseActionValid(){
+        String input="N";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        scan= new Scanner(System.in);
+        assertEquals(input,player.chooseAction(table));
+    }
+    /**
+    @Test
+    public void chooseActionUnvalid(){
+
+    }
+    **/
+
+
+    //roll()
+    /**
+    @Test
+    public void rollPossible(){
+
+    }**/
+    @Test
+    public void rollImpossible(){
+        player.setRolls(2);
+        player.setDiceCount(5);
+        assertEquals(player.getDiceCount(),player.roll());
     }
 }

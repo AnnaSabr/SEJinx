@@ -422,7 +422,6 @@ public class Player implements Cloneable{
         //Player rolls the dice
         this.diceCount = rand.nextInt(6) + 1;
         //log action of player for rollbacks
-        //TODO log the roll of the player here for RE/UNDO
 
         this.rolls++;
 
@@ -879,5 +878,17 @@ public class Player implements Cloneable{
 
     public void setDiceCount(int x){
         this.diceCount=x;
+    }
+
+    public int getDiceCount() {
+        return diceCount;
+    }
+
+    public int getRolls() {
+        return rolls;
+    }
+
+    public void setRolls(int rolls) {
+        this.rolls = rolls;
     }
 }
