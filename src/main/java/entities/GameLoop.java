@@ -172,6 +172,9 @@ public class GameLoop {
                                 manipulieren(veraendert);
                             }
                         }
+                        case "A" -> {
+                            currentPlayer.getHelp(this.table);
+                        }
                     }
                 }
                 //make sure current player always loops, only when round is active
@@ -490,6 +493,7 @@ public class GameLoop {
                 }
                 else if (level.equals("hard")){
                     k=new AIPLayer3(name,sleepTime,manualNextMsg);
+                    break;
                 }
                 else{
                     System.out.println("Not an option. Try again.");

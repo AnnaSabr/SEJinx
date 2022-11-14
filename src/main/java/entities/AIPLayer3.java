@@ -25,10 +25,19 @@ public class AIPLayer3 extends Player{
 
     @Override
     public String chooseAction(Table table) {
+        if(this.throwAgain){
+            this.throwAgain=false;
+            return "R";
+        }
+        //if a new round started
         if(this.myRound!=GameLoop.currentRound){
             this.myRound++;
             this.cardOnTable=null;
+            this.diceCount=0;
+            this.rolls=0;
+            return chooseAction(table);
         }
+        //if no card was selected
         if (this.cardOnTable == null) {
             if (this.rolls == 0) {
                 this.playerlog("First I roll the dice!");
@@ -46,7 +55,7 @@ public class AIPLayer3 extends Player{
                 //gets index of smallest amount of cards of a colour
                 for (int b = 0; b < 8; b++) {
                     for (int a = 0; a < coloursOnTable.length; a++) {
-                        if (coloursOnTable[a] < amount || amount == 0) {
+                        if (coloursOnTable[a] < amount) {
                             amount = coloursOnTable[a];
                             c = a;
                         }
@@ -166,9 +175,10 @@ public class AIPLayer3 extends Player{
             }
             //if no matching card was found, roll again
             if (cardOnTable == null && this.rolls < 2) {
+                playerlog("I need to roll again!");
                 return "R";
             }
-            if (cardOnTable == null && this.rolls == 2) {
+            if (cardOnTable == null && this.rolls >= 2) {
                 for (LuckCard luckCard : this.getLuckCards()) {
                     if (luckCard.getCardType() == CardType.EXTRATHROW && !(usedCards.contains(luckCard))) {
                         return "L";
@@ -179,9 +189,17 @@ public class AIPLayer3 extends Player{
             else if (cardOnTable != null) {
                 return "C";
             }
+        }else{
+            String[] chosenCard=this.cardOnTable.split(",");
+            Card c=table.getField()[Integer.parseInt(chosenCard[0])-1][Integer.parseInt(chosenCard[1])-1];
+            if(this.diceCount==c.getValue()){
+                return "C";
+            }else if(this.getLuckCards().size()!=0&&this.drawLuck){
+                return "L";
+            }
         }
         for(LuckCard luckCard:this.getLuckCards()){
-            if(luckCard.getCardType()==CardType.CARDSUM&&usecsum){
+            if(luckCard.getCardType()==CardType.CARDSUM&&usecsum&&!this.usedCards.contains(luckCard)){
                 playerlog("I will try to use my cardsum card. I cannot get a card otherwise.");
                 return "L";
             }
@@ -201,7 +219,6 @@ public class AIPLayer3 extends Player{
         }
             this.rolls=0;
             this.cardOnTable=null;
-            //TODO fix
             playerlog("Something is wrong, I have to start over.");
         return this.chooseAction(table);
     }
@@ -556,6 +573,7 @@ public class AIPLayer3 extends Player{
         return card1;
     }
 
+    boolean throwAgain=false;
     @Override
     public LuckCard selectLuckCard(Table table) {
         //check if player has luck cards
@@ -564,10 +582,11 @@ public class AIPLayer3 extends Player{
             return null;
         }
         //EXTRATHROW
-        if(this.cardOnTable==null&&this.rolls==2){
+        if(this.cardOnTable==null&&this.rolls>=2){
             for(LuckCard luckCard:this.getLuckCards()){
                 if(luckCard.getCardType()==CardType.EXTRATHROW&&!this.usedCards.contains(luckCard)){
                     playerlog("I want to throw again. I will use my luckcard!");
+                    throwAgain=true;
                     return luckCard;
                 }
             }
@@ -580,47 +599,67 @@ public class AIPLayer3 extends Player{
             coordInt[0]=Integer.parseInt(coordsSTR[0]);
             coordInt[1]=Integer.parseInt(coordsSTR[1]);
             Card c = table.getField()[coordInt[0]-1][coordInt[1]-1];
-            if(c.getValue()==this.diceCount-1){
-                //MINUSONE
-                for(LuckCard luckCard:this.getLuckCards()){
-                    if(luckCard.getCardType()==CardType.MINUSONE){
-                        playerlog("I need a smaller dice count. I will use my luckcard!");
-                        return luckCard;
-                    }
-                }
-            } else if (c.getValue()==this.diceCount-1) {
-                //PLUSONE
-                for(LuckCard luckCard:this.getLuckCards()){
-                    if(luckCard.getCardType()==CardType.PLUSONE){
-                        playerlog("I need a smaller dice count. I will use my luckcard!");
-                        return luckCard;
-                    }
+            int minus=0;
+            for(LuckCard l:this.getLuckCards()){
+                if(l.getCardType().equals(CardType.MINUSONE)&&!this.usedCards.contains(l)){
+                    minus++;
                 }
             }
-            else if(c.getValue()>3&&this.diceCount!=c.getValue()){
+            int plus=0;
+            for(LuckCard l:this.getLuckCards()){
+                if(l.getCardType().equals(CardType.PLUSONE)&&!this.usedCards.contains(l)){
+                    plus++;
+                }
+            }
+            for(int a=minus; a>0; a--){
+                if(c.getValue()==this.diceCount-a){
+                    //MINUSONE
+                    for(LuckCard luckCard:this.getLuckCards()) {
+                        if (luckCard.getCardType() == CardType.MINUSONE&&!this.usedCards.contains(luckCard)) {
+                            playerlog("I need a smaller dice count. I will use my luckcard!");
+                            return luckCard;
+                        }
+                    }    }
+            }
+            for(int a=plus; a>0; a--){
+                if (c.getValue()==this.diceCount+a) {
+                    //PLUSONE
+                    for(LuckCard luckCard:this.getLuckCards()) {
+                        if (luckCard.getCardType() == CardType.PLUSONE&&!this.usedCards.contains(luckCard)) {
+                            playerlog("I need a bigger dice count. I will use my luckcard!");
+                            return luckCard;
+                        }
+                    }    }
+            }
+            if(c.getValue()>3&&this.diceCount!=c.getValue()){
                 for(LuckCard luckCard:this.getLuckCards()){
-                    if(luckCard.getCardType()==CardType.FOURTOSIX){
+                    if(luckCard.getCardType()==CardType.FOURTOSIX&&!this.usedCards.contains(luckCard)){
+                        log("I will use my 4to6 card");
                         return luckCard;
                     }
                 }
             }
             else if(c.getValue()<4&&this.diceCount!=c.getValue()){
                 for(LuckCard luckCard:this.getLuckCards()){
-                    if(luckCard.getCardType()==CardType.ONETOTHREE){
-                        return luckCard;
-                    }
-                }
-            }
-            else{
-                for(LuckCard luckCard:this.getLuckCards()){
-                    if(luckCard.getCardType()==CardType.CARDSUM){
+                    if(luckCard.getCardType()==CardType.ONETOTHREE&&!this.usedCards.contains(luckCard)){
+                        log("I will use my 1to3 card");
                         return luckCard;
                     }
                 }
             }
         }
-        return this.getLuckCards().get(0);
+
+        for(LuckCard luckCard:this.getLuckCards()){
+            if(luckCard.getCardType()==CardType.CARDSUM&&!this.usedCards.contains(luckCard)){
+                log("I will use my cardsum card");
+                return luckCard;
+                }
+            }
+        drawLuck=false;
+        return null;
     }
+
+    boolean drawLuck=true;
 
     public int playerInputNumberInRange(int min, int max){
         if(min<this.diceCount&&max>this.diceCount){
@@ -695,6 +734,6 @@ public class AIPLayer3 extends Player{
     }
 
     public void playerlog(String msg){
-        System.out.println("[AI]" + msg);
+        System.out.println("[" + this.getName()+ "]" + msg);
     }
 }
