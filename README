@@ -111,7 +111,8 @@ KI-Stufen implementieren, ohne den Spielablauf speziell auf eine KI anpassen zu 
 
 ### KI
 Die KI sollte in 3 verschiedenen Schwierigkeitsgraden einstellbar sein. Dies erreichen wir, in dem wir 3 KI-Klassen implementieren
-und für jede dieser Stufen, andere Logik in den wichtigsten Playerfunktionen implementieren. Jede KI gibt bei jedem ihrer Züge
+und für jede dieser Stufen, andere Logik in den wichtigsten Playerfunktionen implementieren.
+Aufgrund der Spezifizierung des Spielers, sind die KIs untereinander in der Lage ein Spiel durchzuführen. Jede KI gibt bei jedem ihrer Züge
 eine kurze Begründung für die gewählte Aktion aus. Dies geschieht in Form einer Nachricht wie: "Ich habe bisher noch nicht
 gewürfelt... Ich werde würfeln!"
 
