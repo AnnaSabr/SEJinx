@@ -90,7 +90,6 @@ class MediumAITest {
 
         ArrayList<Card> hand = ai.getCards();
 
-        System.out.println(ai);
         //the yellow card should have been removed
         for(Card c : hand){
             if(c.getColor() == CardColor.YELLOW && c.getValue() == 6){
