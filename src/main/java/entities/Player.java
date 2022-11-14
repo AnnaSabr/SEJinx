@@ -817,7 +817,7 @@ public class Player implements Cloneable{
             s.nextLine();
         }else {
             try {
-                //Thread.sleep(sleepTime);
+                Thread.sleep(sleepTime);
             } catch (Exception e) {
                 System.out.println("Sleep exception!");
             }
@@ -826,7 +826,6 @@ public class Player implements Cloneable{
     }
 
     /**
-<<<<<<< HEAD
      * Function to see if player is still active
      * */
     public boolean isActive(){
