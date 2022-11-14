@@ -876,4 +876,8 @@ public class Player implements Cloneable{
 
         return ret.toString();
     }
+
+    public void setDiceCount(int x){
+        this.diceCount=x;
+    }
 }

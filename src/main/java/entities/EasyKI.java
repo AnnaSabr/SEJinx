@@ -52,6 +52,7 @@ public class EasyKI extends Player{
                 }
             }
         }
+        System.out.println("Chooses the first Card wich was compatible.");
         return null;
     }
 
