@@ -231,7 +231,7 @@ public class Table implements Cloneable {
         String[] cardOrder;
 
         try{
-            BufferedReader br = new BufferedReader(new FileReader("entities/configfile.csv"));
+            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/configfile.csv"));
 
             String order = br.readLine();
             cardOrder = order.split(",");

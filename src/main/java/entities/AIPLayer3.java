@@ -20,7 +20,7 @@ public class AIPLayer3 extends Player{
 
     boolean usecsum=true;
     int myRound=1;
-    String cardOnTable=null;
+    public String cardOnTable=null;
     private boolean active = true;
 
     @Override
@@ -229,7 +229,7 @@ public class AIPLayer3 extends Player{
      * @param table
      * @return
      */
-    private String[] findValidCards(Table table){
+    public String[] findValidCards(Table table){
         boolean oneThree = false;
         boolean fourSix=false;
         for(LuckCard luckCard:this.getLuckCards()){
@@ -735,5 +735,12 @@ public class AIPLayer3 extends Player{
 
     public void playerlog(String msg){
         System.out.println("[" + this.getName()+ "]" + msg);
+    }
+
+    public void setRolls(int newValue){
+        this.rolls=newValue;
+    }
+    public void setDiceCount(int newCount){
+        this.diceCount=newCount;
     }
 }
