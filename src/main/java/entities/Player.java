@@ -890,20 +890,4 @@ public class Player implements Cloneable{
 
         return ret.toString();
     }
-
-    public void setDiceCount(int x){
-        this.diceCount=x;
-    }
-
-    public int getDiceCount() {
-        return diceCount;
-    }
-
-    public int getRolls() {
-        return rolls;
-    }
-
-    public void setRolls(int rolls) {
-        this.rolls = rolls;
-    }
 }
