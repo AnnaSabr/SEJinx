@@ -81,7 +81,7 @@ public class MediumAI extends Player{
 
     /**
      * Function to let the AI choose wich of its highest cards it wants to drop
-     * Medium AI chooses the card color with the least occurrences in his hand
+     * Medium AI chooses the card color with the least occurrences in its hand
      * */
     @Override
     public boolean selectHighCard(){
@@ -122,28 +122,33 @@ public class MediumAI extends Player{
         //initialize dropCard with the first available card
         Card dropCard = maxCards.get(0);
 
-        int i = this.cards.size();
+        int i = 0;
         int count = this.cards.size();
         //try to find the card with the least occurrences
         for(Card mxC : maxCards) {
             for (Card c : this.cards) {
-                //decrease i if there is a card with the same color as the current high card in the players hand
+                //increase i if there is a card with the same color as the current high card in the players hand
                 if (c.getColor() == mxC.getColor()){
-                    i--;
+                    i++;
                 }
             }
             //check if there is a card with lower count than the one before
             if(i < count){
                 count = i;
                 //reset i
-                i = this.cards.size();
+                i = 0;
                 //select the currently best card to drop
                 dropCard = mxC;
             }
         }
 
         //remove the card from the AIs hand
-        this.cards.remove(dropCard);
+        for(int d = 0; d < this.cards.size(); d++){
+            if(this.cards.get(d).getColor() == dropCard.getColor() && this.cards.get(d).getValue() == dropCard.getValue()){
+                this.cards.remove(d);
+                break;
+            }
+        }
 
         return true;
     }

@@ -19,6 +19,22 @@ public class Player implements Cloneable{
     protected int sleepTime = 0;
     protected boolean manualNextMsg = true;
 
+    public int getDiceCount() {
+        return diceCount;
+    }
+
+    public void setDiceCount(int diceCount) {
+        this.diceCount = diceCount;
+    }
+
+    public int getRolls() {
+        return rolls;
+    }
+
+    public void setRolls(int rolls) {
+        this.rolls = rolls;
+    }
+
     protected int diceCount = 0;
 
     //needs to be reset after each round
@@ -800,7 +816,7 @@ public class Player implements Cloneable{
             s.nextLine();
         }else {
             try {
-                //Thread.sleep(sleepTime);
+                Thread.sleep(sleepTime);
             } catch (Exception e) {
                 System.out.println("Sleep exception!");
             }
@@ -809,7 +825,6 @@ public class Player implements Cloneable{
     }
 
     /**
-<<<<<<< HEAD
      * Function to see if player is still active
      * */
     public boolean isActive(){
