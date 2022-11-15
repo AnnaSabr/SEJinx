@@ -20,8 +20,8 @@ public class GameLoop {
     Player currentPlayer;
 
     //time between msgs and actions
-    protected int sleepTime = 0;
-    protected boolean manualNextMsg = false;
+    protected int sleepTime = 200;
+    protected boolean manualNextMsg = true;
 
     Player[] players;
     Table table;
@@ -32,7 +32,7 @@ public class GameLoop {
     int cP;
     int anzahlKI;
 
-    public GameLoop(boolean rff) {
+    public GameLoop(boolean rff, boolean manualNextMsg, int sleepTime) {
         this.rff=rff;
         this.table = new Table(rff);
         this.highscores=new ArrayList<>();
@@ -40,6 +40,8 @@ public class GameLoop {
         this.verlauf = new Verlauf();
         this.cP=0;
         this.anzahlKI=0;
+        this.manualNextMsg = manualNextMsg;
+        this.sleepTime = sleepTime;
         this.currentRound=1;
     }
 
@@ -314,16 +316,17 @@ public class GameLoop {
      */
     private void log(String msg) {
         if(manualNextMsg){
+            System.out.println("[JINX] " + msg + " [ENTER] to continue!");
             Scanner s = new Scanner(System.in);
             s.nextLine();
         }else {
             try {
-               // Thread.sleep(sleepTime);
+                Thread.sleep(sleepTime);
             } catch (Exception e) {
                 System.out.println("Sleep exception!");
             }
+            System.out.println("[JINX] " + msg);
         }
-        System.out.println("[JINX] " + msg);
     }
 
 

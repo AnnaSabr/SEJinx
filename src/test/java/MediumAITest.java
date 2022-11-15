@@ -1,7 +1,8 @@
-package entities;
-
 import cards.Card;
 import cards.CardColor;
+import entities.MediumAI;
+import entities.Player;
+import entities.Table;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
