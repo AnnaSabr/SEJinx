@@ -31,6 +31,8 @@ public class GameLoop {
     boolean rff;
     int cP;
     int anzahlKI;
+    ArrayList<String> profiles=new ArrayList<>();
+    ArrayList<String> availableProfiles=new ArrayList<>();
 
     public GameLoop(boolean rff, boolean manualNextMsg, int sleepTime) {
         this.rff=rff;
@@ -339,19 +341,8 @@ public class GameLoop {
 
         //create as many players as needed
         for (int i = anzahlKI; i < players.length; i++) {
-            //ask player for name, until confirmed
-            while (true) {
-                log("Welcome Player" + (i + 1) + " whats your name?");
-                String name = s.nextLine().replaceAll(" ", "");
-                log("Are you sure your Name is: " + name + " [y/n]");
-                String con = s.nextLine();
-                //check confirmation
-                if (con.equals("y")) {
-                    //created player with entered name
-                    players[i] = new Player(name,sleepTime,manualNextMsg);
-                    break;
-                }
-            }
+            String name=this.chooseProfileFromFile();
+            players[i] = new Player(name,sleepTime,manualNextMsg);
         }
         //set the first player
         currentPlayer = players[0];
@@ -512,5 +503,117 @@ public class GameLoop {
         System.out.println("You created: KI: "+ k.getName()+ "  Level: "+ k.getClass().getSimpleName());
         this.anzahlKI++;
         return k;
+    }
+
+    /**
+     *  loads existing profiles from textfile
+     */
+    public void getProfilesFromFile(){
+        try{
+            BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
+
+            String line = br.readLine();
+            while (line != null) {
+                this.profiles.add(line);
+                line = br.readLine();
+            }
+
+        }catch (IOException e){
+            System.out.println("Something is wrong with the file");
+        }
+
+    }
+
+    /**
+     * check if the password is valid
+     */
+    public boolean matchPasswordToProfile(String name, String entry){
+        for(String oneLine : this.profiles){
+            String[] line=oneLine.split(",");
+            if(line[0]==name){
+                if(line[1]==entry){
+                    System.out.println("Correct!");
+                    return true;
+                }else{
+                    System.out.println("Wrong password!");
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * choose a profile for the player
+     *
+     * @return name of the chosen profile
+     */
+    public String chooseProfileFromFile(){
+        //TODO check if the chosen profile has not been chosen yet
+        Scanner s=new Scanner(System.in);
+        this.log("Would you like to choose a profile? y/n");
+        if(s.next()=="y"){
+            this.log("Which profile do you want?");
+            String newName=s.nextLine();
+            for(String line:this.availableProfiles){
+                String[] name=line.split(",");
+                if(name[0]==newName){
+                    for(Player p:this.players){
+                        if(p.equals(null)){
+                            break;
+                        } else if (p.name==newName) {
+                            this.log("This profile is taken! Please choose a different profile!");
+                            return this.chooseProfileFromFile();
+                        }
+                    }
+                    //TODO save profile to player
+                    this.log("");
+                    return name[0];
+                }
+            }
+            for(String line:this.profiles){
+                String[] name=line.split(",");
+                if(name[0]==newName){
+                    this.log("Please enter the password!");
+                    String pw=s.nextLine();
+                    boolean access=this.matchPasswordToProfile(name[0],pw);
+                    if(access){
+                        //TODO save profile to player
+                        this.availableProfiles.add(line);
+                        return name[0];
+                    }
+                }
+            }
+        }else{
+            String name="";
+            boolean a=true;
+            while(a){
+                a=false;
+                this.log("Please choose a name for your new profile!");
+                name = s.nextLine().replaceAll(" ", "");
+                for(String line:this.profiles){
+                    String[] strings=line.split(",");
+                    if(strings[0]==name){
+                        this.log("This already exists! Please choose a new name!");
+                        a=true;
+                        break;
+                    }
+                }
+            }
+            this.log("Please choose a password!");
+            String pw=s.nextLine();
+            this.profiles.add(name+","+pw);
+            this.availableProfiles.add(name+","+pw);
+            return name;
+        }
+        return null;
+    }
+
+    /**
+     * calculates the password that will be saved in textfile
+     */
+    public String calculatePassword(String password){
+        //TODO
+        return null;
     }
 }
