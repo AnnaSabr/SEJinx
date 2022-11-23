@@ -53,7 +53,6 @@ public class GameLoop {
         init();
         //start the game loop
         this.showHighscore();
-        this.saveHighscores();
         impLoop();
         //loop();
     }
@@ -364,7 +363,7 @@ public class GameLoop {
      */
     private void getHighscore() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/highscore.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("main/java/entities/highscore.txt"));
 
             String line = br.readLine();
 
@@ -398,9 +397,10 @@ public class GameLoop {
      */
     private void saveHighscores() {
         try {
-            PrintWriter pw = new PrintWriter("src/main/java/entities/highscore.txt");
+            PrintWriter pw = new PrintWriter("main/java/entities/highscore.txt");
 
             for (String entry : this.highscores) {
+                System.out.println(entry);
                 pw.println(entry);
                 pw.flush();
             }
@@ -431,6 +431,9 @@ public class GameLoop {
                 } else {
                     newHighscore.add(nameAndScore[0] + " " + nameAndScore[1]);
                 }
+            }
+            if(this.highscores.size()==0){
+                newHighscore.add(player.getName() + " " + player.getScore());
             }
             this.highscores = newHighscore;
         }
