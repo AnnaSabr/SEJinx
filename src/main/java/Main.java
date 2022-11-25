@@ -5,13 +5,21 @@ import cards.LuckCard;
 import entities.GameLoop;
 import entities.Player;
 import entities.Table;
+import persistence.DBConnector;
 
 import java.util.Scanner;
 
 public class Main {
 
+
     public static void main(String[] args) {
 
+        System.out.println("STARTED");
+        DBConnector conn = DBConnector.getInstance();
+
+        System.out.println(conn.createPlayer("Ronald","pw"));
+
+        System.exit(0);
         // does user want to load a default config
         boolean config = false ;
         boolean manualSleepTime = false;
