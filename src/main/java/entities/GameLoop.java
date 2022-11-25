@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 import actions.ReUnDo.Runde;
 import actions.ReUnDo.Verlauf;
+import actions.Zuege.Action;
+import actions.Zuege.ZugHistorie;
 import cards.Card;
 import cards.LuckCard;
 
@@ -26,6 +28,7 @@ public class GameLoop {
     Player[] players;
     Table table;
     Verlauf verlauf;
+    ZugHistorie zuege;
 
     ArrayList<String> highscores;
     boolean rff;
@@ -43,6 +46,7 @@ public class GameLoop {
         this.manualNextMsg = manualNextMsg;
         this.sleepTime = sleepTime;
         this.currentRound=1;
+        this.zuege=new ZugHistorie();
     }
 
     /**
@@ -101,6 +105,7 @@ public class GameLoop {
      * */
     private void impLoop(){
 
+
         //current player counter
          cP = 0;
         //determines if a round is over
@@ -119,7 +124,7 @@ public class GameLoop {
 
                 // Let the player perform certain actions until he is done
                 while(currentPlayer.isActive()){
-
+                    String aktion="";
                     //display the current round
                     log("Round: " + currentRound);
                     //display the field
@@ -181,7 +186,7 @@ public class GameLoop {
                 }
                 //make sure current player always loops, only when round is active
                 if(!roundOver) {
-                    verlaufAktualisieren(currentPlayer);
+                    verlaufAktualisieren(currentPlayer,null);
                     cP = (cP + 1) % (players.length);
                 }
             }
@@ -205,7 +210,7 @@ public class GameLoop {
 
             //deal new cards
             this.table.resetField();
-            verlaufAktualisieren(currentPlayer);
+            verlaufAktualisieren(currentPlayer,null);
 
             //increase the round count
             currentRound++;
@@ -222,7 +227,7 @@ public class GameLoop {
      * fuegt die letzte Spielrunde in den Spielverlauf ein
      * @param aktiv Spieler der den letzten Zug gemacht hat
      */
-    public void verlaufAktualisieren(Player aktiv){
+    public void verlaufAktualisieren(Player aktiv, Action action){
         Table aktuellerTisch = new Table(rff);
         aktuellerTisch.setField(table.getField());
         aktuellerTisch.setCardStack(table.getCardStack());
@@ -245,7 +250,7 @@ public class GameLoop {
             aktuelleSpielerStaende.add(dummy);
         }
 
-        Runde neu = new Runde(aktuelleSpielerStaende, aktuellerTisch);
+        Runde neu = new Runde(aktuelleSpielerStaende, aktuellerTisch,action);
         verlauf.rundeHinzufuegen(neu);
     }
 
