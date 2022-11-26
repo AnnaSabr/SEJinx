@@ -185,7 +185,8 @@ public class DBConnector {
     /**
      * Gets all histories of the player
      * @param name name of the player
-     * @return null if player is not found, no history is found
+     * @return null if player is not found, no history is found or an error occurred.
+     * Returns PlayerHistory object if all information was found (enemies might be null)
      * */
     public PlayerHistory[] getPlayerHistory(String name){
 
