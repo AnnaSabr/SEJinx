@@ -1,4 +1,6 @@
 package persistence;
+import entities.Player;
+
 import java.sql.*;
 
 public class DBConnector {
@@ -32,7 +34,7 @@ public class DBConnector {
     public boolean checkPlayer(String name){
         try{
             Statement stm = con.createStatement();
-            String request = "SELECT * FROM Player WHERE name=" + name;
+            String request = "SELECT * FROM Player WHERE name='" + name + "'";
             ResultSet rs = stm.executeQuery(request);
 
             //check if an entry was found
@@ -109,5 +111,73 @@ public class DBConnector {
 
         //return true if an entry was found
         return true;
+    }
+
+    /**
+     * Function to store the game history of a player
+     * !Currently only stores enemys information if enemy has profile in DB!
+     * @param history history object storing the important game information
+     * */
+    public boolean createHistory(PlayerHistory history){
+        Player player = history.getPlayer();
+        Player[] enemys = history.getEnemys();
+
+        try{
+            //check if all information is given and player even exists in DB
+            if(!history.isComplete() && !checkPlayer(player.getName())){
+                return false;
+            }
+
+            //handle player information
+            String request = "INSERT INTO PlayerHistory (player, saved, score, numLuckCards) VALUES (?,?,?,?)";
+            PreparedStatement stm = con.prepareStatement(request, Statement.RETURN_GENERATED_KEYS);
+
+            //set information in statement
+            stm.setString(1, player.getName());
+            stm.setDate(2, history.getDate());
+            stm.setInt(3,player.getScore());
+            stm.setInt(4, history.getLuckCardCount());
+
+            //push changes to db
+            int affectedRows = stm.executeUpdate();
+
+            //check if something was created
+            if (affectedRows == 0){
+                return false;
+            }
+
+            //handle enemy information
+            ResultSet generatedKeys = stm.getGeneratedKeys();
+
+            int id = -1;
+            if(generatedKeys.next()){
+                id = generatedKeys.getInt(1);
+            }
+
+            if(id == -1){
+                //TODO handle case, delete history if no id was returned
+                return false;
+            }
+
+
+            String request_enemy = "INSERT INTO PlayerHistoryEnemy (ph_id, enemy, scorce) VALUES (?,?,?)";
+            PreparedStatement stm_enemy = con.prepareStatement(request_enemy, Statement.RETURN_GENERATED_KEYS);
+            for(Player e : enemys) {
+                if(checkPlayer(e.getName())){
+                    stm_enemy.setInt(1, id);
+                    stm_enemy.setString(2, e.getName());
+                    stm_enemy.setInt(3, e.getScore());
+                    //push changes to db
+                    stm_enemy.executeUpdate();
+                }
+            }
+
+            //everything stored in DB
+            return true;
+        } catch (SQLException e){
+            System.out.println("Something went wrong while trying to save the playerhistory");
+            e.printStackTrace();
+            return false;
+        }
     }
 }
