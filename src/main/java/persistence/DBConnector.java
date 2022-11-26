@@ -3,6 +3,7 @@ import entities.Player;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class DBConnector {
 
@@ -238,6 +239,16 @@ public class DBConnector {
                 //add to all histories
                 playerHistories.add(ph);
             }
+
+            //sort player histories by score
+            playerHistories.sort((o1, o2) -> {
+                if(o1.getPlayer().getScore() < o2.getPlayer().getScore()){
+                    return 1;
+                }else if(o1.getPlayer().getScore() == o2.getPlayer().getScore()){
+                    return 0;
+                }
+                return -1;
+            });
 
             return playerHistories.toArray(new PlayerHistory[0]);
         }catch (SQLException e){
