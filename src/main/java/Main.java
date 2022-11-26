@@ -19,7 +19,7 @@ public class Main {
         System.out.println("STARTED");
         DBConnector conn = DBConnector.getInstance();
 
-
+        /*
         Player p = new Player("Hans",0,false);
         Player[] enemys = new Player[3];
         enemys[0] = new Player("Werner",0,false);
@@ -29,12 +29,15 @@ public class Main {
         //date format yyyy-[m]m-[d]d
         PlayerHistory ph = new PlayerHistory(p,3, Date.valueOf("2002-12-10"),enemys);
 
-
         System.out.println(conn.createHistory(ph));
+        */
         //System.out.println(conn.createPlayer("Hans","pw"));
         //System.out.println(conn.createPlayer("Werner","pw"));
         //System.out.println(conn.createPlayer("Rasmus","pw"));
         //System.out.println(conn.createPlayer("Robert","pw"));
+
+        PlayerHistory[] playerHistory = conn.getPlayerHistory("Hans");
+
 
         System.exit(0);
         // does user want to load a default config

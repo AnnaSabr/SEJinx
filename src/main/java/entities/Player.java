@@ -16,6 +16,7 @@ public class Player implements Cloneable{
     protected final String name;
     protected  ArrayList<Card> cards;
     protected  ArrayList<LuckCard> luckCards;
+    protected int score;
 
     //time between msgs and actions
     protected int sleepTime = 200;
@@ -166,7 +167,7 @@ public class Player implements Cloneable{
      * @return current score as int
      * */
     public int getScore(){
-        int score = 0;
+        int score = this.score;
 
         for(Card c : this.cards){
             score += c.getValue();
@@ -175,6 +176,12 @@ public class Player implements Cloneable{
         return score;
     }
 
+    /**
+     * Function to get the current score of the player
+     * */
+    public void setScore(int score){
+        this.score = score;
+    }
 
     /**
      * Function to let the player choose a card

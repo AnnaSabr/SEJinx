@@ -2,6 +2,7 @@ package persistence;
 import entities.Player;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DBConnector {
 
@@ -178,6 +179,69 @@ public class DBConnector {
             System.out.println("Something went wrong while trying to save the playerhistory");
             e.printStackTrace();
             return false;
+        }
+    }
+
+    /**
+     * Gets all histories of the player
+     * @param name name of the player
+     * @return null if player is not found, no history is found
+     * */
+    public PlayerHistory[] getPlayerHistory(String name){
+
+        ArrayList<PlayerHistory> playerHistories = new ArrayList<>();
+
+        //check if player exists
+        if(!checkPlayer(name)){
+            return null;
+        }
+
+        try{
+
+            String request = "SELECT * FROM PlayerHistory WHERE player='" + name + "'";
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery(request);
+
+            //check if an entry was found
+            if(!rs.isBeforeFirst()){
+                return null;
+            }
+
+            //get all histories of player
+            while(rs.next()){
+                Player p = new Player(rs.getString("player"),0,false);
+                p.setScore(rs.getInt("score"));
+
+                //create new player history
+                PlayerHistory ph = new PlayerHistory(p,rs.getInt("numLuckCards"),rs.getDate("saved"),null);
+
+
+                //get information of enemies if there is some
+                String request_enemy = "SELECT * FROM PlayerHistoryEnemy WHERE ph_id=" + rs.getInt("id");
+                Statement stm_enemy = con.createStatement();
+                ResultSet rs_enemy = stm_enemy.executeQuery(request_enemy);
+
+                //check if an entry was found
+                if(rs_enemy.isBeforeFirst()){
+                    ArrayList<Player> enemies = new ArrayList<>();
+                    //add all found enemies
+                    while (rs_enemy.next()){
+                        Player enemie = new Player(rs_enemy.getString("enemy"),0,false);
+                        //set their score accordingly
+                        enemie.setScore(rs_enemy.getInt("scorce"));
+                        enemies.add(enemie);
+                    }
+                    //add enemies to playerhistory
+                    ph.setEnemys(enemies.toArray(new Player[0]));
+                }
+                //add to all histories
+                playerHistories.add(ph);
+            }
+
+            return playerHistories.toArray(new PlayerHistory[0]);
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
         }
     }
 }
