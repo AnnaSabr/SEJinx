@@ -20,12 +20,12 @@ public class Runde {
     private Runde davor;
     private Runde dahinter;
 
-    public Runde(ArrayList<Player> spieler, Table tischStand, Action action){
+    public Runde(ArrayList<Player> spieler, Table tischStand){
         this.spieler=spieler;
         this.tischStand=tischStand;
         this.davor=null;
         this.dahinter=null;
-        this.action=action;
+        //this.action=action;
     }
 
     /**

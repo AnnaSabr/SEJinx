@@ -4,7 +4,7 @@ public enum Zuege {
     SKIPPED,
     GOTCARDFROMTABLE,
     USEDLUCKYCARD,
-    DROPEDCARD,
+    DROPPEDCARD,
     GOTLUCKYCARD,
 
 }
