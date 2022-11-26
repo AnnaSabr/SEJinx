@@ -17,8 +17,8 @@ public class Verlauf {
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
     public Verlauf(){
-        this.head=new Runde(null,null,null);
-        this.tail=new Runde(null,null,null);
+        this.head=new Runde(null,null);
+        this.tail=new Runde(null,null);
 
         this.head.setDahinter(tail);
         this.tail.setDavor(head);

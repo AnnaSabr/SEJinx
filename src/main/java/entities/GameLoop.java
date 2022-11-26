@@ -154,31 +154,37 @@ public class GameLoop {
                                     currentPlayer.mintomax(chosenOne, 1, 3);
                                     LuckCard luck1 = new LuckCard(CardType.ONETOTHREE);
                                     Action action1 = new Action(Zuege.USEDLUCKYCARD,luck1,currentPlayer );
+                                    zuege.actionHinzufuegen(action1);
                                 // let the player change his diceCount to a set value
                                 case FOURTOSIX :
                                     currentPlayer.mintomax(chosenOne, 4, 6);
                                     LuckCard luck2 = new LuckCard(CardType.FOURTOSIX);
                                     Action action2 = new Action(Zuege.USEDLUCKYCARD,luck2,currentPlayer );
+                                    zuege.actionHinzufuegen(action2);
                                 // give the player an extra throw
                                 case EXTRATHROW :
                                     currentPlayer.extraThrow(chosenOne);
                                     LuckCard luck3 = new LuckCard(CardType.EXTRATHROW);
                                     Action action3 = new Action(Zuege.USEDLUCKYCARD,luck3,currentPlayer );
+                                    zuege.actionHinzufuegen(action3);
                                 // reduce the diceCount of the player by one
                                 case MINUSONE :
                                     currentPlayer.minusOne(chosenOne);
                                     LuckCard luck4 = new LuckCard(CardType.MINUSONE);
                                     Action action4 = new Action(Zuege.USEDLUCKYCARD,luck4,currentPlayer );
+                                    zuege.actionHinzufuegen(action4);
                                 // increase the diceCount of the player by one
                                 case PLUSONE :
                                     currentPlayer.plusOne(chosenOne);
                                     LuckCard luck5 = new LuckCard(CardType.PLUSONE);
                                     Action action5 = new Action(Zuege.USEDLUCKYCARD,luck5,currentPlayer );
+                                    zuege.actionHinzufuegen(action5);
                                 // let the player choose a collection of cards based on his dice count
                                 case CARDSUM :
                                     currentPlayer.cardSum(chosenOne, this.table);
                                     LuckCard luck6 = new LuckCard(CardType.CARDSUM);
                                     Action action6 = new Action(Zuege.USEDLUCKYCARD,luck6,currentPlayer );
+                                    zuege.actionHinzufuegen(action6);
                             }
                         }
                         case "C" -> {

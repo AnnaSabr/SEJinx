@@ -28,6 +28,8 @@ public class Action {
         this.zug=zug;
         this.glueckskarte=karte;
         this.aktiverSpieler=aktiv;
+        this.dahinter=null;
+        this.davor=null;
     }
 
     public Zuege getZug() {

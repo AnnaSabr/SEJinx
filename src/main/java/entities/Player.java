@@ -13,6 +13,8 @@ import java.util.*;
  * */
 public class Player implements Cloneable{
 
+    private Card lastCard;
+    private LuckCard lastLuckyCard;
     protected final String name;
     protected  ArrayList<Card> cards;
     protected  ArrayList<LuckCard> luckCards;
@@ -59,6 +61,8 @@ public class Player implements Cloneable{
         this.manualNextMsg = manualNextMsg;
         this.cards = new ArrayList<Card>();
         this.luckCards = new ArrayList<LuckCard>();
+        this.lastCard=null;
+        this.lastLuckyCard=null;
     }
 
     public static ArrayList<Card> copyC(ArrayList<Card> alt) {
@@ -153,6 +157,7 @@ public class Player implements Cloneable{
      * */
     public boolean removeCard(Card card){
         try{
+            this.lastCard=card;
             this.cards.remove(card);
             return true;
         }catch (Exception e){
@@ -195,6 +200,7 @@ public class Player implements Cloneable{
         //check if the player has an option to choose from
         if(checkEndRound(table)){
             log(this.name + ", there is no card you could choose!");
+            this.lastCard=null;
             //set the player as inactive to end his turn
             this.active = false;
 
@@ -212,6 +218,7 @@ public class Player implements Cloneable{
 
             //get a card from the field
             Card chosenOne = table.getCard(coords[0], coords[1]);
+            this.lastCard=chosenOne;
 
             if (chosenOne == null) {
                 log("There is no card at that position!");
@@ -276,12 +283,14 @@ public class Player implements Cloneable{
             return false;
         }else{
             //remove the selected card from the players hand
+            this.lastCard=selected;
             this.cards.remove(selected);
             //add a luckCard to the players hand
             LuckCard drawn = table.drawLuckCard();
             //check if table has luckcards left
             if(drawn != null) {
                 this.luckCards.add(drawn);
+                this.lastLuckyCard=drawn;
                 return true;
             }else{
                 log("The luck card stack has no more cards you can draw!");
@@ -350,6 +359,7 @@ public class Player implements Cloneable{
         int removing = this.playerInputNumberInRange(0,maxCards.size()-1);
         while(true){
             try{
+                this.lastCard=maxCards.get(removing);
                 this.cards.remove(maxCards.get(removing));
                 return true;
             }catch (Exception e){
@@ -1253,4 +1263,19 @@ public class Player implements Cloneable{
         return cards;
     }
 
+    public Card getLastCard() {
+        return lastCard;
+    }
+
+    public LuckCard getLastLuckyCard() {
+        return lastLuckyCard;
+    }
+
+    public void setLastCard(Card lastCard) {
+        this.lastCard = lastCard;
+    }
+
+    public void setLastLuckyCard(LuckCard lastLuckyCard) {
+        this.lastLuckyCard = lastLuckyCard;
+    }
 }

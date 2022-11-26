@@ -25,7 +25,7 @@ public class Runde {
         this.tischStand=tischStand;
         this.davor=null;
         this.dahinter=null;
-        //this.action=action;
+
     }
 
     /**
