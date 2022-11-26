@@ -161,3 +161,32 @@ Um die Funktionalität der public-Methoden testen zu können haben wir mithilfe 
 welche die Spieler- und KI-Methoden testen sollen. Im GameLoop werden ausschließlich private-Methoden genutzt um den
 Spielablauf zu überprüfen, daher können wir hier nicht testen. Wir gehen davon aus, dass der korrekte Spielablauf gesichert ist,
 wenn die Playermethoden funktional sind.
+
+---
+# Änderungen zu Abgabe 3
+
+### Datenbank - MySQL mit JDBC-Connector
+Mit den neuen Anforderungen ist es nötig geworden, eine relationale Datenbank zu verwenden um alle wichtigen Informationen über einen
+Spieler und den Spielverlauf zu speichern.
+Als Datenbank nutzen wir MySQL mit einem JDBC-Connector. Ein SQL-Script welches ein Schema sowie alle Tabellen und Constraints anlegt ist in jinx.sql zu finden.
+Damit Jinx eine Verbindung zur Datenbank herstellen kann, müssen in DB-Connector die richtigen Zugangsdaten eingetragen werden. Standardmäßig
+sucht Jinx in **jdbc:mysql://localhost:3306/jinx** nach einem **root** User mit den Passwort **passwort**.
+
+#### Schema
+Ein Spieler legt einen Account mit einem Passwort und einem Namen an. Der Name ist Primary Key der Tabelle Player, so kann
+es nur eindeutige Namen geben, mit denen sich die Spieler identifizieren. Das Passwort wird als Integer gespeichert und mit
+dem Standard hashcode() von Java verschlüsselt. Die Spielhistorien des Spielers werden in der Tabelle PlayerHistory festgehalten.
+Zu einer Spielhistorie gehört der Tag an dem das Spiel stattgefunden hat, ein Spieler, sowie sein Score und die Anzahl
+der benutzten LuckCards in diesem Spiel. Außerdem wird ein Verweis auf die Gegner des Spielers in diesem Spiel festgehalten.
+Zu den Gegnern wird gespeichert, welchen Score sie hatten.
+
+//TODO Hier noch das Spielablaufschema erklären
+
+#### Code - Datenbankzugriff
+Der Zugriff auf die Datenbank erfolgt über den DBConnector. Dieser ist als Singleton implementiert, um unnötig viele Verbindungen
+zur Datenbank zu verhindern. Der Connector bietet alle wichtigen Funktionen um mit der Datenbank zu kommunizieren. Er übernimmt
+das Prüfen nach Einträgen oder das Erstellen von diesen. Die einzelnen Funktionen sind im Source Code mithilfe von JavaDoc genauer
+dokumentiert.
+Um die PlayerHistory möglichst simple speichern zu können, haben wir eine PlayerHistory-Klasse implementiert, die alle wichtigen
+Daten für diese History zentral verwalten soll. So kann dieses Objekt einfach mit Informationen gefüllt werden und dann von
+jedem genutzt werden, der mit diesen Informationen arbeiten möchte.
