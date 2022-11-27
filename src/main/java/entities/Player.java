@@ -1270,12 +1270,13 @@ public class Player implements Cloneable{
             this.log("You do not have a history yet.");
             return;
         }
+        log(this.name+"'s histories:");
         int i=0;
         for(String line:this.history){
             i++;
             String[] a=line.split(",");
-            String[] opponents=a[3].split("/");
-            this.log(i+". Score: "+a[1]+"\nused Luckcards: "+a[2]+"\nPlayed against:");
+            String[] opponents=a[4].split("/");
+            this.log(i+". Score: "+a[1]+"\nplayed at: "+a[2]+"\nused Luckcards: "+a[3]+"\nPlayed against:");
             int c=0;
             for(String lines:opponents){
                 c++;
@@ -1294,10 +1295,8 @@ public class Player implements Cloneable{
             BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
 
             String line=br.readLine();
-            log(line);
             while(!line.equals("histories")){
                 line=br.readLine();
-                log(line);
             }
             while(line!=null){
                 String[] a=line.split(",");

@@ -3,6 +3,11 @@ package entities;
 import cards.Card;
 import cards.CardColor;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class EasyKI extends Player{
     /**
      * class to define die first Level KI easy
@@ -94,5 +99,31 @@ public class EasyKI extends Player{
     public boolean drawLuckCard(Table table, Player[] players){
         log(this.name + "[AI], i would never waste points for a luck card!");
         return false;
+    }
+
+    /**
+     * adds previous histories of this player to arraylist history
+     */
+    public void loadHistoryFromFile(){
+        try{
+            BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
+
+            String line=br.readLine();
+            while(!line.equals("histories")){
+                line=br.readLine();
+            }
+            while(line!=null){
+                String[] a=line.split(",");
+                if(a[0].equals("AILevel1")){
+                    this.history.add(line);
+                }
+                line=br.readLine();
+            }
+
+        }catch (FileNotFoundException e){
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

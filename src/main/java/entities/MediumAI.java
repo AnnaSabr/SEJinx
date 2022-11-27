@@ -1,6 +1,11 @@
 package entities;
 
 import cards.Card;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -211,5 +216,31 @@ public class MediumAI extends Player{
         }
 
         return null;
+    }
+
+    /**
+     * adds previous histories of this player to arraylist history
+     */
+    public void loadHistoryFromFile(){
+        try{
+            BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
+
+            String line=br.readLine();
+            while(!line.equals("histories")){
+                line=br.readLine();
+            }
+            while(line!=null){
+                String[] a=line.split(",");
+                if(a[0].equals("AILevel2")){
+                    this.history.add(line);
+                }
+                line=br.readLine();
+            }
+
+        }catch (FileNotFoundException e){
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

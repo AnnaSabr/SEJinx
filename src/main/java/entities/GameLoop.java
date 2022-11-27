@@ -1,7 +1,9 @@
 package entities;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 import actions.ReUnDo.Runde;
@@ -67,7 +69,7 @@ public class GameLoop {
         System.out.println("Welcome to JINX! How many players do you wish to play with? (2-4 Players)");
         int playerCount;
         while (true) {
-            try {
+            //try {
                 Scanner s = new Scanner(System.in);
                 playerCount = s.nextInt();
 
@@ -87,9 +89,9 @@ public class GameLoop {
                     }
                     break;
                 }
-            }catch (Exception e){
-                log("Enter a valid number!");
-            }
+            //}//catch (Exception e){
+               // log("Enter a valid number!");
+            //}
         }
         if (playerCount!=anzahlKI){
             // init all players
@@ -657,8 +659,8 @@ public class GameLoop {
         }else{
             history=player.name;
         }
-        //profilename,score,amount of used luckcards,opponents and their scores
-        history=history+","+player.getScore()+","+player.usedCards.size()+",";
+        //profilename,score,amount of used luckcards, date, opponents and their scores
+        history=history+","+player.getScore()+","+this.getDate()+","+player.usedCards.size()+",";
         for(int a=0; a<this.players.length;a++){
             String aiLevel="";
             if(players[a] instanceof EasyKI){
@@ -676,6 +678,15 @@ public class GameLoop {
     }
 
     /**
+     * get date for player history
+     */
+    private String getDate(){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd - HH:mm:ss ");
+        Date currentTime = new Date();
+        return formatter.format(currentTime);
+    }
+
+    /**
      *  saves all new and previous histories to textfile
      */
     public void savingHistoryToFile(){
@@ -684,65 +695,74 @@ public class GameLoop {
         //getting all current player histories
         for(int a=0; a<this.players.length;a++){
             histories[a]=this.createHistory(players[a]);
-            players[a].history.add(histories[a]);
+            //iterate player's histories to show them in order
+            boolean added=false;
+            for(int b=0;b<players[a].history.size();b++){
+                String[] lHistory=players[a].history.get(b).split(",");
+                if(Integer.parseInt(lHistory[1])<players[a].getScore()){
+                    players[a].history.add(b,histories[a]);
+                    added=true;
+                }
+            }
+            if(!added){
+                players[a].history.add(histories[a]);
+            }
             players[a].showHistory();
         }
+        ArrayList<String> content= new ArrayList<>();
+
+        //get all previous histories from textfile
         try {
-            PrintWriter pw = new PrintWriter("main/java/entities/userProfiles.txt");
+            BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
 
-            ArrayList<String> content= new ArrayList<>();
+            String line = br.readLine();
 
-            //get all previous histories from textfile
-            try {
-                BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
-
-                String line = br.readLine();
-
-                while (!line.equals("histories")) {
-                    content.add(line);
-                    line = br.readLine();
-                }
+            log(line);
+            while (!line.equals("histories")) {
                 content.add(line);
-                line=br.readLine();
-                while (line.equals(null)){
-                    prevHistory.add(line);
-                    line=br.readLine();
-                }
-                //add all histories of this round
-                for(String h:histories){
-                    boolean profileFound=false;
-                    for(int a=0; a<prevHistory.size();a++){
-                        //Array
-                        String[] s=h.split(",");
-                        //Arraylist
-                        String[] b=prevHistory.get(a).split(",");
-                        //compare profile names
-                        if(b[0]==s[0]){
-                            //if old score is lower than new score
-                            if(Integer.parseInt(b[1])<Integer.parseInt(s[1])){
-                                prevHistory.add(a,h);
-                                break;
-                            //if profile was found but history has not been added yet
-                            }else{
-                                profileFound=true;
-                            }
-                        //if profile was found, but value has not been added
-                        } else if (profileFound) {
-                            prevHistory.add(a,h);
-                            break;
-                        }
-                    }
-                    //if no spot in Arraylist was found, add history to the end
-                    if(!prevHistory.contains(h)){
-                        prevHistory.add(h);
-                    }
-                }
-
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                line = br.readLine();
+                log(line);
             }
+            content.add(line);
+            line = br.readLine();
+            while (line != null) {
+                prevHistory.add(line);
+                line = br.readLine();
+            }
+            //add all histories of this round
+            for (String h : histories) {
+                boolean profileFound = false;
+                for (int a = 0; a < prevHistory.size(); a++) {
+                    //history of this round
+                    String[] s = h.split(",");
+                    //Arraylist
+                    String[] b = prevHistory.get(a).split(",");
+                    //compare profile names
+                    if (b[0].equals(s[0])) {
+                        //if old score is lower than new score
+                        if (Integer.parseInt(b[1]) < Integer.parseInt(s[1])) {
+                            prevHistory.add(a, h);
+                            break;
+                            //if profile was found but history has not been added yet
+                        } else {
+                            profileFound = true;
+                        }
+                        //if profile was found, but value has not been added
+                    } else if (profileFound) {
+                        prevHistory.add(a, h);
+                        break;
+                    }
+                }
+                //if no spot in Arraylist was found, add history to the end
+                if (!prevHistory.contains(h)) {
+                    prevHistory.add(h);
+                }
+            }
+        }catch(IOException e) {
+            throw new RuntimeException(e);
+        }try {
+                PrintWriter pw = new PrintWriter("main/java/entities/userProfiles.txt");
+
 
             for(String a:content){
                 pw.println(a);
@@ -754,6 +774,8 @@ public class GameLoop {
             }
 
         } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
