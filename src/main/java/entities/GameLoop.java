@@ -520,7 +520,7 @@ public class GameLoop {
             BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
 
             String line = br.readLine();
-            while (line != null) {
+            while (line != null && !line.equals("histories")) {
                 this.profiles.add(line);
                 line = br.readLine();
             }
@@ -568,7 +568,7 @@ public class GameLoop {
                     for(Player p:this.players){
                         if(p.equals(null)){
                             break;
-                        } else if (p.name==newName) {
+                        } else if (p.name.equals(newName)) {
                             this.log("This profile is taken! Please choose a different profile!");
                             return this.chooseProfileFromFile();
                         }
@@ -610,8 +610,11 @@ public class GameLoop {
             }
             this.log("Please choose a password!");
             String pw=s.nextLine();
-            this.profiles.add(name+","+pw);
-            this.availableProfiles.add(name+","+pw);
+            this.profiles.add(name+","+this.calculatePassword(pw));
+            this.availableProfiles.add(name+","+this.calculatePassword(pw));
+            for(String p:profiles){
+                log(p);
+            }
             return name;
         }
         return null;
@@ -702,6 +705,7 @@ public class GameLoop {
                 if(Integer.parseInt(lHistory[1])<players[a].getScore()){
                     players[a].history.add(b,histories[a]);
                     added=true;
+                    break;
                 }
             }
             if(!added){
@@ -756,6 +760,19 @@ public class GameLoop {
                 //if no spot in Arraylist was found, add history to the end
                 if (!prevHistory.contains(h)) {
                     prevHistory.add(h);
+                }
+            }
+            for(String prof:this.profiles){
+                boolean saved=false;
+                String[] a=prof.split(",");
+                for(String oldData:content){
+                    if(a[0].equals(oldData.split(",")[0])){
+                        saved=true;
+                    }
+                }
+                //profile needs to be added to file
+                if(!saved){
+                    content.add(content.size()-1,prof);
                 }
             }
         }catch(IOException e) {
