@@ -216,6 +216,7 @@ public class GameLoop {
                         }
                         case "Z" ->{}
                         case "S"->{
+                            //TODO: Bezug zur Datenbank
                             speicherObjekt.setVerlaufAction(ZugHistorie.zumSpeichern());
                             speicherObjekt.setVerlaufRunden(verlauf.zumSpeichern());
                         }
