@@ -21,7 +21,7 @@ public class AIPlayer3Test {
     void setup(){
         //cards from config-file
         table=new Table(true);
-        ai=new AIPLayer3("bot",20,false);
+        ai=new AIPLayer3("bot",20,false,false);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class AIPlayer3Test {
 
     @Test
     void drawLuckCard(){
-        Player opponent=new AIPLayer3("player",10,false);
+        Player opponent=new AIPLayer3("player",10,false,false);
         opponent.addCard(new Card(CardColor.BLUE,2));
         Player[] players=new Player[2];
         players[0]=ai;
