@@ -6,5 +6,6 @@ public enum Zuege {
     USEDLUCKYCARD,
     DROPPEDCARD,
     GOTLUCKYCARD,
+    MANIPULATION,
 
 }

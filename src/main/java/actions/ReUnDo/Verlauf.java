@@ -1,7 +1,9 @@
 package actions.ReUnDo;
 
+import actions.Zuege.Action;
 import entities.Player;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -183,5 +185,15 @@ public class Verlauf {
 
     public Runde getHead() {
         return head;
+    }
+
+    public ArrayList<Runde> zumSpeichern(){
+        ArrayList<Runde> zugVerlauf= new ArrayList<>();
+        Runde start=head.getDahinter();
+        while (!start.equals(tail)){
+            zugVerlauf.add(start);
+            start=start.getDahinter();
+        }
+        return zugVerlauf;
     }
 }
