@@ -2,14 +2,18 @@ package entities;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
+//import java.util.Date;
+import java.sql.Date;
 import java.util.Scanner;
 
 import actions.ReUnDo.Runde;
 import actions.ReUnDo.Verlauf;
 import cards.Card;
 import cards.LuckCard;
+import persistence.DBConnector;
+import persistence.PlayerHistory;
 
 
 /**
@@ -35,8 +39,10 @@ public class GameLoop {
     int anzahlKI;
     ArrayList<String> profiles=new ArrayList<>();
     ArrayList<String> availableProfiles=new ArrayList<>();
+    boolean db;
+    DBConnector connector=DBConnector.getInstance();
 
-    public GameLoop(boolean rff, boolean manualNextMsg, int sleepTime) {
+    public GameLoop(boolean rff, boolean manualNextMsg, int sleepTime, boolean dataFromDB) {
         this.rff=rff;
         this.table = new Table(rff);
         this.highscores=new ArrayList<>();
@@ -47,6 +53,7 @@ public class GameLoop {
         this.manualNextMsg = manualNextMsg;
         this.sleepTime = sleepTime;
         this.currentRound=1;
+        this.db=dataFromDB;
     }
 
     /**
@@ -65,7 +72,9 @@ public class GameLoop {
      * Function to initialize everything needed
      */
     private void init() {
-        this.getProfilesFromFile();
+        if(!db){
+            this.getProfilesFromFile();
+        }
         System.out.println("Welcome to JINX! How many players do you wish to play with? (2-4 Players)");
         int playerCount;
         while (true) {
@@ -89,7 +98,7 @@ public class GameLoop {
                     }
                     break;
                 }
-            //}//catch (Exception e){
+            //}catch (Exception e){
                // log("Enter a valid number!");
             //}
         }
@@ -221,7 +230,44 @@ public class GameLoop {
         //all 3 rounds ended, calculate score here
         this.addCurrentHighscores();
         this.saveHighscores();
-        this.savingHistoryToFile();
+        if(!db){
+            this.savingHistoryToFile();
+        }else{
+            Player[] enemies=new Player[this.players.length-1];
+            String[] enemyNames=new String[enemies.length];
+            for(Player p:this.players){
+                String myName=p.getName();
+                if(p instanceof EasyKI){
+                    p.name="AILevel1";
+                } else if (p instanceof MediumAI) {
+                    p.name="AILevel2";
+                } else if (p instanceof AIPLayer3) {
+                    p.name="AILevel3";
+                }
+                int b=0;
+                //temporarily change enemy AI's name for database
+                for(Player enemy:this.players){
+                    if(!p.equals(enemy)){
+                        enemyNames[b]=enemy.name;
+                        if(enemy instanceof EasyKI){
+                            enemy.name="AILevel1";
+                        } else if (enemy instanceof MediumAI) {
+                            enemy.name="AILevel2";
+                        } else if (enemy instanceof AIPLayer3) {
+                            enemy.name="AILevel3";
+                        }
+                        enemies[b]=enemy;
+                        b++;
+                    }
+                }
+                PlayerHistory playerHistory=new PlayerHistory(p,p.usedCards.size(),this.getDate(),enemies);
+                this.connector.createHistory(playerHistory);
+                for(int a=0; a<enemies.length;a++){
+                    enemies[a].name=enemyNames[a];
+                }
+                p.name=myName;
+            }
+        }
         log("Game Over!");
     }
 
@@ -237,17 +283,17 @@ public class GameLoop {
         aktuellerTisch.setLuckStack(table.getLuckStack());
 
         ArrayList<Player> aktuelleSpielerStaende= new ArrayList<>();
-        Player ak= new Player(aktiv.getName(),sleepTime,manualNextMsg);
+        Player ak= new Player(aktiv.getName(),sleepTime,manualNextMsg,db);
         ak.setCards(aktiv.getCards());
         ak.setLuckCards(aktiv.getLuckCards());
         for (int i=cP; i<players.length; i++){
-            Player dummy= new Player(players[i].getName(),sleepTime,manualNextMsg);
+            Player dummy= new Player(players[i].getName(),sleepTime,manualNextMsg,db);
             dummy.setCards(players[i].getCards());
             dummy.setLuckCards(players[i].getLuckCards());
             aktuelleSpielerStaende.add(dummy);
         }
         for (int i=0; i<cP; i++){
-            Player dummy= new Player(players[i].getName(),sleepTime,manualNextMsg);
+            Player dummy= new Player(players[i].getName(),sleepTime,manualNextMsg,db);
             dummy.setCards(players[i].getCards());
             dummy.setLuckCards(players[i].getLuckCards());
             aktuelleSpielerStaende.add(dummy);
@@ -348,8 +394,8 @@ public class GameLoop {
 
         //create as many players as needed
         for (int i = anzahlKI; i < players.length; i++) {
-            String name=this.chooseProfileFromFile();
-            players[i] = new Player(name,sleepTime,manualNextMsg);
+            String name=this.chooseProfile();
+            players[i] = new Player(name,sleepTime,manualNextMsg,db);
         }
         //set the first player
         currentPlayer = players[0];
@@ -361,7 +407,7 @@ public class GameLoop {
      */
     private void getHighscore() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("main/java/entities/highscore.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/highscore.txt"));
 
             String line = br.readLine();
 
@@ -395,7 +441,7 @@ public class GameLoop {
      */
     private void saveHighscores() {
         try {
-            PrintWriter pw = new PrintWriter("main/java/entities/highscore.txt");
+            PrintWriter pw = new PrintWriter("src/main/java/entities/highscore.txt");
 
             for (String entry : this.highscores) {
                 System.out.println(entry);
@@ -488,15 +534,15 @@ public class GameLoop {
                         "easy / medium / hard");
                 level=s.next();
                 if (level.equals("easy")){
-                    k = new EasyKI(name,sleepTime,manualNextMsg);
+                    k = new EasyKI(name,sleepTime,manualNextMsg,db);
                     break;
                 }
                 else if (level.equals("medium")){
-                    k = new MediumAI(name,sleepTime,manualNextMsg);
+                    k = new MediumAI(name,sleepTime,manualNextMsg,db);
                     break;
                 }
                 else if (level.equals("hard")){
-                    k=new AIPLayer3(name,sleepTime,manualNextMsg);
+                    k=new AIPLayer3(name,sleepTime,manualNextMsg,db);
                     break;
                 }
                 else{
@@ -517,7 +563,7 @@ public class GameLoop {
      */
     public void getProfilesFromFile(){
         try{
-            BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/userProfiles.txt"));
 
             String line = br.readLine();
             while (line != null && !line.equals("histories")) {
@@ -551,10 +597,163 @@ public class GameLoop {
     }
 
     /**
-     * choose a profile for the player
+     * chooses profile for player from db
+     * @return name of profile
+     */
+    public String chooseProfile(){
+        Scanner s=new Scanner(System.in);
+        this.log("Would you like to choose a profile? y/n");
+        if(s.nextLine().equals("y")){
+            this.log("Which profile do you want?");
+            String name=s.nextLine().replaceAll(" ","");
+            if(db){
+                //TODO ban names of AI profiles, create AIprofiles, create access in initKI
+                //if player exists
+                if(this.connector.checkPlayer(name)){
+                    //check if profile is taken
+                    for(Player player:this.players){
+                        if(player==null){
+                            break;
+                        }else{
+                            if(player.name.equals(name)){
+                                this.log("This profile is taken already");
+                                return this.chooseProfile();
+                            }
+                        }
+                    }
+                    //if profile was not taken yet, but is already available
+                    for(String entry:this.availableProfiles){
+                        if(entry.equals(name)){
+                            this.log("No log-in required.");
+                            return name;
+                        }
+                    }
+                    this.log("Enter your password!");
+                    String enteredPassword=s.nextLine();
+                    if(this.connector.playerLogin(name,enteredPassword)){
+                        this.log("Correct!");
+                        this.availableProfiles.add(name);
+                        return name;
+                    }else{
+                        this.log("Your password is wrong.");
+                        return chooseProfile();
+                    }
+                }else{
+                    this.log("Profile not found.");
+                    return this.chooseProfile();
+                }
+            }else{
+                //log in to profile from textfile
+                if(this.findProfileFromFile(name)){
+                    if(this.accessProfileFromFile(name)){
+                        return name;
+                    }
+                    return this.chooseProfile();
+                }
+            }
+        }else{
+            //new profile to db
+            if(db){
+                String name="";
+                this.log("Please enter a name for the profile.");
+                name=s.nextLine().replaceAll(" ","");
+                if(this.connector.checkPlayer(name)){
+                    this.log("This profile already exists.");
+                    return this.chooseProfile();
+                }else{
+                    this.log("Now enter the new password.");
+                    String password=s.nextLine();
+                    if(this.connector.createPlayer(name,password)){
+                        return name;
+                    }else{
+                        this.log("Profile could not be created.");
+                        return this.chooseProfile();
+                    }
+                }
+            }else{
+                //new profile to textfile
+                String name="";
+                boolean a=true;
+                while(a){
+                    a=false;
+                    this.log("Please choose a name for your new profile!");
+                    name = s.nextLine().replaceAll(" ", "");
+                    for(String line:this.profiles){
+                        String[] strings=line.split(",");
+                        if(strings[0].equals(name)){
+                            this.log("This already exists! Please choose a new name!");
+                            a=true;
+                            break;
+                        }
+                    }
+                }
+                this.log("Please choose a password!");
+                String pw=s.nextLine();
+                this.profiles.add(name+","+this.calculatePassword(pw));
+                this.availableProfiles.add(name+","+this.calculatePassword(pw));
+                return name;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * enter password for chosen profile
+     * @param profileName name of chosen profile
+     * @return
+     */
+    public boolean accessProfileFromFile(String profileName){
+        Scanner s=new Scanner(System.in);
+        for (String line : this.profiles) {
+            String[] name = line.split(",");
+            if (name[0].equals(profileName)) {
+                this.log("Please enter the password!");
+                String pw = s.nextLine();
+                boolean access = this.matchPasswordToProfile(name[0], pw);
+                if (access) {
+                    this.availableProfiles.add(line);
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * finds profile the player can use from textfile
+     * @param newName name of profile
+     * @return whether profile is available
+     */
+    public boolean findProfileFromFile(String newName){
+        boolean found = false;
+        for (String line : this.availableProfiles) {
+            String[] name = line.split(",");
+            if (name[0].equals(newName)) {
+                for (Player p : this.players) {
+                    if (p.equals(null)) {
+                        break;
+                    } else if (p.name.equals(newName)) {
+                        this.log("This profile is taken! Please choose a different profile!");
+                        return false;
+                    }
+                    found = true;
+                }
+            }
+        }
+        if (!found) {
+            log("Profile not found!");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * choose a profile for the player from text-file
      *
      * @return name of the chosen profile
-     */
+     *///TODO delete when replaced
     public String chooseProfileFromFile(){
         Scanner s=new Scanner(System.in);
         this.log("Would you like to choose a profile? y/n");
@@ -639,7 +838,7 @@ public class GameLoop {
     public boolean validatePassword(String expected,String entered){
         int enteredVal=this.calculatePassword(entered);
         String enter=String.valueOf(enteredVal);
-        if(enter==expected){
+        if(enter.equals(expected)){
             return true;
         }else{
             return false;
@@ -683,10 +882,13 @@ public class GameLoop {
     /**
      * get date for player history
      */
-    private String getDate(){
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd - HH:mm:ss ");
-        Date currentTime = new Date();
-        return formatter.format(currentTime);
+    private Date getDate(){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-[m]m-[d]d");
+        //java.util.Date currentTime = new java.util.Date();
+        //String date=formatter.format(currentTime);
+        Date date=new Date(Instant.now().toEpochMilli());
+        formatter.format(date);
+        return date;
     }
 
     /**
@@ -721,11 +923,9 @@ public class GameLoop {
 
             String line = br.readLine();
 
-            log(line);
             while (!line.equals("histories")) {
                 content.add(line);
                 line = br.readLine();
-                log(line);
             }
             content.add(line);
             line = br.readLine();
@@ -791,8 +991,6 @@ public class GameLoop {
             }
 
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

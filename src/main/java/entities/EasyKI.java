@@ -2,6 +2,8 @@ package entities;
 
 import cards.Card;
 import cards.CardColor;
+import persistence.DBConnector;
+import persistence.PlayerHistory;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -13,8 +15,31 @@ public class EasyKI extends Player{
      * class to define die first Level KI easy
      * @param name name of KI
      */
-    public EasyKI (String name, int sleepTime, boolean manualNextMsg){
-        super(name,sleepTime,manualNextMsg);
+    public EasyKI (String name, int sleepTime, boolean manualNextMsg, boolean database){
+        super(name,sleepTime,manualNextMsg,database);
+        if(database){
+            String DBName="AILevel1";
+            String password="aipassword1";
+            log("works");
+            if(!DBConnector.getInstance().checkPlayer("AILevel1")){
+                DBConnector.getInstance().createPlayer(DBName,password);
+            }
+        }
+    }
+
+    public void loadHistoryFromDB(){
+        DBConnector connector=DBConnector.getInstance();
+        PlayerHistory[] playerHistories = connector.getPlayerHistory("AILevel1");
+        if(playerHistories!=null) {
+            for (PlayerHistory ph : playerHistories) {
+                //TODO does ph.getPlayer.getScore actually get the past scores??
+                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate();
+                for (Player p : ph.getEnemys()) {
+                    historyString = historyString + ph.getPlayer().name + ":" + ph.getPlayer().getScore() + "/";
+                }
+                this.history.add(historyString);
+            }
+        }
     }
 
     @Override

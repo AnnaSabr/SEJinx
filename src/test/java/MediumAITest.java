@@ -20,7 +20,7 @@ class MediumAITest {
     @BeforeEach
     void setUp() {
         this.table = new Table(true);
-        this.ai = new MediumAI("Hans", 200, false);
+        this.ai = new MediumAI("Hans", 200, false,false);
     }
 
     @Test

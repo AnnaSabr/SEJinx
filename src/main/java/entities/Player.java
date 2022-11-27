@@ -4,6 +4,8 @@ import cards.Card;
 import cards.CardColor;
 import cards.CardType;
 import cards.LuckCard;
+import persistence.DBConnector;
+import persistence.PlayerHistory;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -17,7 +19,7 @@ import java.util.*;
  * */
 public class Player implements Cloneable{
 
-    protected final String name;
+    protected String name;
     protected  ArrayList<Card> cards;
     protected  ArrayList<LuckCard> luckCards;
     protected int score;
@@ -26,7 +28,6 @@ public class Player implements Cloneable{
     protected int sleepTime = 200;
     protected boolean manualNextMsg = true;
     ArrayList<String> history=new ArrayList<>();
-    //TODO load history from txt
 
     public int getDiceCount() {
         return diceCount;
@@ -60,13 +61,18 @@ public class Player implements Cloneable{
     /**
     * Overloaded Constructor to support sleeptimers
     * */
-    public Player(String name, int sleepTime, boolean manualNextMsg){
+    public Player(String name, int sleepTime, boolean manualNextMsg, boolean database){
         this.name = name;
         this.sleepTime = sleepTime;
         this.manualNextMsg = manualNextMsg;
         this.cards = new ArrayList<Card>();
         this.luckCards = new ArrayList<LuckCard>();
-        this.loadHistoryFromFile();
+        if(database){
+            //TODO FIX THIS
+            this.loadHistoryFromDB();
+        }else{
+            this.loadHistoryFromFile();
+        }
     }
 
     public static ArrayList<Card> copyC(ArrayList<Card> alt) {
@@ -1317,6 +1323,26 @@ public class Player implements Cloneable{
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * loads player's histories from database
+     */
+    public void loadHistoryFromDB(){
+        //TODO fix, in extended classes as well!!!
+        DBConnector connector=DBConnector.getInstance();
+        PlayerHistory[] playerHistories = connector.getPlayerHistory(this.name);
+        if(playerHistories!=null) {
+
+            for (PlayerHistory ph : playerHistories) {
+                //TODO does ph.getPlayer.getScore actually get the past scores??
+                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate();
+                for (Player p : ph.getEnemys()) {
+                    historyString = historyString + ph.getPlayer().name + ":" + ph.getPlayer().getScore() + "/";
+                }
+                this.history.add(historyString);
+            }
         }
     }
 

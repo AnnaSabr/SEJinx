@@ -4,6 +4,8 @@ import cards.Card;
 import cards.CardColor;
 import cards.CardType;
 import cards.LuckCard;
+import persistence.DBConnector;
+import persistence.PlayerHistory;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -18,8 +20,30 @@ public class AIPLayer3 extends Player{
      *
      * @param name name of player
      */
-    public AIPLayer3(String name,int sleepTime, boolean manualNextMsg) {
-        super(name,sleepTime,manualNextMsg);
+    public AIPLayer3(String name,int sleepTime, boolean manualNextMsg, boolean database) {
+        super(name,sleepTime,manualNextMsg,database);
+        if(database){
+            String DBName="AILevel3";
+            String password="aipassword3";
+            if(!DBConnector.getInstance().checkPlayer("AILevel3")){
+                DBConnector.getInstance().createPlayer(DBName,password);
+            }
+        }
+    }
+
+    public void loadHistoryFromDB(){
+        DBConnector connector=DBConnector.getInstance();
+        PlayerHistory[] playerHistories = connector.getPlayerHistory("AILevel3");
+        if(playerHistories!=null) {
+            for (PlayerHistory ph : playerHistories) {
+                //TODO does ph.getPlayer.getScore actually get the past scores??
+                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate();
+                for (Player p : ph.getEnemys()) {
+                    historyString = historyString + ph.getPlayer().name + ":" + ph.getPlayer().getScore() + "/";
+                }
+                this.history.add(historyString);
+            }
+        }
     }
 
     boolean usecsum=true;
