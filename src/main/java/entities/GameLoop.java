@@ -130,7 +130,6 @@ public class GameLoop {
 
                 // Let the player perform certain actions until he is done
                 while(currentPlayer.isActive()){
-                    String aktion="";
                     //display the current round
                     log("Round: " + currentRound);
                     //display the field
@@ -200,9 +199,7 @@ public class GameLoop {
                                 roundOver = true;
                             }
                         }
-                        case "N" -> {
-                            verlauf.verlaufAnzeigen();
-                        }
+                        case "N" -> verlauf.verlaufAnzeigen();
                         case "M" ->{
                             Runde veraendert=verlauf.jump();
                             if (!veraendert.equals(verlauf.getTail())){
@@ -211,19 +208,15 @@ public class GameLoop {
                                 Action action7 = new Action(Zuege.MANIPULATION,platzhalter,currentPlayer);
                             }
                         }
-                        case "A" -> {
-                            currentPlayer.getHelp(this.table);
-                        }
-                        case "Z" ->{}
+                        case "A" -> currentPlayer.getHelp(this.table);
+                        case "Z" -> showActions();
                         case "S"->{
                             //TODO: Bezug zur Datenbank
                             speicherObjekt.setVerlaufAction(ZugHistorie.zumSpeichern());
                             speicherObjekt.setVerlaufRunden(verlauf.zumSpeichern());
                         }
-                        case "X"->{
-                            //TODO: Bezug zur DatenBank
-                            laden(speicherObjekt);
-                        }
+                        case "X"->//TODO: Bezug zur DatenBank
+                                laden(speicherObjekt);
                     }
                 }
                 //make sure current player always loops, only when round is active
@@ -264,6 +257,14 @@ public class GameLoop {
         log("Game Over!");
     }
 
+    public void showActions(){
+        System.out.println("Bisher gespielte Zuege:");
+        Action start=ZugHistorie.getHead();
+        while(!start.equals(ZugHistorie.getTail())){
+            System.out.println("Spieler: "+start.getAktiverSpieler()+" Zug: "+start.getZug()+" Karte: "+start.getKarte());
+            start=start.getDahinter();
+        }
+    }
 
     /**
      * fuegt die letzte Spielrunde in den Spielverlauf ein

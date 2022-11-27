@@ -47,6 +47,14 @@ public class ZugHistorie {
         tail.setDavor(head);
     }
 
+    public static Action getHead(){
+        return head;
+    }
+
+    public static Action getTail(){
+        return tail;
+    }
+
 
 
 
