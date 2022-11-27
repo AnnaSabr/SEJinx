@@ -5,6 +5,10 @@ import cards.CardColor;
 import cards.CardType;
 import cards.LuckCard;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.spec.ECField;
 import java.util.*;
 
@@ -20,6 +24,8 @@ public class Player implements Cloneable{
     //time between msgs and actions
     protected int sleepTime = 200;
     protected boolean manualNextMsg = true;
+    ArrayList<String> history=new ArrayList<>();
+    //TODO load history from txt
 
     public int getDiceCount() {
         return diceCount;
@@ -59,6 +65,7 @@ public class Player implements Cloneable{
         this.manualNextMsg = manualNextMsg;
         this.cards = new ArrayList<Card>();
         this.luckCards = new ArrayList<LuckCard>();
+        this.loadHistoryFromFile();
     }
 
     public static ArrayList<Card> copyC(ArrayList<Card> alt) {
@@ -398,7 +405,7 @@ public class Player implements Cloneable{
      * */
     public String chooseAction(Table table){
 
-        String[] actions = {"R","L","C","M","N","T","H"};
+        String[] actions = {"R","L","C","M","N","T","H","A","P"};
 
         while(true) {
             log("Your turn " + this.name + "! Eye count - " + this.diceCount);
@@ -413,6 +420,8 @@ public class Player implements Cloneable{
                     M - Re or Undo
                     N - Verlauf anzeigen
                     H - Show all previous scores
+                    A - Give advise
+                    P - Show player's history
                     """);
 
             Scanner s = new Scanner(System.in);
@@ -1251,6 +1260,58 @@ public class Player implements Cloneable{
             ycoord++;
         }
         return cards;
+    }
+
+    /**
+     * shows player's history
+     */
+    public void showHistory(){
+        if(this.history.size()==0){
+            this.log("You do not have a history yet.");
+            return;
+        }
+        int i=0;
+        for(String line:this.history){
+            i++;
+            String[] a=line.split(",");
+            String[] opponents=a[3].split("/");
+            this.log(i+". Score: "+a[1]+"\nused Luckcards: "+a[2]+"\nPlayed against:");
+            int c=0;
+            for(String lines:opponents){
+                c++;
+                String[] b=lines.split(":");
+                System.out.println(c+": "+b[0]+" scored "+b[1]);
+            }
+        }
+        return;
+    }
+
+    /**
+     * adds previous histories of this player to arraylist history
+     */
+    public void loadHistoryFromFile(){
+        try{
+            BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
+
+            String line=br.readLine();
+            log(line);
+            while(!line.equals("histories")){
+                line=br.readLine();
+                log(line);
+            }
+            while(line!=null){
+                String[] a=line.split(",");
+                if(a[0]==this.name){
+                    this.history.add(line);
+                }
+                line=br.readLine();
+            }
+
+        }catch (FileNotFoundException e){
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

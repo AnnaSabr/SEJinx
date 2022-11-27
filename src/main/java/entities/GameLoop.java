@@ -63,6 +63,7 @@ public class GameLoop {
      * Function to initialize everything needed
      */
     private void init() {
+        this.getProfilesFromFile();
         System.out.println("Welcome to JINX! How many players do you wish to play with? (2-4 Players)");
         int playerCount;
         while (true) {
@@ -178,6 +179,9 @@ public class GameLoop {
                         case "A" -> {
                             currentPlayer.getHelp(this.table);
                         }
+                        case "P" -> {
+                            currentPlayer.showHistory();
+                        }
                     }
                 }
                 //make sure current player always loops, only when round is active
@@ -215,6 +219,7 @@ public class GameLoop {
         //all 3 rounds ended, calculate score here
         this.addCurrentHighscores();
         this.saveHighscores();
+        this.savingHistoryToFile();
         log("Game Over!");
     }
 
@@ -531,7 +536,7 @@ public class GameLoop {
         for(String oneLine : this.profiles){
             String[] line=oneLine.split(",");
             if(line[0]==name){
-                if(line[1]==entry){
+                if(this.validatePassword(line[1],entry)){
                     System.out.println("Correct!");
                     return true;
                 }else{
@@ -549,15 +554,15 @@ public class GameLoop {
      * @return name of the chosen profile
      */
     public String chooseProfileFromFile(){
-        //TODO check if the chosen profile has not been chosen yet
         Scanner s=new Scanner(System.in);
         this.log("Would you like to choose a profile? y/n");
-        if(s.next()=="y"){
+        if(s.nextLine().equals("y")){
             this.log("Which profile do you want?");
+            boolean found=false;
             String newName=s.nextLine();
             for(String line:this.availableProfiles){
                 String[] name=line.split(",");
-                if(name[0]==newName){
+                if(name[0].equals(newName)){
                     for(Player p:this.players){
                         if(p.equals(null)){
                             break;
@@ -565,11 +570,13 @@ public class GameLoop {
                             this.log("This profile is taken! Please choose a different profile!");
                             return this.chooseProfileFromFile();
                         }
+                        found=true;
                     }
-                    //TODO save profile to player
-                    this.log("");
-                    return name[0];
                 }
+            }
+            if(!found){
+                log("Profile not found!");
+                return this.chooseProfileFromFile();
             }
             for(String line:this.profiles){
                 String[] name=line.split(",");
@@ -578,7 +585,6 @@ public class GameLoop {
                     String pw=s.nextLine();
                     boolean access=this.matchPasswordToProfile(name[0],pw);
                     if(access){
-                        //TODO save profile to player
                         this.availableProfiles.add(line);
                         return name[0];
                     }
@@ -612,8 +618,144 @@ public class GameLoop {
     /**
      * calculates the password that will be saved in textfile
      */
-    public String calculatePassword(String password){
-        //TODO
-        return null;
+    public int calculatePassword(String password){
+        int val=0;
+        for(int a=0; a<password.length();a++){
+            char c=password.charAt(a);
+            val=val+c;
+        }
+        return val%5000;
     }
+
+    /**
+     * calculates if entered password matches password in textfile
+     * @return
+     */
+    public boolean validatePassword(String expected,String entered){
+        int enteredVal=this.calculatePassword(entered);
+        String enter=String.valueOf(enteredVal);
+        if(enter==expected){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * creates history for current round
+     *
+     * @param player player the history is created for
+     */
+    public String createHistory(Player player){
+        String history="";
+        if(player instanceof EasyKI){
+            history="AILevel1";
+        }else if(player instanceof MediumAI){
+            history="AILevel2";
+        }else if(player instanceof AIPLayer3){
+            history="AILevel3";
+        }else{
+            history=player.name;
+        }
+        //profilename,score,amount of used luckcards,opponents and their scores
+        history=history+","+player.getScore()+","+player.usedCards.size()+",";
+        for(int a=0; a<this.players.length;a++){
+            String aiLevel="";
+            if(players[a] instanceof EasyKI){
+                aiLevel=" (AILevel1)";
+            }else if(players[a] instanceof MediumAI){
+                aiLevel=" (AILevel2)";
+            }else if(players[a] instanceof AIPLayer3){
+                aiLevel=" (AILevel3)";
+            }
+            if(this.players[a]!=player){
+                history=history+players[a].name+aiLevel+": "+players[a].getScore()+" /";
+            }
+        }
+        return history;
+    }
+
+    /**
+     *  saves all new and previous histories to textfile
+     */
+    public void savingHistoryToFile(){
+        ArrayList<String> prevHistory = new ArrayList<>();
+        String[] histories=new String[this.players.length];
+        //getting all current player histories
+        for(int a=0; a<this.players.length;a++){
+            histories[a]=this.createHistory(players[a]);
+            players[a].history.add(histories[a]);
+            players[a].showHistory();
+        }
+        try {
+            PrintWriter pw = new PrintWriter("main/java/entities/userProfiles.txt");
+
+            ArrayList<String> content= new ArrayList<>();
+
+            //get all previous histories from textfile
+            try {
+                BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
+
+                String line = br.readLine();
+
+                while (!line.equals("histories")) {
+                    content.add(line);
+                    line = br.readLine();
+                }
+                content.add(line);
+                line=br.readLine();
+                while (line.equals(null)){
+                    prevHistory.add(line);
+                    line=br.readLine();
+                }
+                //add all histories of this round
+                for(String h:histories){
+                    boolean profileFound=false;
+                    for(int a=0; a<prevHistory.size();a++){
+                        //Array
+                        String[] s=h.split(",");
+                        //Arraylist
+                        String[] b=prevHistory.get(a).split(",");
+                        //compare profile names
+                        if(b[0]==s[0]){
+                            //if old score is lower than new score
+                            if(Integer.parseInt(b[1])<Integer.parseInt(s[1])){
+                                prevHistory.add(a,h);
+                                break;
+                            //if profile was found but history has not been added yet
+                            }else{
+                                profileFound=true;
+                            }
+                        //if profile was found, but value has not been added
+                        } else if (profileFound) {
+                            prevHistory.add(a,h);
+                            break;
+                        }
+                    }
+                    //if no spot in Arraylist was found, add history to the end
+                    if(!prevHistory.contains(h)){
+                        prevHistory.add(h);
+                    }
+                }
+
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            for(String a:content){
+                pw.println(a);
+                pw.flush();
+            }
+            for(String a:prevHistory){
+                pw.println(a);
+                pw.flush();
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
