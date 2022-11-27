@@ -435,6 +435,7 @@ public class Player implements Cloneable{
                     H - Show all previous scores
                     S - save the Game
                     Z - to show  moves
+                    X - load other game
                     """);
 
             Scanner s = new Scanner(System.in);

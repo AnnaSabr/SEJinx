@@ -220,6 +220,10 @@ public class GameLoop {
                             speicherObjekt.setVerlaufAction(ZugHistorie.zumSpeichern());
                             speicherObjekt.setVerlaufRunden(verlauf.zumSpeichern());
                         }
+                        case "X"->{
+                            //TODO: Bezug zur DatenBank
+                            laden(speicherObjekt);
+                        }
                     }
                 }
                 //make sure current player always loops, only when round is active
@@ -290,6 +294,13 @@ public class GameLoop {
 
         Runde neu = new Runde(aktuelleSpielerStaende, aktuellerTisch);
         verlauf.rundeHinzufuegen(neu);
+    }
+
+    public void laden(Speicher altesSpiel){
+        this.verlauf=speicherObjekt.zumLadenVerlauf();
+        manipulieren(speicherObjekt.zumLadenRunden());
+        ZugHistorie.leeren();
+        speicherObjekt.zugHistorieUeberschreiben();
     }
 
     /**

@@ -42,6 +42,11 @@ public class ZugHistorie {
         return zugVerlauf;
     }
 
+    public static void leeren(){
+        head.setDahinter(tail);
+        tail.setDavor(head);
+    }
+
 
 
 
