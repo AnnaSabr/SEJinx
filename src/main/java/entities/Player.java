@@ -356,6 +356,10 @@ public class Player implements Cloneable {
         }
     }
 
+    /**
+     *
+     * @return die hoechste Karte auf der Hand
+     */
     public boolean selectHighCard() {
 
         //check if the player is able to drop a card

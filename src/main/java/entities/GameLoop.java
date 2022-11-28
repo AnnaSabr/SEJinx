@@ -197,6 +197,7 @@ public class GameLoop {
                             //TODO: Bezug zur Datenbank
                             speicherObjekt.setVerlaufAction(ZugHistorie.zumSpeichern());
                             speicherObjekt.setVerlaufRunden(verlauf.zumSpeichern());
+                            System.out.println("!!Saved!!");
                         }
                         case "X" ->//TODO: Bezug zur DatenBank
                                 laden(speicherObjekt);
@@ -240,6 +241,9 @@ public class GameLoop {
         log("Game Over!");
     }
 
+    /**
+     * Stellt die bisher gespielten Zuege der Runde auf der Konsole dar
+     */
     public void showActions() {
         System.out.println("\n\n");
         System.out.println("Bisher gespielte Zuege:");
@@ -294,7 +298,12 @@ public class GameLoop {
         verlauf.rundeHinzufuegen(neu);
     }
 
+    /**
+     *
+     * @param altesSpiel laedt ein altes nicht beendetes Spiel
+     */
     public void laden(Speicher altesSpiel) {
+        this.verlauf= new Verlauf();
         this.verlauf = speicherObjekt.zumLadenVerlauf();
         manipulieren(speicherObjekt.zumLadenRunden());
         ZugHistorie.leeren();
