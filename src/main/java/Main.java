@@ -84,6 +84,23 @@ public class Main {
         GameLoop game = new GameLoop(config,manualSleepTime,nextMsgTime);
 
         game.run();
+        boolean naechstes = true;
+        while (naechstes);
+        {
+            System.out.println("Next Game? y for yes, n for no");
+            Scanner sc = new Scanner(System.in);
+            String eingabe=sc.nextLine();
+            if (eingabe.equals("y")) {
+                game.run();
+            }
+            else  if (eingabe.equals("n")){
+                System.out.println("End initialized");
+                naechstes=false;
+            }
+            else{
+                System.out.println("Wrong input.");
+            }
+        }
 
         System.out.println("DONE");
     }

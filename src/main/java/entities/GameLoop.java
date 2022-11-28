@@ -6,7 +6,13 @@ import java.util.Scanner;
 
 import actions.ReUnDo.Runde;
 import actions.ReUnDo.Verlauf;
+import actions.Zuege.Action;
+import actions.Zuege.Zuege;
+import actions.Zuege.ZugHistorie;
+import actions.speichern.Speicher;
 import cards.Card;
+import cards.CardColor;
+import cards.CardType;
 import cards.LuckCard;
 
 
@@ -26,11 +32,13 @@ public class GameLoop {
     Player[] players;
     Table table;
     Verlauf verlauf;
+    ZugHistorie zuege;
 
     ArrayList<String> highscores;
     boolean rff;
     int cP;
     int anzahlKI;
+    Speicher speicherObjekt;
 
     public GameLoop(boolean rff, boolean manualNextMsg, int sleepTime) {
         this.rff=rff;
@@ -43,6 +51,8 @@ public class GameLoop {
         this.manualNextMsg = manualNextMsg;
         this.sleepTime = sleepTime;
         this.currentRound=1;
+        this.zuege=new ZugHistorie();
+        this.speicherObjekt = new Speicher();
     }
 
     /**
@@ -101,6 +111,7 @@ public class GameLoop {
      * */
     private void impLoop(){
 
+
         //current player counter
          cP = 0;
         //determines if a round is over
@@ -119,7 +130,6 @@ public class GameLoop {
 
                 // Let the player perform certain actions until he is done
                 while(currentPlayer.isActive()){
-
                     //display the current round
                     log("Round: " + currentRound);
                     //display the field
@@ -143,17 +153,41 @@ public class GameLoop {
                             //switch over all possible card types
                             switch (chosenOne.getCardType()) {
                                 // let the player change his diceCount to a set value
-                                case ONETOTHREE -> currentPlayer.mintomax(chosenOne, 1, 3);
+                                case ONETOTHREE :
+                                    currentPlayer.mintomax(chosenOne, 1, 3);
+                                    LuckCard luck1 = new LuckCard(CardType.ONETOTHREE);
+                                    Action action1 = new Action(Zuege.USEDLUCKYCARD,luck1,currentPlayer );
+                                    ZugHistorie.actionHinzufuegen(action1);
                                 // let the player change his diceCount to a set value
-                                case FOURTOSIX -> currentPlayer.mintomax(chosenOne, 4, 6);
+                                case FOURTOSIX :
+                                    currentPlayer.mintomax(chosenOne, 4, 6);
+                                    LuckCard luck2 = new LuckCard(CardType.FOURTOSIX);
+                                    Action action2 = new Action(Zuege.USEDLUCKYCARD,luck2,currentPlayer );
+                                    ZugHistorie.actionHinzufuegen(action2);
                                 // give the player an extra throw
-                                case EXTRATHROW -> currentPlayer.extraThrow(chosenOne);
+                                case EXTRATHROW :
+                                    currentPlayer.extraThrow(chosenOne);
+                                    LuckCard luck3 = new LuckCard(CardType.EXTRATHROW);
+                                    Action action3 = new Action(Zuege.USEDLUCKYCARD,luck3,currentPlayer );
+                                    ZugHistorie.actionHinzufuegen(action3);
                                 // reduce the diceCount of the player by one
-                                case MINUSONE -> currentPlayer.minusOne(chosenOne);
+                                case MINUSONE :
+                                    currentPlayer.minusOne(chosenOne);
+                                    LuckCard luck4 = new LuckCard(CardType.MINUSONE);
+                                    Action action4 = new Action(Zuege.USEDLUCKYCARD,luck4,currentPlayer );
+                                    ZugHistorie.actionHinzufuegen(action4);
                                 // increase the diceCount of the player by one
-                                case PLUSONE -> currentPlayer.plusOne(chosenOne);
+                                case PLUSONE :
+                                    currentPlayer.plusOne(chosenOne);
+                                    LuckCard luck5 = new LuckCard(CardType.PLUSONE);
+                                    Action action5 = new Action(Zuege.USEDLUCKYCARD,luck5,currentPlayer );
+                                    ZugHistorie.actionHinzufuegen(action5);
                                 // let the player choose a collection of cards based on his dice count
-                                case CARDSUM -> currentPlayer.cardSum(chosenOne, this.table);
+                                case CARDSUM :
+                                    currentPlayer.cardSum(chosenOne, this.table);
+                                    LuckCard luck6 = new LuckCard(CardType.CARDSUM);
+                                    Action action6 = new Action(Zuege.USEDLUCKYCARD,luck6,currentPlayer );
+                                    ZugHistorie.actionHinzufuegen(action6);
                             }
                         }
                         case "C" -> {
@@ -165,18 +199,24 @@ public class GameLoop {
                                 roundOver = true;
                             }
                         }
-                        case "N" -> {
-                            verlauf.verlaufAnzeigen();
-                        }
+                        case "N" -> verlauf.verlaufAnzeigen();
                         case "M" ->{
                             Runde veraendert=verlauf.jump();
                             if (!veraendert.equals(verlauf.getTail())){
                                 manipulieren(veraendert);
+                                Card platzhalter = new Card(CardColor.RED,420);
+                                Action action7 = new Action(Zuege.MANIPULATION,platzhalter,currentPlayer);
                             }
                         }
-                        case "A" -> {
-                            currentPlayer.getHelp(this.table);
+                        case "A" -> currentPlayer.getHelp(this.table);
+                        case "Z" -> showActions();
+                        case "S"->{
+                            //TODO: Bezug zur Datenbank
+                            speicherObjekt.setVerlaufAction(ZugHistorie.zumSpeichern());
+                            speicherObjekt.setVerlaufRunden(verlauf.zumSpeichern());
                         }
+                        case "X"->//TODO: Bezug zur DatenBank
+                                laden(speicherObjekt);
                     }
                 }
                 //make sure current player always loops, only when round is active
@@ -217,6 +257,14 @@ public class GameLoop {
         log("Game Over!");
     }
 
+    public void showActions(){
+        System.out.println("Bisher gespielte Zuege:");
+        Action start=ZugHistorie.getHead();
+        while(!start.equals(ZugHistorie.getTail())){
+            System.out.println("Spieler: "+start.getAktiverSpieler()+" Zug: "+start.getZug()+" Karte: "+start.getKarte());
+            start=start.getDahinter();
+        }
+    }
 
     /**
      * fuegt die letzte Spielrunde in den Spielverlauf ein
@@ -247,6 +295,13 @@ public class GameLoop {
 
         Runde neu = new Runde(aktuelleSpielerStaende, aktuellerTisch);
         verlauf.rundeHinzufuegen(neu);
+    }
+
+    public void laden(Speicher altesSpiel){
+        this.verlauf=speicherObjekt.zumLadenVerlauf();
+        manipulieren(speicherObjekt.zumLadenRunden());
+        ZugHistorie.leeren();
+        speicherObjekt.zugHistorieUeberschreiben();
     }
 
     /**

@@ -1,5 +1,6 @@
 package actions.ReUnDo;
 
+import actions.Zuege.Action;
 import entities.Player;
 import entities.Table;
 
@@ -13,6 +14,8 @@ public class Runde {
 
     private ArrayList<Player> spieler;
     private Table tischStand;
+    private Action action;
+
 
     private Runde davor;
     private Runde dahinter;
@@ -22,6 +25,7 @@ public class Runde {
         this.tischStand=tischStand;
         this.davor=null;
         this.dahinter=null;
+
     }
 
     /**
@@ -70,5 +74,9 @@ public class Runde {
      */
     public Table getTischStand() {
         return tischStand;
+    }
+
+    public Action getAction() {
+        return action;
     }
 }
