@@ -183,17 +183,19 @@ public class Verlauf {
         return tail;
     }
 
-    public Runde getHead() {
-        return head;
-    }
 
+    /**
+     * wandelt den bisherigen Verlauf aus einer doppeltverketteten Liste in eine ArrayListe um
+     * @return
+     */
     public ArrayList<Runde> zumSpeichern(){
         ArrayList<Runde> zugVerlauf= new ArrayList<>();
-        Runde start=head.getDahinter();
+        Runde start=head;
         while (!start.equals(tail)){
             zugVerlauf.add(start);
             start=start.getDahinter();
         }
+        zugVerlauf.add(tail);
         return zugVerlauf;
     }
 }

@@ -68,6 +68,11 @@ public class Player implements Cloneable{
 
     }
 
+    /**
+     * Cloned eine ArrayListe
+     * @param alt Arraylist die Kopiert werden soll
+     * @return geclonte Liste
+     */
     public static ArrayList<Card> copyC(ArrayList<Card> alt) {
         if (alt == null) {
             return null;
@@ -76,6 +81,11 @@ public class Player implements Cloneable{
         return neu;
     }
 
+    /**
+     * Cloned eine ArrayListe mit LuckyCards
+     * @param alt ArrayListe mit LuckyCards
+     * @return geclonte Liste
+     */
     public static ArrayList<LuckCard> copyL(ArrayList<LuckCard> alt) {
         if (alt == null) {
             return null;
@@ -85,10 +95,18 @@ public class Player implements Cloneable{
         return neu;
     }
 
+    /**
+     * Aktualisiert die Karten auf der Spieler Hand
+     * @param handkarten neue Liste der Spielerkarten im besitz
+     */
     public void setCards(ArrayList<Card> handkarten){
         this.cards=copyC(handkarten);
     }
 
+    /**
+     * Aktualisiert die LuckyKarten des Spielers
+     * @param luckyKarten neue Liste vorhandener LuckyKarten
+     */
     public void setLuckCards(ArrayList<LuckCard> luckyKarten){
         this.luckCards=copyL(luckyKarten);
     }

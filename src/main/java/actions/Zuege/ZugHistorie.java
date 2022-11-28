@@ -1,18 +1,20 @@
 package actions.Zuege;
 
-import actions.ReUnDo.Runde;
-import actions.ReUnDo.Verlauf;
+
 import cards.Card;
 import cards.CardColor;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+/**
+ * doppelt verkettete Liste mit den gespielten zuegen im Spiel
+ */
 public class ZugHistorie {
 
     static Action head;
     static Action tail;
-    Action aktuellePosition;
+
     Card platzhalter;
 
 
@@ -24,6 +26,11 @@ public class ZugHistorie {
         this.head=new Action(null,platzhalter,null);
         this.tail=new Action(null,platzhalter,null);
     }
+
+    /**
+     * Fuegt einen weiteren Spielzug der Historie hinzu
+     * @param neu Action die hinzugefuegt werden soll
+     */
     public static void actionHinzufuegen(Action neu){
         Action halter = tail.getDavor();
         halter.setDahinter(neu);
@@ -32,25 +39,41 @@ public class ZugHistorie {
         neu.setDahinter(tail);
     }
 
+    /**
+     *
+     * @return eine ArrayListe mit allen bisher gespielten Zuegen
+     */
     public static ArrayList<Action> zumSpeichern(){
         ArrayList<Action> zugVerlauf= new ArrayList<>();
-        Action start=head.getDahinter();
+        Action start=head;
         while (!start.equals(tail)){
             zugVerlauf.add(start);
             start=start.getDahinter();
         }
+        zugVerlauf.add(tail);
         return zugVerlauf;
     }
 
+    /**
+     * resetet die ZugHistorie, so das sie leer ist
+     */
     public static void leeren(){
         head.setDahinter(tail);
         tail.setDavor(head);
     }
 
+    /**
+     *
+     * @return start der Zughistorie
+     */
     public static Action getHead(){
         return head;
     }
 
+    /**
+     *
+     * @return Ende der Zughistorie
+     */
     public static Action getTail(){
         return tail;
     }

@@ -14,7 +14,6 @@ public class Runde {
 
     private ArrayList<Player> spieler;
     private Table tischStand;
-    private Action action;
 
 
     private Runde davor;
@@ -76,7 +75,5 @@ public class Runde {
         return tischStand;
     }
 
-    public Action getAction() {
-        return action;
-    }
+
 }
