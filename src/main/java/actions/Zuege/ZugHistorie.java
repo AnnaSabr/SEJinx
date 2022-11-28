@@ -12,20 +12,13 @@ import java.util.logging.Logger;
  */
 public class ZugHistorie {
 
-    static Action head;
-    static Action tail;
-
-    Card platzhalter;
+    static Card platzhalter = new Card(CardColor.RED, 420);
+    static Action head = new Action(null, platzhalter, null);
+    static Action tail = new Action(null, platzhalter, null);
 
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
-
-    public ZugHistorie() {
-        platzhalter = new Card(CardColor.RED, 420);
-        this.head = new Action(null, platzhalter, null);
-        this.tail = new Action(null, platzhalter, null);
-    }
 
     /**
      * Fuegt einen weiteren Spielzug der Historie hinzu
@@ -33,6 +26,10 @@ public class ZugHistorie {
      * @param neu Action die hinzugefuegt werden soll
      */
     public static void actionHinzufuegen(Action neu) {
+        if (tail.getDavor()==null){
+            tail.setDavor(head);
+            head.setDahinter(tail);
+        }
         Action halter = tail.getDavor();
         halter.setDahinter(neu);
         tail.setDavor(neu);
