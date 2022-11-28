@@ -21,17 +21,18 @@ public class ZugHistorie {
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
 
-    public ZugHistorie(){
-        platzhalter=new Card(CardColor.RED,420);
-        this.head=new Action(null,platzhalter,null);
-        this.tail=new Action(null,platzhalter,null);
+    public ZugHistorie() {
+        platzhalter = new Card(CardColor.RED, 420);
+        this.head = new Action(null, platzhalter, null);
+        this.tail = new Action(null, platzhalter, null);
     }
 
     /**
      * Fuegt einen weiteren Spielzug der Historie hinzu
+     *
      * @param neu Action die hinzugefuegt werden soll
      */
-    public static void actionHinzufuegen(Action neu){
+    public static void actionHinzufuegen(Action neu) {
         Action halter = tail.getDavor();
         halter.setDahinter(neu);
         tail.setDavor(neu);
@@ -40,15 +41,14 @@ public class ZugHistorie {
     }
 
     /**
-     *
      * @return eine ArrayListe mit allen bisher gespielten Zuegen
      */
-    public static ArrayList<Action> zumSpeichern(){
-        ArrayList<Action> zugVerlauf= new ArrayList<>();
-        Action start=head;
-        while (!start.equals(tail)){
+    public static ArrayList<Action> zumSpeichern() {
+        ArrayList<Action> zugVerlauf = new ArrayList<>();
+        Action start = head;
+        while (!start.equals(tail)) {
             zugVerlauf.add(start);
-            start=start.getDahinter();
+            start = start.getDahinter();
         }
         zugVerlauf.add(tail);
         return zugVerlauf;
@@ -57,29 +57,24 @@ public class ZugHistorie {
     /**
      * resetet die ZugHistorie, so das sie leer ist
      */
-    public static void leeren(){
+    public static void leeren() {
         head.setDahinter(tail);
         tail.setDavor(head);
     }
 
     /**
-     *
      * @return start der Zughistorie
      */
-    public static Action getHead(){
+    public static Action getHead() {
         return head;
     }
 
     /**
-     *
      * @return Ende der Zughistorie
      */
-    public static Action getTail(){
+    public static Action getTail() {
         return tail;
     }
-
-
-
 
 
 }

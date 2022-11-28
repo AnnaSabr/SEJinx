@@ -13,10 +13,10 @@ public class Main {
     public static void main(String[] args) {
 
         // does user want to load a default config
-        boolean config = false ;
+        boolean config = false;
         boolean manualSleepTime = false;
         int nextMsgTime = 200;
-        while(true){
+        while (true) {
 
             System.out.println("Do you wish to load a config file? [y/n]");
             Scanner s = new Scanner(System.in);
@@ -33,7 +33,7 @@ public class Main {
             }
         }
 
-        while(true){
+        while (true) {
             System.out.println("Do you wish to manually control the game flow? [y/n]");
             Scanner s = new Scanner(System.in);
             String con = s.nextLine();
@@ -43,33 +43,31 @@ public class Main {
                 break;
             } else if ("n".equals(con)) {
                 System.out.println("How long should the time between messages be? [ms]");
-                try{
+                try {
                     nextMsgTime = s.nextInt();
                     break;
-                }catch (Exception e){
+                } catch (Exception e) {
                     System.out.println("Please enter a valid number!");
                 }
             } else {
                 System.out.println("Not an option! Try again!");
             }
         }
-        GameLoop game = new GameLoop(config,manualSleepTime,nextMsgTime);
+        GameLoop game = new GameLoop(config, manualSleepTime, nextMsgTime);
 
         game.run();
         boolean naechstes = true;
-        while (naechstes);
+        while (naechstes) ;
         {
             System.out.println("Next Game? y for yes, n for no");
             Scanner sc = new Scanner(System.in);
-            String eingabe=sc.nextLine();
+            String eingabe = sc.nextLine();
             if (eingabe.equals("y")) {
                 game.run();
-            }
-            else  if (eingabe.equals("n")){
+            } else if (eingabe.equals("n")) {
                 System.out.println("End initialized");
-                naechstes=false;
-            }
-            else{
+                naechstes = false;
+            } else {
                 System.out.println("Wrong input.");
             }
         }

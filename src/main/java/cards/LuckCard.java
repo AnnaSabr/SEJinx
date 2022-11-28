@@ -1,19 +1,19 @@
 package cards;
 
-public class LuckCard implements Cloneable{
+public class LuckCard implements Cloneable {
 
     private CardType cardType;
 
     /**
      * Constructor for a new Card
+     *
      * @param cT CardType enum
-     * */
-    public LuckCard(CardType cT){
+     */
+    public LuckCard(CardType cT) {
         this.cardType = cT;
     }
 
     /**
-     *
      * @return den Kartentyp
      */
     public CardType getCardType() {
@@ -21,12 +21,12 @@ public class LuckCard implements Cloneable{
     }
 
     @Override
-    public LuckCard clone() throws CloneNotSupportedException{
+    public LuckCard clone() throws CloneNotSupportedException {
         return (LuckCard) super.clone();
     }
 
     @Override
-    public String toString (){
+    public String toString() {
         return "" + this.cardType;
     }
 

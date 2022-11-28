@@ -13,14 +13,13 @@ import java.util.*;
 
 /**
  * Class representing a player
- * */
-public class Player implements Cloneable{
-
+ */
+public class Player implements Cloneable {
 
 
     protected final String name;
-    protected  ArrayList<Card> cards;
-    protected  ArrayList<LuckCard> luckCards;
+    protected ArrayList<Card> cards;
+    protected ArrayList<LuckCard> luckCards;
 
     //time between msgs and actions
     protected int sleepTime = 200;
@@ -54,11 +53,10 @@ public class Player implements Cloneable{
     Random rand = new Random();
 
 
-
     /**
-    * Overloaded Constructor to support sleeptimers
-    * */
-    public Player(String name, int sleepTime, boolean manualNextMsg){
+     * Overloaded Constructor to support sleeptimers
+     */
+    public Player(String name, int sleepTime, boolean manualNextMsg) {
         this.name = name;
         this.sleepTime = sleepTime;
         this.manualNextMsg = manualNextMsg;
@@ -70,6 +68,7 @@ public class Player implements Cloneable{
 
     /**
      * Cloned eine ArrayListe
+     *
      * @param alt Arraylist die Kopiert werden soll
      * @return geclonte Liste
      */
@@ -77,12 +76,13 @@ public class Player implements Cloneable{
         if (alt == null) {
             return null;
         }
-        ArrayList<Card> neu =(ArrayList<Card>) alt.clone();
+        ArrayList<Card> neu = (ArrayList<Card>) alt.clone();
         return neu;
     }
 
     /**
      * Cloned eine ArrayListe mit LuckyCards
+     *
      * @param alt ArrayListe mit LuckyCards
      * @return geclonte Liste
      */
@@ -90,97 +90,98 @@ public class Player implements Cloneable{
         if (alt == null) {
             return null;
         }
-        ArrayList<LuckCard> neu =(ArrayList<LuckCard>)alt.clone();
+        ArrayList<LuckCard> neu = (ArrayList<LuckCard>) alt.clone();
 
         return neu;
     }
 
     /**
      * Aktualisiert die Karten auf der Spieler Hand
+     *
      * @param handkarten neue Liste der Spielerkarten im besitz
      */
-    public void setCards(ArrayList<Card> handkarten){
-        this.cards=copyC(handkarten);
+    public void setCards(ArrayList<Card> handkarten) {
+        this.cards = copyC(handkarten);
     }
 
     /**
      * Aktualisiert die LuckyKarten des Spielers
+     *
      * @param luckyKarten neue Liste vorhandener LuckyKarten
      */
-    public void setLuckCards(ArrayList<LuckCard> luckyKarten){
-        this.luckCards=copyL(luckyKarten);
+    public void setLuckCards(ArrayList<LuckCard> luckyKarten) {
+        this.luckCards = copyL(luckyKarten);
     }
-
-
-
-
 
 
     /**
      * returns current hand of player
-     * */
-    public ArrayList<Card> getCards(){
+     */
+    public ArrayList<Card> getCards() {
         return this.cards;
     }
 
     /**
      * returns current luckcards of player
-     * */
-    public ArrayList<LuckCard> getLuckCards(){
+     */
+    public ArrayList<LuckCard> getLuckCards() {
         return this.luckCards;
     }
 
     /**
      * returns players name
-     * */
-    public String getName(){
+     */
+    public String getName() {
         return this.name;
     }
 
 
     /**
      * Adds a card to the players hand
-     * */
-    public void addCard(Card card){
+     */
+    public void addCard(Card card) {
         this.cards.add(card);
     }
 
     /**
      * Adds a card to the players luck cards
-     * */
-    public void addLuckCard(LuckCard luckCard){
+     */
+    public void addLuckCard(LuckCard luckCard) {
         this.luckCards.add(luckCard);
     }
 
-    public void removeLuckCard(LuckCard luckCard){
+    public void removeLuckCard(LuckCard luckCard) {
         this.luckCards.remove(luckCard);
     }
 
     /**
      * Removes a card from the players hand
+     *
      * @param pos position of card in players hand, counting from 0!
      * @return null if no card was found otherwise card in position pos
-     * */
-    public Card removeCard(int pos){
-        try{
+     */
+    public Card removeCard(int pos) {
+        try {
             Card card = this.cards.get(pos);
             this.cards.remove(pos);
             return card;
-        }catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             System.out.println("[ERROR] No Card found!");
             return null;
         }
     }
+
     /**
      * Overloaded removeCard function to remove a card by reference
+     *
      * @param card card to be removed
      * @return true if card was remove, false if card was not found
-     * */
-    public boolean removeCard(Card card){
-        try{
+     */
+    public boolean removeCard(Card card) {
+        try {
             this.cards.remove(card);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("[ERROR] No Card found!");
             return false;
         }
@@ -188,12 +189,13 @@ public class Player implements Cloneable{
 
     /**
      * Calculates the current score of the player
+     *
      * @return current score as int
-     * */
-    public int getScore(){
+     */
+    public int getScore() {
         int score = 0;
 
-        for(Card c : this.cards){
+        for (Card c : this.cards) {
             score += c.getValue();
         }
 
@@ -207,21 +209,22 @@ public class Player implements Cloneable{
      * Player chose a card --> isActive = false
      * Player wasnt able to choose a card --> isActive = false
      * Player didnt choose a card --> isActive = true
+     *
      * @param table the current playing field
      * @return true if card was chosen, false if no card was chosen
-     * */
-    public boolean chooseCard(Table table){
+     */
+    public boolean chooseCard(Table table) {
         //check if player is able to choose a card
-        if(this.diceCount <= 0){
+        if (this.diceCount <= 0) {
             log("Roll the dice first!");
             return false;
         }
 
         //check if the player has an option to choose from
-        if(checkEndRound(table)){
+        if (checkEndRound(table)) {
             log(this.name + ", there is no card you could choose!");
-            Card halter= new Card(CardColor.RED,420);
-            Action action6= new Action(Zuege.SKIPPED,halter,this);
+            Card halter = new Card(CardColor.RED, 420);
+            Action action6 = new Action(Zuege.SKIPPED, halter, this);
             ZugHistorie.actionHinzufuegen(action6);
             //set the player as inactive to end his turn
             this.active = false;
@@ -234,7 +237,7 @@ public class Player implements Cloneable{
 
         int[] inputCoord = this.getPlayerInputCoord();
 
-        try{
+        try {
             //subtract one to get back to array counting
             int[] coords = {inputCoord[0] - 1, inputCoord[1] - 1};
 
@@ -253,7 +256,7 @@ public class Player implements Cloneable{
             }
             //add card to players hand
             addCard(chosenOne);
-            Action action1= new Action(Zuege.GOTCARDFROMTABLE,chosenOne,this);
+            Action action1 = new Action(Zuege.GOTCARDFROMTABLE, chosenOne, this);
             ZugHistorie.actionHinzufuegen(action1);
             //set the player as inactive, since this action ended his turn
             this.active = false;
@@ -288,12 +291,13 @@ public class Player implements Cloneable{
 
     /**
      * Lets the player draw a luckCard from the table
+     *
      * @param table the current instance of the table
      * @return returns true if the player has chosen a luckCard, false if he didnt
-     * */
-    public boolean drawLuckCard(Table table, Player[] players){
+     */
+    public boolean drawLuckCard(Table table, Player[] players) {
         //check if player has cards on his hand to exchange for a luck card
-        if(this.cards.size() == 0){
+        if (this.cards.size() == 0) {
             log(this.name + ", you dont have any cards to exchange for a luck card!");
             return false;
         }
@@ -301,24 +305,24 @@ public class Player implements Cloneable{
         log(name + ", you can choose to draw a luck card!");
         Card selected = selectCard(players);
 
-        if(selected == null){
+        if (selected == null) {
             log(this.name + ", you didnt choose a card");
             return false;
-        }else{
+        } else {
             //remove the selected card from the players hand
-            Action action2= new Action(Zuege.DROPPEDCARD,selected,this);
+            Action action2 = new Action(Zuege.DROPPEDCARD, selected, this);
             ZugHistorie.actionHinzufuegen(action2);
             this.cards.remove(selected);
             //add a luckCard to the players hand
             LuckCard drawn = table.drawLuckCard();
             //check if table has luckcards left
-            if(drawn != null) {
+            if (drawn != null) {
                 this.luckCards.add(drawn);
-                Action action3= new Action(Zuege.GOTLUCKYCARD,drawn,this);
+                Action action3 = new Action(Zuege.GOTLUCKYCARD, drawn, this);
                 ZugHistorie.actionHinzufuegen(action3);
 
                 return true;
-            }else{
+            } else {
                 log("The luck card stack has no more cards you can draw!");
                 return false;
             }
@@ -328,9 +332,10 @@ public class Player implements Cloneable{
     /**
      * Lets the player select a card from his hand
      * Doesnt remove the card from players hand!
+     *
      * @return selected Card or null if no card was selected
-     * */
-    public Card selectCard(Player[] players){
+     */
+    public Card selectCard(Player[] players) {
 
         log(this.name + ", choose a card");
         log("Enter 0 to not choose a card");
@@ -339,8 +344,8 @@ public class Player implements Cloneable{
             log(cards.get(i - 1) + " - " + i);
         }
 
-        while(true) {
-            int input = this.playerInputNumberInRange(1,this.cards.size());
+        while (true) {
+            int input = this.playerInputNumberInRange(1, this.cards.size());
 
             if (input == 0) {
                 log("You have not chosen a card");
@@ -351,10 +356,10 @@ public class Player implements Cloneable{
         }
     }
 
-    public boolean selectHighCard(){
+    public boolean selectHighCard() {
 
         //check if the player is able to drop a card
-        if(this.cards.size() == 0){
+        if (this.cards.size() == 0) {
             log(name + ", has no cards to drop after this round!");
             return false;
         }
@@ -382,18 +387,18 @@ public class Player implements Cloneable{
             log(maxCards.get(i) + " - " + i);
         }
 
-        int removing = this.playerInputNumberInRange(0,maxCards.size()-1);
-        while(true){
-            try{
-                Card halter= maxCards.get(removing);
+        int removing = this.playerInputNumberInRange(0, maxCards.size() - 1);
+        while (true) {
+            try {
+                Card halter = maxCards.get(removing);
                 this.cards.remove(maxCards.get(removing));
-                Action action4= new Action(Zuege.DROPPEDCARD,halter,this);
+                Action action4 = new Action(Zuege.DROPPEDCARD, halter, this);
                 ZugHistorie.actionHinzufuegen(action4);
                 return true;
-            }catch (Exception e){
+            } catch (Exception e) {
                 log("Please choose a card!");
             }
-            removing=this.playerInputNumberInRange(0,maxCards.size()-1);
+            removing = this.playerInputNumberInRange(0, maxCards.size() - 1);
         }
     }
 
@@ -401,12 +406,13 @@ public class Player implements Cloneable{
     /**
      * Lets the player select a luckCard from his hand
      * Doesnt remove the card from players hand!
+     *
      * @return selected Card or null if no card was selected
-     * */
-    public LuckCard selectLuckCard(Table table){
+     */
+    public LuckCard selectLuckCard(Table table) {
 
         //check if player has luck cards
-        if(this.luckCards.size() == 0){
+        if (this.luckCards.size() == 0) {
             log(name + ", you dont have any luck cards!");
             return null;
         }
@@ -417,9 +423,9 @@ public class Player implements Cloneable{
             log(luckCards.get(i - 1) + " - " + i);
         }
 
-        while(true) {
+        while (true) {
 
-            int input = this.playerInputNumberInRange(1,this.luckCards.size());
+            int input = this.playerInputNumberInRange(1, this.luckCards.size());
 
             if (input == 0) {
                 log("You have not chosen a card to play!");
@@ -432,13 +438,14 @@ public class Player implements Cloneable{
 
     /**
      * Lets the player choose an action he wants to perform
+     *
      * @return returns the chosen action!
-     * */
-    public String chooseAction(Table table){
+     */
+    public String chooseAction(Table table) {
 
-        String[] actions = {"R","L","C","M","N","T","H"};
+        String[] actions = {"R", "L", "C", "M", "N", "T", "H"};
 
-        while(true) {
+        while (true) {
             log("Your turn " + this.name + "! Eye count - " + this.diceCount);
             log(this.toString());
 
@@ -459,9 +466,9 @@ public class Player implements Cloneable{
             Scanner s = new Scanner(System.in);
             String action = s.nextLine();
             //check if value is acceptable
-            if(Arrays.asList(actions).contains(action)){
+            if (Arrays.asList(actions).contains(action)) {
                 return action;
-            }else{
+            } else {
                 log("Please choose a valid option!");
             }
         }
@@ -470,10 +477,11 @@ public class Player implements Cloneable{
     /**
      * Lets the player roll the dice
      * Automaticly sets the players diceCount
+     *
      * @return the number the player rolled, current DiceCount if nothing changed
-     * */
-    public int roll(){
-        if(this.rolls >= 2){
+     */
+    public int roll() {
+        if (this.rolls >= 2) {
             log("You can´t roll again! Your current eye count is " + diceCount);
             return this.diceCount;
         }
@@ -492,26 +500,27 @@ public class Player implements Cloneable{
     /**
      * Function to perfrom a ONETOTHREE or FOURTOSIX luckCard action
      * !Removes the Card from the players hand!
-     * @param lC the card the player chose
+     *
+     * @param lC  the card the player chose
      * @param min the min value the player can choose
      * @param max the max value the player can choose
      * @return true if player selected a valid value and his diceCount was changed, false if he didnt
-     * */
-    public boolean mintomax(LuckCard lC, int min, int max){
+     */
+    public boolean mintomax(LuckCard lC, int min, int max) {
 
         //check if the card has already been used
-        if(usedCards.contains(lC)){
+        if (usedCards.contains(lC)) {
             log("You have already played that card!");
             return false;
         }
 
-        log("Which number do you wish to replace your eye count with? [" + min + "," + max + "] Enter 0 to abort!" );
+        log("Which number do you wish to replace your eye count with? [" + min + "," + max + "] Enter 0 to abort!");
 
-        int input = this.playerInputNumberInRange(min,max);
+        int input = this.playerInputNumberInRange(min, max);
 
-        if(input == 0){
+        if (input == 0) {
             return false;
-        }else{
+        } else {
             //set diceCount to the input
             this.diceCount = input;
 
@@ -524,18 +533,18 @@ public class Player implements Cloneable{
     }
 
 
-    public int playerInputNumberInRange(int min, int max){
+    public int playerInputNumberInRange(int min, int max) {
         Scanner s = new Scanner(System.in);
         String line = s.nextLine();
-        try{
+        try {
             int newDiceCount = Integer.parseInt(line);
-            if(newDiceCount <= max && newDiceCount >= min){
+            if (newDiceCount <= max && newDiceCount >= min) {
                 return newDiceCount;
             } else if (newDiceCount == 0) {
                 return newDiceCount;
-            }else{
+            } else {
                 log("Enter a valid number!");
-                return this.playerInputNumberInRange(min,max);
+                return this.playerInputNumberInRange(min, max);
             }
         } catch (NumberFormatException e) {
             log("Please enter a number!");
@@ -545,17 +554,18 @@ public class Player implements Cloneable{
 
     /**
      * Function to let the player perform an extra throw
+     *
      * @param lC the card used by the player
-     * */
-    public boolean extraThrow(LuckCard lC){
+     */
+    public boolean extraThrow(LuckCard lC) {
         //check if the player still has rolls left
-        if(rolls < 2){
+        if (rolls < 2) {
             log(this.name + ", you still have extra rolls!");
             return false;
         }
 
         //check if the player already played that card
-        if(usedCards.contains(lC)){
+        if (usedCards.contains(lC)) {
             log(name + ", you have already played that card!");
             return false;
         }
@@ -572,24 +582,25 @@ public class Player implements Cloneable{
 
     /**
      * Function to let the player subtract one of his diceCount
+     *
      * @param lC the card used by the player
-     * */
-    public boolean minusOne(LuckCard lC){
+     */
+    public boolean minusOne(LuckCard lC) {
 
         //check if the player rolled the dice already
-        if(this.rolls <= 0){
+        if (this.rolls <= 0) {
             log(name + ", roll the dice first!");
             return false;
         }
 
         //check if the subtraction makes sense
-        if(this.diceCount <= 1){
+        if (this.diceCount <= 1) {
             log(name + ", this action wouldnt make much sense!");
             return false;
         }
 
         //check if the player already played that card
-        if(usedCards.contains(lC)){
+        if (usedCards.contains(lC)) {
             log(name + ", you have already played that card!");
             return false;
         }
@@ -607,23 +618,23 @@ public class Player implements Cloneable{
      * Function to let the player add one to his diceCount
      *
      * @param lC the card used by the player
-     * */
-    public boolean plusOne(LuckCard lC){
+     */
+    public boolean plusOne(LuckCard lC) {
 
         //check if the player rolled the dice already
-        if(this.rolls <= 0){
+        if (this.rolls <= 0) {
             log(name + ", roll the dice first!");
             return false;
         }
 
         //check if the addition makes sense
-        if(this.diceCount >= 6){
+        if (this.diceCount >= 6) {
             log(name + ", this action wouldnt make much sense!");
             return false;
         }
 
         //check if the player already played that card
-        if(usedCards.contains(lC)){
+        if (usedCards.contains(lC)) {
             log(name + ", you have already played that card!");
             return false;
         }
@@ -639,19 +650,20 @@ public class Player implements Cloneable{
 
     /**
      * Function to let the player choose cards based on his eye count
-     * @param lC card used by the player
+     *
+     * @param lC    card used by the player
      * @param table the current instance of the field
-     * */
-    public boolean cardSum(LuckCard lC, Table table){
+     */
+    public boolean cardSum(LuckCard lC, Table table) {
 
         //check if the player has rolled the dice before
-        if(rolls <= 0){
+        if (rolls <= 0) {
             log(name + ", roll the dice first!");
             return false;
         }
 
         //check if the player already played that card
-        if(usedCards.contains(lC)){
+        if (usedCards.contains(lC)) {
             log(name + ", you have already played that card!");
             return false;
         }
@@ -663,7 +675,7 @@ public class Player implements Cloneable{
 
         String input = this.getPlayerInputMultipleCoordinates(table);
 
-        if(input.equals("0")){
+        if (input.equals("0")) {
             log(name + ", you stopped the card selection!");
             return false;
         }
@@ -672,7 +684,7 @@ public class Player implements Cloneable{
         ArrayList<Card> selectedCards = new ArrayList<>();
 
         int sum = 0;
-        if(coords != null) {
+        if (coords != null) {
             for (int[] coord : coords) {
                 Card card = table.getCard(coord[0], coord[1]);
                 if (card != null) {
@@ -701,7 +713,7 @@ public class Player implements Cloneable{
 
                 return true;
             }
-        }else{
+        } else {
             log(name + ", you entered a wrong format!");
             return false;
         }
@@ -743,7 +755,7 @@ public class Player implements Cloneable{
     public String getPlayerInputMenu() {
         Scanner s = new Scanner(System.in);
         String line = s.nextLine();
-        if((!line.equals("C"))&&(!line.equals("L"))&&(!line.equals("R")&&!line.equals("M")&&(!line.equals("N"))&&(!line.equals("T"))&&(!line.equals("H")))) {
+        if ((!line.equals("C")) && (!line.equals("L")) && (!line.equals("R") && !line.equals("M") && (!line.equals("N")) && (!line.equals("T")) && (!line.equals("H")))) {
             log("Try again!");
             return this.getPlayerInputMenu();
         }
@@ -761,12 +773,11 @@ public class Player implements Cloneable{
         Scanner s = new Scanner(System.in);
         String line = s.nextLine();
         String[] coordsSTR = line.split(",");
-        try{
-            if(Integer.valueOf(coordsSTR[0])>4||Integer.valueOf(coordsSTR[0])<1){
+        try {
+            if (Integer.valueOf(coordsSTR[0]) > 4 || Integer.valueOf(coordsSTR[0]) < 1) {
                 log("Enter valid coordinates");
                 return this.getPlayerInputCoord();
-            }
-            else if(Integer.valueOf(coordsSTR[1])>4||Integer.valueOf(coordsSTR[1])<1){
+            } else if (Integer.valueOf(coordsSTR[1]) > 4 || Integer.valueOf(coordsSTR[1]) < 1) {
                 log("Enter valid coordinates");
                 return this.getPlayerInputCoord();
             }
@@ -774,11 +785,11 @@ public class Player implements Cloneable{
             log("Enter coordinates in format y,x!");
             return this.getPlayerInputCoord();
         }
-        String coord=coordsSTR[0] + "," + coordsSTR[1];
+        String coord = coordsSTR[0] + "," + coordsSTR[1];
         this.playerlog(coord);
         int[] coordInt = new int[2];
-        coordInt[0]=Integer.parseInt(coordsSTR[0]);
-        coordInt[1]=Integer.parseInt(coordsSTR[1]);
+        coordInt[0] = Integer.parseInt(coordsSTR[0]);
+        coordInt[1] = Integer.parseInt(coordsSTR[1]);
         return coordInt;
 
     }
@@ -792,7 +803,7 @@ public class Player implements Cloneable{
     public String getPlayerInputYesNo() {
         Scanner s = new Scanner(System.in);
         String line = s.nextLine();
-        if((!line.equals("y"))&&(!line.equals("n"))){
+        if ((!line.equals("y")) && (!line.equals("n"))) {
             log("Enter y or n!");
             return this.getPlayerInputYesNo();
         }
@@ -808,11 +819,11 @@ public class Player implements Cloneable{
     public String getPlayerInputMultipleCoordinates(Table table) {
         Scanner s = new Scanner(System.in);
         String line = s.nextLine();
-        if((!line.equals("0"))){
+        if ((!line.equals("0"))) {
             String[] coord = line.split(";");
-            for(String c : coord){
-                try{
-                    if(!(Integer.parseInt(String.valueOf(c.charAt(0)))<=4&&Integer.parseInt(String.valueOf(c.charAt(0)))>0&&String.valueOf(c.charAt(1))==","&&Integer.parseInt(String.valueOf(c.charAt(2)))<=4)&&Integer.parseInt(String.valueOf(c.charAt(2)))>0){
+            for (String c : coord) {
+                try {
+                    if (!(Integer.parseInt(String.valueOf(c.charAt(0))) <= 4 && Integer.parseInt(String.valueOf(c.charAt(0))) > 0 && String.valueOf(c.charAt(1)) == "," && Integer.parseInt(String.valueOf(c.charAt(2))) <= 4) && Integer.parseInt(String.valueOf(c.charAt(2))) > 0) {
                         log("Enter valid coordinates or type 0");
                         return this.getPlayerInputMultipleCoordinates(table);
                     }
@@ -851,14 +862,13 @@ public class Player implements Cloneable{
 
     /**
      * Function to easily log a msg on the console
-     *
-     * */
+     */
     void log(String msg) {
-        if(manualNextMsg){
+        if (manualNextMsg) {
             System.out.println("[JINX] " + msg + " [ENTER] to continue!");
             Scanner s = new Scanner(System.in);
             s.nextLine();
-        }else {
+        } else {
             try {
                 Thread.sleep(sleepTime);
             } catch (Exception e) {
@@ -870,63 +880,63 @@ public class Player implements Cloneable{
 
     /**
      * Function to see if player is still active
-     * */
-    public boolean isActive(){
+     */
+    public boolean isActive() {
         return this.active;
     }
 
     /**
      * Function to set the player in active status
-     * */
-    public void setActive(){
+     */
+    public void setActive() {
         this.active = true;
     }
 
     /**
      * Function to clear the used cards
-     * */
-    public void clearUsedCards(){
+     */
+    public void clearUsedCards() {
         this.usedCards.clear();
     }
 
     /**
      * Function to reset the rolls and the dice count
-     * */
+     */
     public void resetRolls() {
         this.rolls = 0;
         this.diceCount = 0;
     }
 
-     /* shows player input on console
+    /* shows player input on console
      *
      * @param msg
      */
-    private void playerlog(String msg){
+    private void playerlog(String msg) {
         System.out.println("[" + this.getName() + "] chose " + msg);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder ret = new StringBuilder("");
 
-        if(this.cards.size() == 0 && this.luckCards.size() == 0){
+        if (this.cards.size() == 0 && this.luckCards.size() == 0) {
             return this.name + "\n[]\n[]";
         }
 
         ret.append(this.name);
         ret.append("\n");
         ret.append("[");
-        for(int i = 0; i < this.cards.size(); i++){
+        for (int i = 0; i < this.cards.size(); i++) {
             ret.append(cards.get(i).toString());
-            if(i < this.cards.size() - 1){
+            if (i < this.cards.size() - 1) {
                 ret.append(",");
             }
         }
         ret.append("]\n");
         ret.append(" [");
-        for(int i = 0; i < this.luckCards.size(); i++){
+        for (int i = 0; i < this.luckCards.size(); i++) {
             ret.append(luckCards.get(i).toString());
-            if(i < this.luckCards.size() - 1){
+            if (i < this.luckCards.size() - 1) {
                 ret.append(",");
             }
         }
@@ -940,63 +950,62 @@ public class Player implements Cloneable{
      *
      * @param msg
      */
-    private void adviceLog(String msg){
+    private void adviceLog(String msg) {
         System.out.println("[Advisor]" + msg);
     }
 
     /**
      * gives advice to the player
      */
-    public void getHelp(Table table){
-        if(this.diceCount==0){
+    public void getHelp(Table table) {
+        if (this.diceCount == 0) {
             this.adviceLog("First you need to roll the dice!");
             return;
         }
         String[] cardcoords = this.findValidCards(table);
-        if(cardcoords[0]==null){
+        if (cardcoords[0] == null) {
             this.adviceLog("You can't take any cards.");
-            boolean rollAgain=false;
-            for(LuckCard lc:this.getLuckCards()){
-                if(lc.getCardType().equals(CardType.EXTRATHROW)&&!this.usedCards.contains(lc)){
-                    rollAgain=true;
+            boolean rollAgain = false;
+            for (LuckCard lc : this.getLuckCards()) {
+                if (lc.getCardType().equals(CardType.EXTRATHROW) && !this.usedCards.contains(lc)) {
+                    rollAgain = true;
                 }
             }
-            if(this.rolls<2){
+            if (this.rolls < 2) {
                 this.adviceLog("You should roll again!");
                 return;
-            }else if(rollAgain){
+            } else if (rollAgain) {
                 this.adviceLog("You can use your Extrathrow-Luckcard to roll again!");
                 return;
-            }else{
+            } else {
                 this.adviceLog("You can't take any cards and you can't roll again. It looks like you have to end this round.");
                 return;
             }
-        }else if(cardcoords[1]==null){
+        } else if (cardcoords[1] == null) {
             this.adviceLog("There is only one card you can take, so you should take it.");
             return;
-        }
-        else{
+        } else {
             this.adviceLog("These are the coordinates you can chose:");
-            for(String coord:cardcoords){
-                if(coord!=null){
+            for (String coord : cardcoords) {
+                if (coord != null) {
                     this.adviceLog(coord);
-                    String[] cardcoord=coord.split(",");
-                    Card c=table.getField()[Integer.parseInt(cardcoord[0])-1][Integer.parseInt(cardcoord[1])-1];
-                    if(c.getValue()==this.diceCount){
+                    String[] cardcoord = coord.split(",");
+                    Card c = table.getField()[Integer.parseInt(cardcoord[0]) - 1][Integer.parseInt(cardcoord[1]) - 1];
+                    if (c.getValue() == this.diceCount) {
                         this.adviceLog("You can just take this card.");
-                    }else{
+                    } else {
                         this.adviceLog("If you'd like to take this card you need to use a Luckcard.");
-                        if(c.getValue()>this.diceCount){
+                        if (c.getValue() > this.diceCount) {
                             this.adviceLog("You need to increase your dice count.");
-                        } else if (c.getValue()<this.diceCount) {
+                        } else if (c.getValue() < this.diceCount) {
                             this.adviceLog("You need to decrease your dice count.");
                         }
                     }
                 }
             }
-            CardColor[] desiredColour=new CardColor[8];
+            CardColor[] desiredColour = new CardColor[8];
             //if player has no cards
-            if(this.cards.size()==0){
+            if (this.cards.size() == 0) {
                 int[] coloursOnTable = this.findAmountByColour(table);
                 int amount = 100;
                 int c = 0;
@@ -1041,7 +1050,7 @@ public class Player implements Cloneable{
                 }
             }
             //if player has cards
-            else{
+            else {
                 int[] valueByColour = new int[8];
                 for (Card c : this.cards) {
                     switch (c.getColor()) {
@@ -1097,30 +1106,30 @@ public class Player implements Cloneable{
                     desiredColour[a] = cardColor;
                 }
             }
-            for(CardColor cardColor:desiredColour){
-                for(String co:cardcoords){
-                    if(co!=null){
-                        String[] line=co.split(",");
-                        Card c=table.getField()[Integer.parseInt(line[0])-1][Integer.parseInt(line[1])-1];
-                        if(c!=null){
-                            if(c.getColor().equals(cardColor)){
-                                if(this.cards.size()==0){
+            for (CardColor cardColor : desiredColour) {
+                for (String co : cardcoords) {
+                    if (co != null) {
+                        String[] line = co.split(",");
+                        Card c = table.getField()[Integer.parseInt(line[0]) - 1][Integer.parseInt(line[1]) - 1];
+                        if (c != null) {
+                            if (c.getColor().equals(cardColor)) {
+                                if (this.cards.size() == 0) {
                                     this.adviceLog("I recommend taking " + co + ".");
                                     this.adviceLog("Based on the cards on the table this is the card you are most likely to keep.");
                                     return;
-                                }else{
-                                    boolean cardInHand=false;
-                                    for(Card card:this.cards){
-                                        if(card.getColor().equals(cardColor)){
-                                            cardInHand=true;
+                                } else {
+                                    boolean cardInHand = false;
+                                    for (Card card : this.cards) {
+                                        if (card.getColor().equals(cardColor)) {
+                                            cardInHand = true;
                                         }
                                     }
-                                    if(cardInHand){
+                                    if (cardInHand) {
                                         this.adviceLog("I recommend taking " + co + ".");
                                         this.adviceLog("Based on the cards you already have, this is the best card you can take in order to keep a high score.");
                                         return;
                                     }
-                                    CardColor[] prefferedColour=new CardColor[8];
+                                    CardColor[] prefferedColour = new CardColor[8];
                                     int[] coloursOnTable = this.findAmountByColour(table);
                                     int amount = 100;
                                     int d = 0;
@@ -1163,15 +1172,15 @@ public class Player implements Cloneable{
                                         prefferedColour[b] = adding;
                                         amount = 100;
                                     }
-                                    for(CardColor cardColor1:prefferedColour){
-                                        for(String coCard:cardcoords){
-                                            if(coCard==null){
+                                    for (CardColor cardColor1 : prefferedColour) {
+                                        for (String coCard : cardcoords) {
+                                            if (coCard == null) {
                                                 break;
                                             }
-                                            String[] line2=coCard.split(",");
-                                            Card c2=table.getField()[Integer.parseInt(line2[0])-1][Integer.parseInt(line2[1])-1];
-                                            if(c2!=null){
-                                                if(c2.getColor().equals(cardColor1)){
+                                            String[] line2 = coCard.split(",");
+                                            Card c2 = table.getField()[Integer.parseInt(line2[0]) - 1][Integer.parseInt(line2[1]) - 1];
+                                            if (c2 != null) {
+                                                if (c2.getColor().equals(cardColor1)) {
                                                     this.adviceLog("I recommend taking " + coCard + ".");
                                                     this.adviceLog("You can't take a card to protect your score, so you should take this one because there are few cards of this color on the table.");
                                                     return;
@@ -1196,12 +1205,12 @@ public class Player implements Cloneable{
      * @param table
      * @return
      */
-    public int[] findAmountByColour(Table table){
+    public int[] findAmountByColour(Table table) {
         int[] cardByColour = new int[8];
-        for(Card[] card:table.getField()) {
+        for (Card[] card : table.getField()) {
             for (Card c : card) {
-                if(c!=null){
-                    switch (c.getColor()){
+                if (c != null) {
+                    switch (c.getColor()) {
                         case RED -> cardByColour[0]++;
                         case GREEN -> cardByColour[1]++;
                         case BLUE -> cardByColour[2]++;
@@ -1223,64 +1232,59 @@ public class Player implements Cloneable{
      * @param table
      * @return
      */
-    private String[] findValidCards(Table table){
+    private String[] findValidCards(Table table) {
         boolean oneThree = false;
-        boolean fourSix=false;
-        for(LuckCard luckCard:this.getLuckCards()){
-            if(luckCard.getCardType().equals(CardType.ONETOTHREE)){
-                oneThree=true;
-            }
-            else if(luckCard.getCardType().equals(CardType.FOURTOSIX)){
-                fourSix=true;
+        boolean fourSix = false;
+        for (LuckCard luckCard : this.getLuckCards()) {
+            if (luckCard.getCardType().equals(CardType.ONETOTHREE)) {
+                oneThree = true;
+            } else if (luckCard.getCardType().equals(CardType.FOURTOSIX)) {
+                fourSix = true;
             }
         }
         String[] cards = new String[16];
         int index = 0;
         int plus = 0;
         int minus = 0;
-        for(LuckCard luckCard:this.getLuckCards()){
+        for (LuckCard luckCard : this.getLuckCards()) {
             //compareTo returns 0 if they are equal
-            if(luckCard.getCardType().compareTo(CardType.PLUSONE)==0&&!this.usedCards.contains(luckCard)){
+            if (luckCard.getCardType().compareTo(CardType.PLUSONE) == 0 && !this.usedCards.contains(luckCard)) {
                 plus++;
-            }
-            else if(luckCard.getCardType().compareTo(CardType.MINUSONE)==0&&!this.usedCards.contains(luckCard)){
+            } else if (luckCard.getCardType().compareTo(CardType.MINUSONE) == 0 && !this.usedCards.contains(luckCard)) {
                 minus++;
             }
         }
         //row, y-coordinate
         int ycoord = 1;
-        for(Card[] card:table.getField()) {
+        for (Card[] card : table.getField()) {
             //x-coordinate
             int xcoord = 1;
             for (Card c : card) {
-                if(c!=null){
-                    if(this.diceCount==c.getValue()){
-                        cards[index]=ycoord + "," + xcoord;
+                if (c != null) {
+                    if (this.diceCount == c.getValue()) {
+                        cards[index] = ycoord + "," + xcoord;
                         index++;
-                    }
-                    else if(oneThree&&c.getValue()<4){
-                        cards[index]=ycoord + "," + xcoord;
+                    } else if (oneThree && c.getValue() < 4) {
+                        cards[index] = ycoord + "," + xcoord;
                         index++;
-                    }
-                    else if(fourSix&&c.getValue()>3){
-                        cards[index]=ycoord + "," + xcoord;
+                    } else if (fourSix && c.getValue() > 3) {
+                        cards[index] = ycoord + "," + xcoord;
                         index++;
-                    }
-                    else{
-                        int a=plus;
-                        int b=minus;
+                    } else {
+                        int a = plus;
+                        int b = minus;
                         //all cards that can be taken with plusone
-                        while(a!=0){
-                            if(this.diceCount+a==c.getValue()){
-                                cards[index]=ycoord + "," + xcoord;
+                        while (a != 0) {
+                            if (this.diceCount + a == c.getValue()) {
+                                cards[index] = ycoord + "," + xcoord;
                                 index++;
                             }
                             a--;
                         }
                         //all cards that can be taken with minusone
-                        while(b!=0){
-                            if(this.diceCount-b==c.getValue()){
-                                cards[index]=ycoord + "," + xcoord;
+                        while (b != 0) {
+                            if (this.diceCount - b == c.getValue()) {
+                                cards[index] = ycoord + "," + xcoord;
                                 index++;
                             }
                             b--;

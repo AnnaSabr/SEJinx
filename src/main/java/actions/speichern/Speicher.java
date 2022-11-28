@@ -51,6 +51,7 @@ public class Speicher {
 
     /**
      * Erstellt einen neuen Verlauf aus der ArrayListe
+     *
      * @return Verlaufsobjekt
      */
     public Verlauf zumLadenVerlauf() {

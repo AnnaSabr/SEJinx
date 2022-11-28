@@ -19,16 +19,17 @@ public class Runde {
     private Runde davor;
     private Runde dahinter;
 
-    public Runde(ArrayList<Player> spieler, Table tischStand){
-        this.spieler=spieler;
-        this.tischStand=tischStand;
-        this.davor=null;
-        this.dahinter=null;
+    public Runde(ArrayList<Player> spieler, Table tischStand) {
+        this.spieler = spieler;
+        this.tischStand = tischStand;
+        this.davor = null;
+        this.dahinter = null;
 
     }
 
     /**
      * fuegt eine neue Runde vor dieser ein
+     *
      * @param davor wird eingefuegt
      */
     public void setDavor(Runde davor) {
@@ -36,7 +37,6 @@ public class Runde {
     }
 
     /**
-     *
      * @return gibt die vorherige Runde zurueck
      */
     public Runde getDavor() {
@@ -45,6 +45,7 @@ public class Runde {
 
     /**
      * fuegt eine neue Runde hinter diese ein
+     *
      * @param dahinter die dahinter eingefuegt werden soll
      */
     public void setDahinter(Runde dahinter) {
@@ -52,7 +53,6 @@ public class Runde {
     }
 
     /**
-     *
      * @return die folgende Runde
      */
     public Runde getDahinter() {
@@ -60,7 +60,6 @@ public class Runde {
     }
 
     /**
-     *
      * @return die Spieler der Runde und somit ihre Spielstaende
      */
     public ArrayList<Player> getSpieler() {
@@ -68,7 +67,6 @@ public class Runde {
     }
 
     /**
-     *
      * @return die Tisch positionen der Runde
      */
     public Table getTischStand() {

@@ -34,7 +34,6 @@ public class Action {
     }
 
     /**
-     *
      * @return die Art des Spielzuges
      */
     public Zuege getZug() {
@@ -42,7 +41,6 @@ public class Action {
     }
 
     /**
-     *
      * @return gespielte Karte in dem Zug
      */
     public Card getKarte() {
@@ -51,7 +49,6 @@ public class Action {
 
 
     /**
-     *
      * @return den Spieler, der den Zug getaetigt hat
      */
     public Player getAktiverSpieler() {
@@ -60,7 +57,6 @@ public class Action {
 
 
     /**
-     *
      * @return den folgenden Spielzug
      */
     public Action getDahinter() {
@@ -68,7 +64,6 @@ public class Action {
     }
 
     /**
-     *
      * @return den vorherigen Spielzug
      */
     public Action getDavor() {
@@ -76,7 +71,6 @@ public class Action {
     }
 
     /**
-     *
      * @param dahinter neuer Zug der dem aktuelln Zug folgen soll
      */
     public void setDahinter(Action dahinter) {
@@ -84,7 +78,6 @@ public class Action {
     }
 
     /**
-     *
      * @param davor neuer Zug der dem aktuellen vor geschobenw erden soll
      */
     public void setDavor(Action davor) {
