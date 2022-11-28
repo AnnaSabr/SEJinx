@@ -47,6 +47,13 @@ public class Action {
         return karte;
     }
 
+    /**
+     *
+     * @return gespielte LuckyKarte
+     */
+    public LuckCard getGlueckskarte() {
+        return glueckskarte;
+    }
 
     /**
      * @return den Spieler, der den Zug getaetigt hat
