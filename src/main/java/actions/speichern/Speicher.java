@@ -16,8 +16,8 @@ public class Speicher {
     private ArrayList<Action> verlaufAction;
 
     public Speicher() {
-        this.verlaufRunden = null;
-        this.verlaufAction = null;
+        this.verlaufRunden = new ArrayList<>();
+        this.verlaufAction = new ArrayList<>();
     }
 
     /**

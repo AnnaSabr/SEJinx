@@ -1,3 +1,4 @@
+import actions.Zuege.ZugHistorie;
 import cards.Card;
 import cards.CardColor;
 import cards.CardType;
@@ -57,13 +58,14 @@ public class Main {
 
         game.run();
         boolean naechstes = true;
-        while (naechstes) ;
-        {
+        while (naechstes) {
             System.out.println("Next Game? y for yes, n for no");
             Scanner sc = new Scanner(System.in);
             String eingabe = sc.nextLine();
             if (eingabe.equals("y")) {
-                game.run();
+                GameLoop gameA = new GameLoop(config, manualSleepTime, nextMsgTime);
+                ZugHistorie.leeren();
+                gameA.run();
             } else if (eingabe.equals("n")) {
                 System.out.println("End initialized");
                 naechstes = false;

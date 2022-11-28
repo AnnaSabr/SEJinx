@@ -148,45 +148,29 @@ public class GameLoop {
                             if (chosenOne == null) {
                                 break;
                             }
-
+                            Action act= new Action(Zuege.USEDLUCKYCARD,chosenOne,currentPlayer);
+                            ZugHistorie.actionHinzufuegen(act);
                             //switch over all possible card types
                             switch (chosenOne.getCardType()) {
                                 // let the player change his diceCount to a set value
+
                                 case ONETOTHREE:
                                     currentPlayer.mintomax(chosenOne, 1, 3);
-                                    LuckCard luck1 = new LuckCard(CardType.ONETOTHREE);
-                                    Action action1 = new Action(Zuege.USEDLUCKYCARD, luck1, currentPlayer);
-                                    ZugHistorie.actionHinzufuegen(action1);
                                     // let the player change his diceCount to a set value
                                 case FOURTOSIX:
                                     currentPlayer.mintomax(chosenOne, 4, 6);
-                                    LuckCard luck2 = new LuckCard(CardType.FOURTOSIX);
-                                    Action action2 = new Action(Zuege.USEDLUCKYCARD, luck2, currentPlayer);
-                                    ZugHistorie.actionHinzufuegen(action2);
                                     // give the player an extra throw
                                 case EXTRATHROW:
                                     currentPlayer.extraThrow(chosenOne);
-                                    LuckCard luck3 = new LuckCard(CardType.EXTRATHROW);
-                                    Action action3 = new Action(Zuege.USEDLUCKYCARD, luck3, currentPlayer);
-                                    ZugHistorie.actionHinzufuegen(action3);
                                     // reduce the diceCount of the player by one
                                 case MINUSONE:
                                     currentPlayer.minusOne(chosenOne);
-                                    LuckCard luck4 = new LuckCard(CardType.MINUSONE);
-                                    Action action4 = new Action(Zuege.USEDLUCKYCARD, luck4, currentPlayer);
-                                    ZugHistorie.actionHinzufuegen(action4);
                                     // increase the diceCount of the player by one
                                 case PLUSONE:
                                     currentPlayer.plusOne(chosenOne);
-                                    LuckCard luck5 = new LuckCard(CardType.PLUSONE);
-                                    Action action5 = new Action(Zuege.USEDLUCKYCARD, luck5, currentPlayer);
-                                    ZugHistorie.actionHinzufuegen(action5);
                                     // let the player choose a collection of cards based on his dice count
                                 case CARDSUM:
                                     currentPlayer.cardSum(chosenOne, this.table);
-                                    LuckCard luck6 = new LuckCard(CardType.CARDSUM);
-                                    Action action6 = new Action(Zuege.USEDLUCKYCARD, luck6, currentPlayer);
-                                    ZugHistorie.actionHinzufuegen(action6);
                             }
                         }
                         case "C" -> {
@@ -257,12 +241,25 @@ public class GameLoop {
     }
 
     public void showActions() {
+        System.out.println("\n\n");
         System.out.println("Bisher gespielte Zuege:");
-        Action start = ZugHistorie.getHead();
+        Action start = ZugHistorie.getHead().getDahinter();
         while (!start.equals(ZugHistorie.getTail())) {
-            System.out.println("Spieler: " + start.getAktiverSpieler() + " Zug: " + start.getZug() + " Karte: " + start.getKarte());
+            if (start.getKarte()!=null){
+                if (start.getKarte().getValue()==420){
+                    System.out.println("Spieler: " + start.getAktiverSpieler().getName() + ",   Zug: " + start.getZug()+"\n");
+                }
+                else{
+                    System.out.println("Spieler: " + start.getAktiverSpieler().getName() + ",   Zug: " + start.getZug() + ",   Karte: " + start.getKarte()+"\n");
+                }
+
+            }
+            else{
+                System.out.println("Spieler: " + start.getAktiverSpieler().getName() + ",   Zug: " + start.getZug() + ",   Karte: " + start.getGlueckskarte()+"\n");
+            }
             start = start.getDahinter();
         }
+        System.out.println("\n\n");
     }
 
     /**

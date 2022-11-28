@@ -443,7 +443,7 @@ public class Player implements Cloneable {
      */
     public String chooseAction(Table table) {
 
-        String[] actions = {"R", "L", "C", "M", "N", "T", "H"};
+        String[] actions = {"R", "L", "C", "M", "N", "T", "H","S","Z","X","A"};
 
         while (true) {
             log("Your turn " + this.name + "! Eye count - " + this.diceCount);
@@ -461,6 +461,7 @@ public class Player implements Cloneable {
                     S - save the Game
                     Z - to show  moves
                     X - load other game
+                    A - get Help
                     """);
 
             Scanner s = new Scanner(System.in);
