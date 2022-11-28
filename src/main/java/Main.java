@@ -36,10 +36,10 @@ public class Main {
         //System.out.println(conn.createPlayer("Rasmus","pw"));
         //System.out.println(conn.createPlayer("Robert","pw"));
 
-        PlayerHistory[] playerHistory = conn.getPlayerHistory("Hans");
+        //PlayerHistory[] playerHistory = conn.getPlayerHistory("Hans");
 
 
-        System.exit(0);
+        //System.exit(0);
         // does user want to load a default config
         boolean config = false ;
         boolean manualSleepTime = false;

@@ -14,6 +14,7 @@ import cards.Card;
 import cards.CardColor;
 import cards.CardType;
 import cards.LuckCard;
+import persistence.DBConnector;
 
 
 /**
@@ -214,6 +215,12 @@ public class GameLoop {
                             //TODO: Bezug zur Datenbank
                             speicherObjekt.setVerlaufAction(ZugHistorie.zumSpeichern());
                             speicherObjekt.setVerlaufRunden(verlauf.zumSpeichern());
+
+                            DBConnector dbConnector = DBConnector.getInstance();
+
+                            boolean test = dbConnector.createSpeicher(speicherObjekt);
+
+                            System.out.println(test);
                         }
                         case "X"->//TODO: Bezug zur DatenBank
                                 laden(speicherObjekt);

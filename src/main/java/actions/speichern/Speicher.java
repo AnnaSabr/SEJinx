@@ -10,11 +10,15 @@ import java.util.ArrayList;
 public  class Speicher {
 
     private ArrayList<Runde> verlaufRunden;
-    private ArrayList<Action> verlaufAction;
 
+    private ArrayList<Action> verlaufAction;
     public Speicher(){
         this.verlaufRunden=null;
         this.verlaufAction=null;
+    }
+
+    public ArrayList<Runde> getVerlaufRunden() {
+        return verlaufRunden;
     }
 
     public void setVerlaufAction(ArrayList<Action> verlaufAction) {

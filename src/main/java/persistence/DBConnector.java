@@ -1,5 +1,9 @@
 package persistence;
-import entities.Player;
+import actions.ReUnDo.Runde;
+import actions.Zuege.Action;
+import actions.speichern.Speicher;
+import com.google.gson.Gson;
+import entities.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -254,6 +258,378 @@ public class DBConnector {
         }catch (SQLException e){
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * Function to create a 'Speicherstand'
+     * */
+    public boolean createSpeicher(Speicher speicher){
+
+        //create the speicher reference
+        int speicher_id = handleSpeicher(Date.valueOf("22.02.2022"));
+
+        //create entry for every round in the speicher object
+        for(Runde r: speicher.getVerlaufRunden()){
+
+            //create the runde itself first
+            int runden_id = handleRunde(r.getAction(), speicher_id);
+
+            //make sure runde was created successfully
+            if(runden_id == 0){
+                return false;
+            }
+
+            //add tisch for runde
+            int tisch_id = handleTisch(r.getTischStand(), runden_id);
+
+            //make sure tisch was created
+            if(tisch_id == 0){
+                return false;
+            }
+
+            //add all players for this round
+            for(Player p: r.getSpieler()){
+
+                //create each player
+                int spieler_id = handleSpieler(p, runden_id);
+
+                //check if a player was created
+                if(spieler_id == 0){
+                    return false;
+                }
+            }
+        }
+
+        //create entry for every action in the speicher object
+        for(Action a : speicher.getVerlaufAction()){
+            //handle the action separately
+            int action_id = handleAction(a, speicher_id);
+
+            //check if action was created successfully
+            if(action_id == 0){
+                return false;
+            }
+        }
+
+        //speicher was created!
+        return true;
+    }
+
+    /**
+     * Function that creates a new spieler for a round
+     * @param spieler spieler to be created
+     * @param runde id of round
+     * @return 0 if nothing was created, id of spieler otherwise
+     * */
+    private int handleSpieler(Player spieler, int runde){
+
+        try{
+            //handle player information
+            String request = "INSTER INTO spieler (name, cards, luckCards, score, sleeptime, " +
+                    "manualNextMsg, diceCount, rolls, active, ai, r_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+            PreparedStatement stm = con.prepareStatement(request, Statement.RETURN_GENERATED_KEYS);
+
+            //parse stacks into JSON
+            Gson gson = new Gson();
+            String cards = gson.toJson(spieler.getCards());
+            String luckCards = gson.toJson(spieler.getLuckCards());
+
+            //set information
+            stm.setString(1, spieler.getName());
+            stm.setString(2, cards);
+            stm.setString(3, luckCards);
+            stm.setInt(4, spieler.getScore());
+            stm.setInt(5, spieler.getSleepTime());
+            stm.setBoolean(6, spieler.isManualNextMsg());
+            stm.setInt(7, spieler.getDiceCount());
+            stm.setInt(8, spieler.getRolls());
+            stm.setBoolean(9, spieler.isActive());
+
+            //check if the player is actually an AI, otherwise set null
+            if(spieler instanceof EasyKI){
+                stm.setString(10, "EasyKI");
+            }else if(spieler instanceof MediumAI){
+                stm.setString(10, "MediumKI");
+            }else if(spieler instanceof AIPLayer3){
+                stm.setString(10, "AIPLayer3");
+            }else{
+                stm.setNull(10,Types.VARCHAR);
+            }
+
+            stm.setInt(11, runde);
+
+
+            //push changes to db
+            int affectedRows = stm.executeUpdate();
+
+            //check if something was created
+            if (affectedRows == 0){
+                return 0;
+            }
+
+            //handle generated id
+            ResultSet generatedKeys = stm.getGeneratedKeys();
+
+            int id = 0;
+            if(generatedKeys.next()){
+                id = generatedKeys.getInt(1);
+            }
+
+            return id;
+
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * Function that creates a new tisch
+     * @param tisch tisch that needs to be persisted
+     * @param runde id of the runde it belongs to
+     * @return 0 if nothing was created, id of tisch otherwise
+     * */
+    private int handleTisch(Table tisch, int runde){
+
+        try{
+            //handle tisch information
+            String request = "INSERT INTO tisch (cardStack, luckCardStack, field, r_id) VALUES (?,?,?,?)";
+            PreparedStatement stm = con.prepareStatement(request, Statement.RETURN_GENERATED_KEYS);
+
+            //parse stacks into json
+            Gson gson = new Gson();
+            String cardStack = gson.toJson(tisch.getCardStack());
+            String luckCardStack = gson.toJson(tisch.getLuckStack());
+            String field = gson.toJson(tisch.getField());
+
+            //set information in statement
+            stm.setString(1, cardStack);
+            stm.setString(2, luckCardStack);
+            stm.setString(3, field);
+            stm.setInt(4, runde);
+
+            //push changes to db
+            int affectedRows = stm.executeUpdate();
+
+            //check if something was created
+            if (affectedRows == 0){
+                return 0;
+            }
+
+            //handle generated id
+            ResultSet generatedKeys = stm.getGeneratedKeys();
+
+            int id = 0;
+            if(generatedKeys.next()){
+                id = generatedKeys.getInt(1);
+            }
+
+            return id;
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            return 0;
+        }
+
+    }
+
+    /**
+     * Function that creates a new runde
+     * @param action action that was made in that round
+     * @return 0 if something could not be created, id of runde if created
+     * */
+    private int handleRunde(Action action, int speicher){
+        try{
+            //handle the action for this round
+            int action_id = handleAction(action);
+
+            //check if action was created
+            if (action_id == 0){
+                return 0;
+            }
+
+            String request =  "INSERT INTO spieler (a_id, s_id) VALUES (?,?)";
+            PreparedStatement stm = con.prepareStatement(request, Statement.RETURN_GENERATED_KEYS);
+
+
+            //Set information in statement
+            stm.setInt(1, action_id);
+            stm.setInt(2, speicher);
+
+            //push to DB
+            int affectedRows = stm.executeUpdate();
+
+            //check if something was created
+            if(affectedRows == 0){
+                return 0;
+            }
+
+            //get id of created speicher
+            ResultSet generatedKeys = stm.getGeneratedKeys();
+
+            int id = 0;
+            if(generatedKeys.next()){
+                id = generatedKeys.getInt(1);
+            }
+
+            //return id if found
+            return id;
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * Function that creates an action
+     * @param action action to be created
+     * @return 0 if nothing was created, id of action otherwise
+     * */
+    private int handleAction(Action action){
+        try{
+            //create player for this action, runde = 0 default
+            int player_id = handleSpieler(action.getAktiverSpieler(), 0);
+
+            //check if player created
+            if(player_id == 0){
+                return 0;
+            }
+
+            //prepare request
+            String request = "INSERT INTO action (zug, luckCard, card, p_id) VALUES (?,?,?,?)";
+            PreparedStatement stm = con.prepareStatement(request, Statement.RETURN_GENERATED_KEYS);
+
+            //parse cards into JSON
+            Gson gson = new Gson();
+            String luckCard = gson.toJson(action.getGlueckskarte());
+            String card = gson.toJson(action.getKarte());
+
+            //set information
+            stm.setString(1, action.getZug().toString());
+            stm.setString(2, luckCard);
+            stm.setString(3, card);
+            stm.setInt(4, player_id);
+
+            //push to DB
+            int affectedRows = stm.executeUpdate();
+
+            //check if something was created
+            if(affectedRows == 0){
+                return 0;
+            }
+
+            //get id of created speicher
+            ResultSet generatedKeys = stm.getGeneratedKeys();
+
+            int id = 0;
+            if(generatedKeys.next()){
+                id = generatedKeys.getInt(1);
+            }
+
+            //return id if found
+            return id;
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * Overloaded function that creates an Action and links it to a Speicher
+     * @param action action to be created
+     * @param speicher speicher_id to be linked to this action
+     * @return 0 if nothing was created, id of action otherwise
+     * */
+    private int handleAction(Action action, int speicher){
+
+        try{
+            //create player for this action, runde = 0 default
+            int player_id = handleSpieler(action.getAktiverSpieler(), 0);
+
+            //check if player created
+            if(player_id == 0){
+                return 0;
+            }
+
+            //prepare request
+            String request = "INSERT INTO action (zug, luckCard, card, p_id, s_id) VALUES (?,?,?,?,?)";
+            PreparedStatement stm = con.prepareStatement(request, Statement.RETURN_GENERATED_KEYS);
+
+            //parse cards into JSON
+            Gson gson = new Gson();
+            String luckCard = gson.toJson(action.getGlueckskarte());
+            String card = gson.toJson(action.getKarte());
+
+            //set information
+            stm.setString(1, action.getZug().toString());
+            stm.setString(2, luckCard);
+            stm.setString(3, card);
+            stm.setInt(4, player_id);
+            stm.setInt(5, speicher);
+
+            //push to DB
+            int affectedRows = stm.executeUpdate();
+
+            //check if something was created
+            if(affectedRows == 0){
+                return 0;
+            }
+
+            //get id of created speicher
+            ResultSet generatedKeys = stm.getGeneratedKeys();
+
+            int id = 0;
+            if(generatedKeys.next()){
+                id = generatedKeys.getInt(1);
+            }
+
+            //return id if found
+            return id;
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * Function that creates a new Speicher
+     * @param date day of creation
+     * @return 0 if something went wrong, id of created Speicher otherwise
+     * */
+    private int handleSpeicher(Date date){
+        try{
+            String request = "INSERT INTO Speicher (date) VALUES (?)";
+            PreparedStatement stm = con.prepareStatement(request, Statement.RETURN_GENERATED_KEYS);
+
+            //set information in statement
+            stm.setDate(1, date); //TODO CHANGE TO CURRENT DATE
+
+            //push changes to db
+            int affectedRows = stm.executeUpdate();
+
+            //check if something was created
+            if(affectedRows == 0){
+                return 0;
+            }
+
+            //get id of created speicher
+            ResultSet generatedKeys = stm.getGeneratedKeys();
+
+            int id = 0;
+            if(generatedKeys.next()){
+                id = generatedKeys.getInt(1);
+            }
+
+            //return id if found
+            return id;
+
+        } catch (SQLException e){
+            System.out.println("Something went wrong while trying to save the Speicherstand");
+            e.printStackTrace();
+            return 0;
         }
     }
 }

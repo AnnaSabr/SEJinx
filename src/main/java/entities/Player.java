@@ -24,9 +24,9 @@ public class Player implements Cloneable{
     protected int score;
 
     //time between msgs and actions
+
     protected int sleepTime = 200;
     protected boolean manualNextMsg = true;
-
     public int getDiceCount() {
         return diceCount;
     }
@@ -46,14 +46,14 @@ public class Player implements Cloneable{
     protected int diceCount = 0;
 
     //needs to be reset after each round
+
     protected int rolls = 0;
     protected ArrayList<LuckCard> usedCards = new ArrayList<LuckCard>();
-
     protected boolean active = true;
 
     //used to roll the dice
-    Random rand = new Random();
 
+    Random rand = new Random();
 
 
     /**
@@ -154,6 +154,7 @@ public class Player implements Cloneable{
             return null;
         }
     }
+
     /**
      * Overloaded removeCard function to remove a card by reference
      * @param card card to be removed
@@ -168,7 +169,6 @@ public class Player implements Cloneable{
             return false;
         }
     }
-
     /**
      * Calculates the current score of the player
      * @return current score as int
@@ -250,6 +250,7 @@ public class Player implements Cloneable{
             //signal that player has chosen a card successfully
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             log("Choose a valid combination!");
             return false;
         }
@@ -890,10 +891,10 @@ public class Player implements Cloneable{
      *
      * @param msg
      */
+
     private void playerlog(String msg){
         System.out.println("[" + this.getName() + "] chose " + msg);
     }
-
     @Override
     public String toString(){
         StringBuilder ret = new StringBuilder("");
@@ -1281,5 +1282,25 @@ public class Player implements Cloneable{
             ycoord++;
         }
         return cards;
+    }
+
+    public int getSleepTime() {
+        return sleepTime;
+    }
+
+    public void setSleepTime(int sleepTime) {
+        this.sleepTime = sleepTime;
+    }
+
+    public boolean isManualNextMsg() {
+        return manualNextMsg;
+    }
+
+    public void setManualNextMsg(boolean manualNextMsg) {
+        this.manualNextMsg = manualNextMsg;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
