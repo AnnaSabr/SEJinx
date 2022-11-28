@@ -68,8 +68,9 @@ public class Player implements Cloneable{
         this.cards = new ArrayList<Card>();
         this.luckCards = new ArrayList<LuckCard>();
         if(database){
-            //TODO FIX THIS
-            this.loadHistoryFromDB();
+            if(!(this instanceof EasyKI) && !(this instanceof MediumAI) && !(this instanceof AIPLayer3)){
+                //this.loadHistoryFromDB();
+            }
         }else{
             this.loadHistoryFromFile();
         }
@@ -1283,13 +1284,12 @@ public class Player implements Cloneable{
             this.log("You do not have a history yet.");
             return;
         }
-        log(this.name+"'s histories:");
         int i=0;
         for(String line:this.history){
             i++;
             String[] a=line.split(",");
             String[] opponents=a[4].split("/");
-            this.log(i+". Score: "+a[1]+"\nplayed at: "+a[2]+"\nused Luckcards: "+a[3]+"\nPlayed against:");
+            this.log(i+". Played by:"+name+" Score: "+a[1]+"\nused Luckcards: "+a[2]+"\nplayed on: "+a[3]+"\nPlayed against:");
             int c=0;
             for(String lines:opponents){
                 c++;
@@ -1305,7 +1305,7 @@ public class Player implements Cloneable{
      */
     public void loadHistoryFromFile(){
         try{
-            BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/userProfiles.txt"));
 
             String line=br.readLine();
             while(!line.equals("histories")){
@@ -1313,7 +1313,7 @@ public class Player implements Cloneable{
             }
             while(line!=null){
                 String[] a=line.split(",");
-                if(a[0]==this.name){
+                if(a[0].equals(this.name)){
                     this.history.add(line);
                 }
                 line=br.readLine();
@@ -1336,10 +1336,9 @@ public class Player implements Cloneable{
         if(playerHistories!=null) {
 
             for (PlayerHistory ph : playerHistories) {
-                //TODO does ph.getPlayer.getScore actually get the past scores??
-                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate();
+                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate()+",";
                 for (Player p : ph.getEnemys()) {
-                    historyString = historyString + ph.getPlayer().name + ":" + ph.getPlayer().getScore() + "/";
+                    historyString = historyString + p.name + ":" + p.getScore() + "/";
                 }
                 this.history.add(historyString);
             }

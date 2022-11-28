@@ -28,6 +28,7 @@ public class AIPLayer3 extends Player{
             if(!DBConnector.getInstance().checkPlayer("AILevel3")){
                 DBConnector.getInstance().createPlayer(DBName,password);
             }
+            this.loadHistoryFromDB();
         }
     }
 
@@ -37,7 +38,7 @@ public class AIPLayer3 extends Player{
         if(playerHistories!=null) {
             for (PlayerHistory ph : playerHistories) {
                 //TODO does ph.getPlayer.getScore actually get the past scores??
-                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate();
+                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate()+",";
                 for (Player p : ph.getEnemys()) {
                     historyString = historyString + ph.getPlayer().name + ":" + ph.getPlayer().getScore() + "/";
                 }
@@ -777,7 +778,7 @@ public class AIPLayer3 extends Player{
      */
     public void loadHistoryFromFile(){
         try{
-            BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/userProfiles.txt"));
 
             String line=br.readLine();
             while(!line.equals("histories")){

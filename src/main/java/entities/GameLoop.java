@@ -267,6 +267,10 @@ public class GameLoop {
                 }
                 p.name=myName;
             }
+            for(Player p:this.players){
+                log("Histories of "+p.name);
+                p.showHistory();
+            }
         }
         log("Game Over!");
     }
@@ -395,7 +399,11 @@ public class GameLoop {
         //create as many players as needed
         for (int i = anzahlKI; i < players.length; i++) {
             String name=this.chooseProfile();
-            players[i] = new Player(name,sleepTime,manualNextMsg,db);
+            Player p=new Player(name,sleepTime,manualNextMsg,db);
+            if(db){
+                p.loadHistoryFromDB();
+            }
+            players[i] = p;
         }
         //set the first player
         currentPlayer = players[0];
@@ -583,7 +591,7 @@ public class GameLoop {
     public boolean matchPasswordToProfile(String name, String entry){
         for(String oneLine : this.profiles){
             String[] line=oneLine.split(",");
-            if(line[0]==name){
+            if(line[0].equals(name)){
                 if(this.validatePassword(line[1],entry)){
                     System.out.println("Correct!");
                     return true;
@@ -597,7 +605,7 @@ public class GameLoop {
     }
 
     /**
-     * chooses profile for player from db
+     * chooses profile for player from db or file
      * @return name of profile
      */
     public String chooseProfile(){
@@ -606,8 +614,11 @@ public class GameLoop {
         if(s.nextLine().equals("y")){
             this.log("Which profile do you want?");
             String name=s.nextLine().replaceAll(" ","");
+            if(name.equals("AILevel1")||name.equals("AILevel2")||name.equals("AILevel3")){
+                this.log("This is the AI's profile! You may not use it.");
+                return chooseProfile();
+            }
             if(db){
-                //TODO ban names of AI profiles, create AIprofiles, create access in initKI
                 //if player exists
                 if(this.connector.checkPlayer(name)){
                     //check if profile is taken
@@ -648,6 +659,8 @@ public class GameLoop {
                     if(this.accessProfileFromFile(name)){
                         return name;
                     }
+                    return this.chooseProfile();
+                }else{
                     return this.chooseProfile();
                 }
             }
@@ -694,7 +707,6 @@ public class GameLoop {
                 return name;
             }
         }
-        return null;
     }
 
     /**
@@ -709,7 +721,7 @@ public class GameLoop {
             if (name[0].equals(profileName)) {
                 this.log("Please enter the password!");
                 String pw = s.nextLine();
-                boolean access = this.matchPasswordToProfile(name[0], pw);
+                boolean access = this.matchPasswordToProfile(profileName, pw);
                 if (access) {
                     this.availableProfiles.add(line);
                     return true;
@@ -728,18 +740,18 @@ public class GameLoop {
      */
     public boolean findProfileFromFile(String newName){
         boolean found = false;
-        for (String line : this.availableProfiles) {
+        for (String line : this.profiles) {
             String[] name = line.split(",");
             if (name[0].equals(newName)) {
                 for (Player p : this.players) {
-                    if (p.equals(null)) {
+                    if (p == null) {
                         break;
                     } else if (p.name.equals(newName)) {
                         this.log("This profile is taken! Please choose a different profile!");
                         return false;
                     }
-                    found = true;
                 }
+                found = true;
             }
         }
         if (!found) {
@@ -862,7 +874,7 @@ public class GameLoop {
             history=player.name;
         }
         //profilename,score,amount of used luckcards, date, opponents and their scores
-        history=history+","+player.getScore()+","+this.getDate()+","+player.usedCards.size()+",";
+        history=history+","+player.getScore()+","+player.usedCards.size()+","+this.getDate()+",";
         for(int a=0; a<this.players.length;a++){
             String aiLevel="";
             if(players[a] instanceof EasyKI){
@@ -919,7 +931,7 @@ public class GameLoop {
 
         //get all previous histories from textfile
         try {
-            BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/userProfiles.txt"));
 
             String line = br.readLine();
 
@@ -978,7 +990,7 @@ public class GameLoop {
         }catch(IOException e) {
             throw new RuntimeException(e);
         }try {
-                PrintWriter pw = new PrintWriter("main/java/entities/userProfiles.txt");
+                PrintWriter pw = new PrintWriter("src/main/java/entities/userProfiles.txt");
 
 
             for(String a:content){

@@ -25,6 +25,7 @@ public class MediumAI extends Player{
             if(!DBConnector.getInstance().checkPlayer("AILevel2")){
                 DBConnector.getInstance().createPlayer(DBName,password);
             }
+            this.loadHistoryFromDB();
         }
     }
 
@@ -33,7 +34,7 @@ public class MediumAI extends Player{
         PlayerHistory[] playerHistories = connector.getPlayerHistory("AILevel2");
         if(playerHistories!=null) {
             for (PlayerHistory ph : playerHistories) {
-                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate();
+                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate()+",";
                 for (Player p : ph.getEnemys()) {
                     historyString = historyString + ph.getPlayer().name + ":" + ph.getPlayer().getScore() + "/";
                 }
@@ -246,7 +247,7 @@ public class MediumAI extends Player{
      */
     public void loadHistoryFromFile(){
         try{
-            BufferedReader br = new BufferedReader(new FileReader("main/java/entities/userProfiles.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/userProfiles.txt"));
 
             String line=br.readLine();
             while(!line.equals("histories")){
