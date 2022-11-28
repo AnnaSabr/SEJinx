@@ -2,8 +2,8 @@ package cards;
 
 /**
  * Each card can be one of 8 Colors
- * */
-public enum CardColor implements Cloneable{
+ */
+public enum CardColor implements Cloneable {
     RED(0),
     GREEN(1),
     BLUE(2),
@@ -15,11 +15,11 @@ public enum CardColor implements Cloneable{
 
     private final int value;
 
-    CardColor(final int newValue){
+    CardColor(final int newValue) {
         value = newValue;
     }
 
-    public int getValue(){
+    public int getValue() {
         return value;
     }
 

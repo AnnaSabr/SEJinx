@@ -2,8 +2,8 @@ package cards;
 
 /**
  * Class representing a card from the game JINX
- * */
-public class Card implements Cloneable{
+ */
+public class Card implements Cloneable {
 
     private final CardColor cardColor;
     // between 1-6
@@ -12,36 +12,36 @@ public class Card implements Cloneable{
 
     /**
      * Constructor for a new cards.Card
+     *
      * @param cC cards.CardColor enum
-     * @param v CardValue [1,6] int
-     * */
-    public Card(CardColor cC, int v){
+     * @param v  CardValue [1,6] int
+     */
+    public Card(CardColor cC, int v) {
         this.cardColor = cC;
         this.value = v;
-        this.typ=CardType.NORMAL;
+        this.typ = CardType.NORMAL;
     }
 
     @Override
-    public Card clone() throws CloneNotSupportedException{
-        return (Card)super.clone();
+    public Card clone() throws CloneNotSupportedException {
+        return (Card) super.clone();
     }
 
     /**
      * Gets card value
-     * */
-    public int getValue(){
+     */
+    public int getValue() {
         return this.value;
     }
 
     /**
      * Gets card color
-     * */
-    public CardColor getColor(){
+     */
+    public CardColor getColor() {
         return this.cardColor;
     }
 
     /**
-     *
      * @return Card Typ
      */
     public CardType getTyp() {
@@ -49,7 +49,7 @@ public class Card implements Cloneable{
     }
 
     @Override
-    public String toString (){
+    public String toString() {
         return "" + this.value + "/" + this.cardColor;
     }
 
