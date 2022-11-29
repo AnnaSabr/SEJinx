@@ -304,11 +304,11 @@ public class GameLoop {
             for(Player p:this.players){
                 String myName=p.getName();
                 if(p instanceof EasyKI){
-                    p.name="AILevel1";
+                    p.setName("AILevel1");
                 } else if (p instanceof MediumAI) {
-                    p.name="AILevel2";
+                    p.setName("AILevel2");
                 } else if (p instanceof AIPLayer3) {
-                    p.name="AILevel3";
+                    p.setName("AILevel3");
                 }
                 int b=0;
                 //temporarily change enemy AI's name for database

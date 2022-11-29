@@ -74,7 +74,7 @@ public class Main {
                 System.out.println("Not an option! Try again!");
             }
         }
-        GameLoop game = new GameLoop(config,manualSleepTime,nextMsgTime);
+        GameLoop game = new GameLoop(config,manualSleepTime,nextMsgTime, dataSource);
 
         game.run();
         boolean naechstes = true;
@@ -83,7 +83,7 @@ public class Main {
             Scanner sc = new Scanner(System.in);
             String eingabe = sc.nextLine();
             if (eingabe.equals("y")) {
-                GameLoop gameA = new GameLoop(config, manualSleepTime, nextMsgTime);
+                GameLoop gameA = new GameLoop(config, manualSleepTime, nextMsgTime, dataSource);
                 ZugHistorie.leeren();
                 gameA.run();
             } else if (eingabe.equals("n")) {

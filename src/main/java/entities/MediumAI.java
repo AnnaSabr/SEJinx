@@ -29,6 +29,10 @@ public class MediumAI extends Player{
         }
     }
 
+    public MediumAI(String name,int sleepTime, boolean manualNextMsg) {
+        super(name,sleepTime,manualNextMsg);
+    }
+
     public void loadHistoryFromDB(){
         DBConnector connector=DBConnector.getInstance();
         PlayerHistory[] playerHistories = connector.getPlayerHistory("AILevel2");

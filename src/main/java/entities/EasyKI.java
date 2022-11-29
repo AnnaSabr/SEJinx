@@ -26,6 +26,9 @@ public class EasyKI extends Player{
             this.loadHistoryFromDB();
         }
     }
+    public EasyKI (String name, int sleepTime, boolean manualNextMsg){
+        super(name,sleepTime,manualNextMsg);
+    }
 
     public void loadHistoryFromDB(){
         DBConnector connector=DBConnector.getInstance();

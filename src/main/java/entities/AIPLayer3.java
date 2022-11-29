@@ -32,6 +32,10 @@ public class AIPLayer3 extends Player{
         }
     }
 
+    public AIPLayer3(String name,int sleepTime, boolean manualNextMsg) {
+        super(name,sleepTime,manualNextMsg);
+    }
+
     public void loadHistoryFromDB(){
         DBConnector connector=DBConnector.getInstance();
         PlayerHistory[] playerHistories = connector.getPlayerHistory("AILevel3");

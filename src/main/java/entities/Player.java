@@ -23,16 +23,16 @@ import java.util.*;
 public class Player implements Cloneable{
 
 
-    protected final String name;
+    protected String name;
+
     protected ArrayList<Card> cards;
     protected ArrayList<LuckCard> luckCards;
     protected int score;
-
     //time between msgs and actions
+
     protected int sleepTime = 200;
     protected boolean manualNextMsg = true;
     ArrayList<String> history=new ArrayList<>();
-
     public int getDiceCount() {
         return diceCount;
     }
@@ -52,14 +52,14 @@ public class Player implements Cloneable{
     protected int diceCount = 0;
 
     //needs to be reset after each round
+
     protected int rolls = 0;
     protected ArrayList<LuckCard> usedCards = new ArrayList<LuckCard>();
-
     protected boolean active = true;
 
     //used to roll the dice
-    Random rand = new Random();
 
+    Random rand = new Random();
 
     /**
     * Overloaded Constructor to support sleeptimers
@@ -77,6 +77,21 @@ public class Player implements Cloneable{
         }else{
             this.loadHistoryFromFile();
         }
+    }
+    /**
+     * Overloaded Constructor
+     * */
+    public Player(String name, int sleepTime, boolean manualNextMsg){
+        this.name = name;
+        this.sleepTime = sleepTime;
+        this.manualNextMsg = manualNextMsg;
+        this.cards = new ArrayList<Card>();
+        this.luckCards = new ArrayList<LuckCard>();
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
