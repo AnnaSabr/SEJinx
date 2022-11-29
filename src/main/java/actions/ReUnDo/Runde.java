@@ -15,7 +15,7 @@ public class Runde {
     private ArrayList<Player> spieler;
     private Table tischStand;
 
-
+    private int spielerAnzahl=0;
     private Runde davor;
     private Runde dahinter;
 
@@ -73,5 +73,12 @@ public class Runde {
         return tischStand;
     }
 
-
+    /**
+     *
+     * @return Anzahl der Spieler in der Runde
+     */
+    public int getSpielerAnzahl() {
+        spielerAnzahl=spieler.size();
+        return spielerAnzahl;
+    }
 }

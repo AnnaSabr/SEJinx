@@ -1,6 +1,7 @@
 package entities;
 
 import java.io.*;
+import java.sql.Array;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -395,9 +396,21 @@ public class GameLoop {
         verlauf.rundeHinzufuegen(neu);
     }
 
+    /**
+     * Ueberschreibt alle Informationen des aktuellen Spiels, mit denen des Spielstandes, welcher fortgesetzt werden soll
+     * @param altesSpiel Spielstand von dem aus weiter gespielt werden soll
+     */
     public void laden(Speicher altesSpiel) {
         this.verlauf = speicherObjekt.zumLadenVerlauf();
+
+        int spielerCount= speicherObjekt.zumLadenRunden().getSpielerAnzahl();
+        this.players= new Player[spielerCount];
+        for (int i=0; i<spielerCount; i++){
+            this.players[i]=speicherObjekt.zumLadenRunden().getSpieler().get(i+1);
+        }
+
         manipulieren(speicherObjekt.zumLadenRunden());
+
         ZugHistorie.leeren();
         speicherObjekt.zugHistorieUeberschreiben();
     }

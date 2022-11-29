@@ -76,4 +76,5 @@ public class Speicher {
             ZugHistorie.actionHinzufuegen(verlaufAction.get(a));
         }
     }
+
 }
