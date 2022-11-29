@@ -426,7 +426,7 @@ public class Player implements Cloneable{
      * */
     public String chooseAction(Table table){
 
-        String[] actions = {"R","L","C","M","N","T","H"};
+        String[] actions = {"R","L","C","M","N","T","H","S","X"};
 
         while(true) {
             log("Your turn " + this.name + "! Eye count - " + this.diceCount);

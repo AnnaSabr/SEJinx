@@ -1,20 +1,27 @@
 package persistence;
 import actions.ReUnDo.Runde;
 import actions.Zuege.Action;
+import actions.Zuege.Zuege;
 import actions.speichern.Speicher;
+import cards.Card;
+import cards.LuckCard;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import entities.*;
 
+import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Stack;
 
 public class DBConnector {
 
     private static final DBConnector singleton = new DBConnector();
     private Connection con;
     private DBConnector(){
-        String url = "jdbc:mysql://localhost:3306/jinx?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+        String url = "jdbc:mysql://localhost:3306/jinx_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
         String user = "root";
         String pass = "passwort";
 
@@ -266,14 +273,19 @@ public class DBConnector {
      * */
     public boolean createSpeicher(Speicher speicher){
 
+        //TODO CREATE ROUND 0 in DB-SCRIPT TO MAKE SURE IT EXISTS
         //create the speicher reference
-        int speicher_id = handleSpeicher(Date.valueOf("22.02.2022"));
+        int speicher_id = handleSpeicher(Date.valueOf("2002-12-10")); //TODO CHANGE TO REAL DATE
+
+        if(speicher_id == 0){
+            return false;
+        }
 
         //create entry for every round in the speicher object
         for(Runde r: speicher.getVerlaufRunden()){
 
             //create the runde itself first
-            int runden_id = handleRunde(r.getAction(), speicher_id);
+            int runden_id = handleRunde(speicher_id);
 
             //make sure runde was created successfully
             if(runden_id == 0){
@@ -326,7 +338,7 @@ public class DBConnector {
 
         try{
             //handle player information
-            String request = "INSTER INTO spieler (name, cards, luckCards, score, sleeptime, " +
+            String request = "INSERT INTO spieler (name, cards, luckCards, score, sleeptime, " +
                     "manualNextMsg, diceCount, rolls, active, ai, r_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stm = con.prepareStatement(request, Statement.RETURN_GENERATED_KEYS);
 
@@ -357,8 +369,11 @@ public class DBConnector {
                 stm.setNull(10,Types.VARCHAR);
             }
 
-            stm.setInt(11, runde);
-
+            if(runde == 0) {
+                stm.setNull(11, Types.INTEGER);
+            }else{
+                stm.setInt(11, runde);
+            }
 
             //push changes to db
             int affectedRows = stm.executeUpdate();
@@ -431,32 +446,27 @@ public class DBConnector {
         }catch (SQLException e){
             e.printStackTrace();
             return 0;
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
         }
 
     }
 
     /**
      * Function that creates a new runde
-     * @param action action that was made in that round
+     * @param speicher speicher the runde should be connected to
      * @return 0 if something could not be created, id of runde if created
      * */
-    private int handleRunde(Action action, int speicher){
+    private int handleRunde(int speicher){
         try{
-            //handle the action for this round
-            int action_id = handleAction(action);
 
-            //check if action was created
-            if (action_id == 0){
-                return 0;
-            }
-
-            String request =  "INSERT INTO spieler (a_id, s_id) VALUES (?,?)";
+            String request =  "INSERT INTO runde (s_id) VALUES (?)";
             PreparedStatement stm = con.prepareStatement(request, Statement.RETURN_GENERATED_KEYS);
 
 
             //Set information in statement
-            stm.setInt(1, action_id);
-            stm.setInt(2, speicher);
+            stm.setInt(1, speicher);
 
             //push to DB
             int affectedRows = stm.executeUpdate();
@@ -478,60 +488,6 @@ public class DBConnector {
             return id;
 
         }catch (SQLException e){
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    /**
-     * Function that creates an action
-     * @param action action to be created
-     * @return 0 if nothing was created, id of action otherwise
-     * */
-    private int handleAction(Action action){
-        try{
-            //create player for this action, runde = 0 default
-            int player_id = handleSpieler(action.getAktiverSpieler(), 0);
-
-            //check if player created
-            if(player_id == 0){
-                return 0;
-            }
-
-            //prepare request
-            String request = "INSERT INTO action (zug, luckCard, card, p_id) VALUES (?,?,?,?)";
-            PreparedStatement stm = con.prepareStatement(request, Statement.RETURN_GENERATED_KEYS);
-
-            //parse cards into JSON
-            Gson gson = new Gson();
-            String luckCard = gson.toJson(action.getGlueckskarte());
-            String card = gson.toJson(action.getKarte());
-
-            //set information
-            stm.setString(1, action.getZug().toString());
-            stm.setString(2, luckCard);
-            stm.setString(3, card);
-            stm.setInt(4, player_id);
-
-            //push to DB
-            int affectedRows = stm.executeUpdate();
-
-            //check if something was created
-            if(affectedRows == 0){
-                return 0;
-            }
-
-            //get id of created speicher
-            ResultSet generatedKeys = stm.getGeneratedKeys();
-
-            int id = 0;
-            if(generatedKeys.next()){
-                id = generatedKeys.getInt(1);
-            }
-
-            //return id if found
-            return id;
-        }catch (Exception e){
             e.printStackTrace();
             return 0;
         }
@@ -601,11 +557,11 @@ public class DBConnector {
      * */
     private int handleSpeicher(Date date){
         try{
-            String request = "INSERT INTO Speicher (date) VALUES (?)";
+            String request = "INSERT INTO speicher (created) VALUES (?)";
             PreparedStatement stm = con.prepareStatement(request, Statement.RETURN_GENERATED_KEYS);
 
             //set information in statement
-            stm.setDate(1, date); //TODO CHANGE TO CURRENT DATE
+            stm.setDate(1, date);
 
             //push changes to db
             int affectedRows = stm.executeUpdate();
@@ -632,4 +588,331 @@ public class DBConnector {
             return 0;
         }
     }
+
+    /**
+     * Function to load a speicher object from Storage
+     * @param speicher_id the id of the speicher object
+     * @return a fully constructed speicher object
+     * */
+    public Speicher getSpeicher(int speicher_id){
+        //Speicher object to be returned
+        Speicher newSpeicher = new Speicher();
+        try{
+            //only load something if the Speicher exists in DB
+            Statement stm = con.createStatement();
+            String request_speicher = "SELECT * FROM speicher WHERE id=" + speicher_id;
+            ResultSet rs = stm.executeQuery(request_speicher);
+
+            //check if an entry was found
+            if(!rs.isBeforeFirst()){
+                return null;
+            }
+
+            //get all rounds of this speicher
+            String request_rounds = "SELECT * FROM runde WHERE s_id=" + speicher_id;
+            rs = stm.executeQuery(request_rounds);
+
+            //check if an entry was found
+            if(!rs.isBeforeFirst()){
+                return null;
+            }
+
+            ArrayList<Runde> runden = new ArrayList<>();
+
+            //create all existing rounds
+            while(rs.next()){
+                //runde to be added when filled
+                Runde runde;
+
+                //look for table
+                Table table = loadTable(rs.getInt("id"));
+
+                //check if a table was found
+                if(table == null){
+                    return null;
+                }
+
+                //look for player
+                ArrayList<Player> players = loadPlayers(rs.getInt("id"));
+
+                //something failed
+                if(players == null){
+                    return null;
+                }
+
+                //create new runde with loaded information
+                runden.add(new Runde(players, table));
+            }
+
+            //load the action of this speicher
+            ArrayList<Action> actions = loadActions(speicher_id);
+
+            if(actions == null){
+                return null;
+            }
+
+            //setup new speicher object
+            newSpeicher.setVerlaufRunden(runden);
+            newSpeicher.setVerlaufAction(actions);
+            //return result
+            return newSpeicher;
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Function that returns a list of all available speicher-objects
+     * @return array of ids, null if something failed/nothing was found
+     * */
+    public Integer[] getSpeicherList(){
+        try{
+            //prepare statement
+            Statement stm = con.createStatement();
+            String request = "SELECT id FROM speicher";
+            ResultSet rs = stm.executeQuery(request);
+
+            //check if something was found
+            if(!rs.isBeforeFirst()){
+                return null;
+            }
+            ArrayList<Integer> speicher = new ArrayList<>();
+            while(rs.next()){
+                speicher.add(rs.getInt("id"));
+            }
+            return speicher.toArray(new Integer[]{});
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+    /**
+     * Function to load actions of a speicher
+     * @param s_id id of the speicher referring to
+     * @return ArrayList of actions, null if failed
+     * */
+    private ArrayList<Action> loadActions(int s_id){
+        try{
+            //get all actions performed during this speicher
+            Statement stm = con.createStatement();
+            String request_actions = "SELECT * FROM action WHERE s_id=" + s_id;
+            ResultSet rs = stm.executeQuery(request_actions);
+
+            //check if an entry was found
+            if(!rs.isBeforeFirst()){
+                return null;
+            }
+
+            ArrayList<Action> actions = new ArrayList<>();
+            Gson gson = new Gson();
+
+            while(rs.next()){
+                Action action = null;
+
+                String zug_s = rs.getString("zug");
+                Zuege zug = null;
+                switch (zug_s){
+                    case "SKIPPED" -> zug = Zuege.SKIPPED;
+                    case "GOTCARDFROMTABLE" -> zug = Zuege.GOTCARDFROMTABLE;
+                    case "USEDLUCKYCARD" -> zug = Zuege.USEDLUCKYCARD;
+                    case "DROPPEDCARD" -> zug = Zuege.DROPPEDCARD;
+                    case "GOTLUCKYCARD" -> zug = Zuege.GOTLUCKYCARD;
+                    case "MANIPULATION" -> zug = Zuege.MANIPULATION;
+                }
+
+                LuckCard luckCard = gson.fromJson(rs.getString("luckCard"),LuckCard.class);
+                Card card = gson.fromJson(rs.getString("card"), Card.class);
+
+                //get the player who performed this action
+                Player player = loadPlayer(rs.getInt("p_id"));
+
+                if(luckCard == null && card != null){
+                    action = new Action(zug, card, player);
+                }else if(card == null && luckCard !=null){
+                    action = new Action(zug, luckCard, player);
+                }
+
+                actions.add(action);
+            }
+            return actions;
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Function to load a single player for an action
+     * @param p_id player id
+     * @return Player object, null if not found
+     * */
+    private Player loadPlayer(int p_id){
+        try {
+            Statement stm = con.createStatement();
+            String request = "SELECT * FROM spieler WHERE id=" + p_id;
+            ResultSet rs = stm.executeQuery(request);
+
+            //check if something was found
+            if (!rs.isBeforeFirst()) {
+                return null;
+            }
+
+            //Gson configs
+            Gson gson = new Gson();
+            Type cardToken = new TypeToken<ArrayList<Card>>(){}.getType();
+            Type luckToken = new TypeToken<ArrayList<LuckCard>>(){}.getType();
+
+            Player p = null;
+            while(rs.next()){
+                String name = rs.getString("name");
+                ArrayList<Card> cards = gson.fromJson(rs.getString("cards"),cardToken);
+                ArrayList<LuckCard> luckCards = gson.fromJson(rs.getString("luckCards"), luckToken);
+                int score = rs.getInt("score");
+                int sleeptime = rs.getInt("sleeptime");
+                boolean manualNextMsg = rs.getBoolean("manualNextMsg");
+                int diceCount = rs.getInt("diceCount");
+                int rolls = rs.getInt("rolls");
+                boolean active = rs.getBoolean("active");
+                String ai = rs.getString("ai");
+
+                //create the type of player as saved
+                if(ai != null){
+                    p = switch (ai) {
+                        case "EasyKI" -> new EasyKI(name, sleeptime, manualNextMsg);
+                        case "MediumKI" -> new MediumAI(name, sleeptime, manualNextMsg);
+                        case "AIPLayer3" -> new AIPLayer3(name, sleeptime, manualNextMsg);
+                        default -> new Player(name, sleeptime, manualNextMsg);
+                    };
+                }else{
+                    p = new Player(name, sleeptime, manualNextMsg);
+                }
+
+                //set all attributes
+                p.setCards(cards);
+                p.setLuckCards(luckCards);
+                p.setScore(score);
+                p.setDiceCount(diceCount);
+                p.setRolls(rolls);
+                if(active){
+                    p.setActive();
+                }
+            }
+            //return created player
+            return p;
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+    /**
+     * Function to load all players of a round
+     * @param r_id id of the round the players are referring to
+     * @return null if failed, ArrayList of Players otherwise
+     * */
+    private ArrayList<Player> loadPlayers(int r_id){
+            try{
+                Statement stm = con.createStatement();
+                String request = "SELECT * FROM spieler WHERE r_id=" + r_id;
+                ResultSet rs = stm.executeQuery(request);
+
+                //check if something was found
+                if(!rs.isBeforeFirst()){
+                    return null;
+                }
+
+                //Gson configs
+                Gson gson = new Gson();
+                Type cardToken = new TypeToken<ArrayList<Card>>(){}.getType();
+                Type luckToken = new TypeToken<ArrayList<LuckCard>>(){}.getType();
+
+                ArrayList<Player> players = new ArrayList<>();
+                while(rs.next()){
+                    Player p;
+                    String name = rs.getString("name");
+                    ArrayList<Card> cards = gson.fromJson(rs.getString("cards"),cardToken);
+                    ArrayList<LuckCard> luckCards = gson.fromJson(rs.getString("luckCards"), luckToken);
+                    int score = rs.getInt("score");
+                    int sleeptime = rs.getInt("sleeptime");
+                    boolean manualNextMsg = rs.getBoolean("manualNextMsg");
+                    int diceCount = rs.getInt("diceCount");
+                    int rolls = rs.getInt("rolls");
+                    boolean active = rs.getBoolean("active");
+                    String ai = rs.getString("ai");
+
+                    //create the type of player as saved
+                    if(ai != null){
+                        p = switch (ai) {
+                            case "EasyKI" -> new EasyKI(name, sleeptime, manualNextMsg);
+                            case "MediumKI" -> new MediumAI(name, sleeptime, manualNextMsg);
+                            case "AIPLayer3" -> new AIPLayer3(name, sleeptime, manualNextMsg);
+                            default -> new Player(name, sleeptime, manualNextMsg);
+                        };
+                    }else{
+                        p = new Player(name, sleeptime, manualNextMsg);
+                    }
+
+                    //set all attributes
+                    p.setCards(cards);
+                    p.setLuckCards(luckCards);
+                    p.setScore(score);
+                    p.setDiceCount(diceCount);
+                    p.setRolls(rolls);
+                    if(active){
+                        p.setActive();
+                    }
+
+                    //add to result set
+                    players.add(p);
+                }
+
+                return players;
+            }catch (SQLException e){
+                e.printStackTrace();
+                return null;
+            }
+    }
+
+    /**
+     * Function to load a table from the DB
+     * @param r_id id of the round the table is referring to
+     * @return Table-Object, null if something failed
+     * */
+    private Table loadTable(int r_id){
+        try{
+            //load the table belonging to that round
+            Statement stm = con.createStatement();
+            String request = "SELECT * FROM tisch WHERE r_id=" + r_id;
+            ResultSet rs = stm.executeQuery(request);
+
+            if(!rs.isBeforeFirst()){
+                return null;
+            }
+
+            //Gson configs
+            Gson gson = new Gson();
+            Type cardToken = new TypeToken<Stack<Card>>(){}.getType();
+            Type luckToken = new TypeToken<Stack<LuckCard>>(){}.getType();
+
+            //table to be returned
+            Table table = null;
+            while(rs.next()){
+                Stack<Card> cardStack = gson.fromJson(rs.getString("cardStack"), cardToken);
+                Stack<LuckCard> luckCards = gson.fromJson(rs.getString("luckCardStack"), luckToken);
+                Card[][] field = gson.fromJson(rs.getString("field"), Card[][].class);
+
+                table = new Table(false);
+                table.setCardStack(cardStack);
+                table.setLuckStack(luckCards);
+                table.setField(field);
+            }
+
+            return table;
+        }catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

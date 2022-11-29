@@ -49,8 +49,7 @@ public class Speicher {
      */
     public Runde zumLadenRunden() {
         int size = verlaufRunden.size();
-        Runde letzteRunde = verlaufRunden.get(size);
-        return letzteRunde;
+        return verlaufRunden.get(size - 1);
     }
 
 
@@ -62,7 +61,7 @@ public class Speicher {
     public Verlauf zumLadenVerlauf() {
         Verlauf verlaufsKopie = new Verlauf();
         int size = verlaufRunden.size();
-        for (int a = 1; a <= size; a++) {
+        for (int a = 0; a < size; a++) {
             verlaufsKopie.rundeHinzufuegen(verlaufRunden.get(a));
         }
         return verlaufsKopie;
@@ -73,7 +72,7 @@ public class Speicher {
      */
     public void zugHistorieUeberschreiben() {
         int size = verlaufAction.size();
-        for (int a = 1; a <= size; a++) {
+        for (int a = 0; a < size; a++) {
             ZugHistorie.actionHinzufuegen(verlaufAction.get(a));
         }
     }

@@ -186,11 +186,11 @@ public class Verlauf {
     public ArrayList<Runde> zumSpeichern() {
         ArrayList<Runde> zugVerlauf = new ArrayList<>();
         Runde start = head;
+        start = start.getDahinter();
         while (!start.equals(tail)) {
             zugVerlauf.add(start);
             start = start.getDahinter();
         }
-        zugVerlauf.add(tail);
         return zugVerlauf;
     }
 }

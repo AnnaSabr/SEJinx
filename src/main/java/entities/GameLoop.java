@@ -62,6 +62,9 @@ public class GameLoop {
     public void run() {
         //init all required fields for the first time
         init();
+
+        currentPlayer = players[0];
+
         //start the game loop
         this.showHighscore();
         this.saveHighscores();
@@ -195,18 +198,43 @@ public class GameLoop {
                         case "A" -> currentPlayer.getHelp(this.table);
                         case "Z" -> showActions();
                         case "S" -> {
-                            //TODO: Bezug zur Datenbank
-                            speicherObjekt.setVerlaufAction(ZugHistorie.zumSpeichern());
-                            speicherObjekt.setVerlaufRunden(verlauf.zumSpeichern());
+                                try {
+                                    speicherObjekt.setVerlaufAction(ZugHistorie.zumSpeichern());
+                                    speicherObjekt.setVerlaufRunden(verlauf.zumSpeichern());
+                                    DBConnector dbConnector = DBConnector.getInstance();
 
+                                    boolean saved = dbConnector.createSpeicher(speicherObjekt);
+
+                                    if(saved){
+                                        log("Your game was saved, you can load it any time!");
+                                    }else{
+                                        log("Saving failed - Sorry!");
+                                    }
+                                }catch (Exception e){
+                                    log("Saving failed - You will need to make a move first!");
+                                }
+                        }
+                        case "X" ->{
+
+                            log("You can choose one of the following save states! Choose 0 to stop the selection");
                             DBConnector dbConnector = DBConnector.getInstance();
 
-                            boolean test = dbConnector.createSpeicher(speicherObjekt);
+                            Integer[] speicherObjekte = dbConnector.getSpeicherList();
 
-                            System.out.println(test);
+                            for(int i = 0; i < speicherObjekte.length; i++){
+                                log("Speicherstand " + speicherObjekte[i] + " - " + (i + 1));
+                            }
+
+                            int input = currentPlayer.getPlayerInputINT(0,speicherObjekte.length);
+
+                            if(input == 0){
+                                break;
+                            }
+
+                            speicherObjekt = dbConnector.getSpeicher(speicherObjekte[input - 1]);
+
+                            laden(speicherObjekt);
                         }
-                        case "X" ->//TODO: Bezug zur DatenBank
-                                laden(speicherObjekt);
                     }
                 }
                 //make sure current player always loops, only when round is active

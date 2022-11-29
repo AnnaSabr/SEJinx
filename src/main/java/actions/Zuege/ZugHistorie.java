@@ -43,16 +43,16 @@ public class ZugHistorie {
     public static ArrayList<Action> zumSpeichern() {
         ArrayList<Action> zugVerlauf = new ArrayList<>();
         Action start = head;
+        start = start.getDahinter();
         while (!start.equals(tail)) {
             zugVerlauf.add(start);
             start = start.getDahinter();
         }
-        zugVerlauf.add(tail);
         return zugVerlauf;
     }
 
     /**
-     * resetet die ZugHistorie, so das sie leer ist
+     * resetet die ZugHistorie, so dass sie leer ist
      */
     public static void leeren() {
         head.setDahinter(tail);
