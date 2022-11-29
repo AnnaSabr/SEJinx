@@ -221,10 +221,17 @@ public class GameLoop {
 
                             Integer[] speicherObjekte = dbConnector.getSpeicherList();
 
+                            //no speicherObjekte present
+                            if(speicherObjekte == null){
+                                log("You have no saved games!");
+                                break;
+                            }
+                            //present player with selection of save states
                             for(int i = 0; i < speicherObjekte.length; i++){
                                 log("Speicherstand " + speicherObjekte[i] + " - " + (i + 1));
                             }
 
+                            //let player choose a save state
                             int input = currentPlayer.getPlayerInputINT(0,speicherObjekte.length);
 
                             if(input == 0){
