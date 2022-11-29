@@ -219,7 +219,7 @@ public class DBConnector {
 
             //get all histories of player
             while(rs.next()){
-                Player p = new Player(rs.getString("player"),0,false);
+                Player p = new Player(rs.getString("player"),0,false,true);
                 p.setScore(rs.getInt("score"));
 
                 //create new player history
@@ -236,7 +236,7 @@ public class DBConnector {
                     ArrayList<Player> enemies = new ArrayList<>();
                     //add all found enemies
                     while (rs_enemy.next()){
-                        Player enemie = new Player(rs_enemy.getString("enemy"),0,false);
+                        Player enemie = new Player(rs_enemy.getString("enemy"),0,false,true);
                         //set their score accordingly
                         enemie.setScore(rs_enemy.getInt("scorce"));
                         enemies.add(enemie);

@@ -7,14 +7,20 @@ import cards.Card;
 import cards.CardColor;
 import cards.CardType;
 import cards.LuckCard;
+import persistence.DBConnector;
+import persistence.PlayerHistory;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.spec.ECField;
 import java.util.*;
 
 /**
  * Class representing a player
- */
-public class Player implements Cloneable {
+ * */
+public class Player implements Cloneable{
 
 
     protected final String name;
@@ -25,6 +31,7 @@ public class Player implements Cloneable {
     //time between msgs and actions
     protected int sleepTime = 200;
     protected boolean manualNextMsg = true;
+    ArrayList<String> history=new ArrayList<>();
 
     public int getDiceCount() {
         return diceCount;
@@ -55,16 +62,21 @@ public class Player implements Cloneable {
 
 
     /**
-     * Overloaded Constructor to support sleeptimers
-     */
-    public Player(String name, int sleepTime, boolean manualNextMsg) {
+    * Overloaded Constructor to support sleeptimers
+    * */
+    public Player(String name, int sleepTime, boolean manualNextMsg, boolean database){
         this.name = name;
         this.sleepTime = sleepTime;
         this.manualNextMsg = manualNextMsg;
         this.cards = new ArrayList<Card>();
         this.luckCards = new ArrayList<LuckCard>();
-
-
+        if(database){
+            if(!(this instanceof EasyKI) && !(this instanceof MediumAI) && !(this instanceof AIPLayer3)){
+                //this.loadHistoryFromDB();
+            }
+        }else{
+            this.loadHistoryFromFile();
+        }
     }
 
     /**
@@ -113,6 +125,10 @@ public class Player implements Cloneable {
     public void setLuckCards(ArrayList<LuckCard> luckyKarten) {
         this.luckCards = copyL(luckyKarten);
     }
+
+
+
+
 
 
     /**
@@ -455,7 +471,7 @@ public class Player implements Cloneable {
      */
     public String chooseAction(Table table) {
 
-        String[] actions = {"R", "L", "C", "M", "N", "T", "H","S","Z","X","A"};
+        String[] actions = {"R", "L", "C", "M", "N", "T", "H","S","Z","X","A","P"};
 
         while (true) {
             log("Your turn " + this.name + "! Eye count - " + this.diceCount);
@@ -473,7 +489,8 @@ public class Player implements Cloneable {
                     S - save the Game
                     Z - to show  moves
                     X - load other game
-                    A - get Help
+                    A - Give advise
+                    P - Show player's history
                     """);
 
             Scanner s = new Scanner(System.in);
@@ -1330,4 +1347,73 @@ public class Player implements Cloneable {
     public void setActive(boolean active) {
         this.active = active;
     }
+    /**
+     * shows player's history
+     */
+    public void showHistory(){
+        if(this.history.size()==0){
+            this.log("You do not have a history yet.");
+            return;
+        }
+        int i=0;
+        for(String line:this.history){
+            i++;
+            String[] a=line.split(",");
+            String[] opponents=a[4].split("/");
+            this.log(i+". Played by:"+name+" Score: "+a[1]+"\nused Luckcards: "+a[2]+"\nplayed on: "+a[3]+"\nPlayed against:");
+            int c=0;
+            for(String lines:opponents){
+                c++;
+                String[] b=lines.split(":");
+                System.out.println(c+": "+b[0]+" scored "+b[1]);
+            }
+        }
+        return;
+    }
+
+    /**
+     * adds previous histories of this player to arraylist history
+     */
+    public void loadHistoryFromFile(){
+        try{
+            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/userProfiles.txt"));
+
+            String line=br.readLine();
+            while(!line.equals("histories")){
+                line=br.readLine();
+            }
+            while(line!=null){
+                String[] a=line.split(",");
+                if(a[0].equals(this.name)){
+                    this.history.add(line);
+                }
+                line=br.readLine();
+            }
+
+        }catch (FileNotFoundException e){
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * loads player's histories from database
+     */
+    public void loadHistoryFromDB(){
+        //TODO fix, in extended classes as well!!!
+        DBConnector connector=DBConnector.getInstance();
+        PlayerHistory[] playerHistories = connector.getPlayerHistory(this.name);
+        if(playerHistories!=null) {
+
+            for (PlayerHistory ph : playerHistories) {
+                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate()+",";
+                for (Player p : ph.getEnemys()) {
+                    historyString = historyString + p.name + ":" + p.getScore() + "/";
+                }
+                this.history.add(historyString);
+            }
+        }
+    }
+
 }

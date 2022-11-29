@@ -2,29 +2,58 @@ package entities;
 
 import cards.Card;
 import cards.CardColor;
+import persistence.DBConnector;
+import persistence.PlayerHistory;
 
-public class EasyKI extends Player {
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class EasyKI extends Player{
     /**
      * class to define die first Level KI easy
-     *
      * @param name name of KI
      */
-    public EasyKI(String name, int sleepTime, boolean manualNextMsg) {
-        super(name, sleepTime, manualNextMsg);
+    public EasyKI (String name, int sleepTime, boolean manualNextMsg, boolean database){
+        super(name,sleepTime,manualNextMsg,database);
+        if(database){
+            String DBName="AILevel1";
+            String password="aipassword1";
+            if(!DBConnector.getInstance().checkPlayer("AILevel1")){
+                DBConnector.getInstance().createPlayer(DBName,password);
+            }
+            this.loadHistoryFromDB();
+        }
+    }
+
+    public void loadHistoryFromDB(){
+        DBConnector connector=DBConnector.getInstance();
+        PlayerHistory[] playerHistories = connector.getPlayerHistory("AILevel1");
+        if(playerHistories!=null) {
+            for (PlayerHistory ph : playerHistories) {
+                //TODO does ph.getPlayer.getScore actually get the past scores??
+                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate()+",";
+                for (Player p : ph.getEnemys()) {
+                    historyString = historyString + ph.getPlayer().name + ":" + ph.getPlayer().getScore() + "/";
+                }
+                this.history.add(historyString);
+            }
+        }
     }
 
     @Override
-    public String chooseAction(Table table) {
+    public String chooseAction(Table table){
         log("Your turn " + this.name + "! Eye count - " + this.diceCount);
         log(this.toString());
 
         //roll if not rolled yet
-        if (this.rolls == 0) {
+        if(this.rolls == 0){
             log(this.name + "[AI], i didnt roll the dice yet!");
             return "R";
         }
         //check if there is a card that can be picked, if not and rolls are available --> roll
-        if (cardAvailable(table) == null && this.rolls < 2) {
+        if(cardAvailable(table) == null && this.rolls < 2){
             log(this.name + "[AI], there is no card i want...I´ll roll again!");
             return "R";
         }
@@ -36,18 +65,17 @@ public class EasyKI extends Player {
     }
 
     /**
-     * checks if a card with the same number as dicecount is on the table
-     *
+     *  checks if a card with the same number as dicecount is on the table
      * @param table table and cards from this round
      * @return the card or null if not
      */
-    private Card cardAvailable(Table table) {
-        Card[][] karten = table.getField();
-        for (int a = 0; a < karten.length; a++) {
-            for (int b = 0; b < karten[0].length; b++) {
-                Card c = table.checkCard(a, b);
-                if (c != null) {
-                    if (c.getValue() == this.diceCount) {
+    private Card cardAvailable(Table table){
+        Card[][] karten= table.getField();
+        for (int a=0; a<karten.length; a++){
+            for (int b=0; b<karten[0].length; b++){
+                Card c= table.checkCard(a,b);
+                if (c!=null){
+                    if (c.getValue()==this.diceCount){
                         System.out.println(c.getValue());
                         return c;
                     }
@@ -59,9 +87,9 @@ public class EasyKI extends Player {
     }
 
     @Override
-    public boolean chooseCard(Table table) {
+    public boolean chooseCard(Table table){
         //check if the AI has to end its turn because it has no options to pick a card
-        if (checkEndRound(table)) {
+        if(checkEndRound(table)){
             log(this.name + "[AI], there is no card you could choose!");
             //set AI inactive to end its turn;
             this.active = false;
@@ -79,12 +107,12 @@ public class EasyKI extends Player {
     }
 
     @Override
-    public boolean selectHighCard() {
-        Card away = new Card(CardColor.BLUE, 0);
-        if (this.cards.size() != 0) {
-            for (Card c : this.cards) {
-                if (c.getValue() >= away.getValue()) {
-                    away = c;
+    public boolean selectHighCard(){
+        Card away= new Card(CardColor.BLUE,0);
+        if (this.cards.size()!=0){
+            for (Card c:this.cards){
+                if (c.getValue()>=away.getValue()){
+                    away=c;
                 }
             }
             this.cards.remove(away);
@@ -93,8 +121,34 @@ public class EasyKI extends Player {
     }
 
     @Override
-    public boolean drawLuckCard(Table table, Player[] players) {
+    public boolean drawLuckCard(Table table, Player[] players){
         log(this.name + "[AI], i would never waste points for a luck card!");
         return false;
+    }
+
+    /**
+     * adds previous histories of this player to arraylist history
+     */
+    public void loadHistoryFromFile(){
+        try{
+            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/userProfiles.txt"));
+
+            String line=br.readLine();
+            while(!line.equals("histories")){
+                line=br.readLine();
+            }
+            while(line!=null){
+                String[] a=line.split(",");
+                if(a[0].equals("AILevel1")){
+                    this.history.add(line);
+                }
+                line=br.readLine();
+            }
+
+        }catch (FileNotFoundException e){
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
