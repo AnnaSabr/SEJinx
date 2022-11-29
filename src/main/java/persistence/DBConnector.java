@@ -776,13 +776,13 @@ public class DBConnector {
                 //create the type of player as saved
                 if(ai != null){
                     p = switch (ai) {
-                        case "EasyKI" -> new EasyKI(name, sleeptime, manualNextMsg);
-                        case "MediumKI" -> new MediumAI(name, sleeptime, manualNextMsg);
-                        case "AIPLayer3" -> new AIPLayer3(name, sleeptime, manualNextMsg);
-                        default -> new Player(name, sleeptime, manualNextMsg);
+                        case "EasyKI" -> new EasyKI(name, sleeptime, manualNextMsg,true);
+                        case "MediumKI" -> new MediumAI(name, sleeptime, manualNextMsg,true);
+                        case "AIPLayer3" -> new AIPLayer3(name, sleeptime, manualNextMsg,true);
+                        default -> new Player(name, sleeptime, manualNextMsg,true);
                     };
                 }else{
-                    p = new Player(name, sleeptime, manualNextMsg);
+                    p = new Player(name, sleeptime, manualNextMsg,true);
                 }
 
                 //set all attributes
@@ -841,13 +841,13 @@ public class DBConnector {
                     //create the type of player as saved
                     if(ai != null){
                         p = switch (ai) {
-                            case "EasyKI" -> new EasyKI(name, sleeptime, manualNextMsg);
-                            case "MediumKI" -> new MediumAI(name, sleeptime, manualNextMsg);
-                            case "AIPLayer3" -> new AIPLayer3(name, sleeptime, manualNextMsg);
-                            default -> new Player(name, sleeptime, manualNextMsg);
+                            case "EasyKI" -> new EasyKI(name, sleeptime, manualNextMsg,true);
+                            case "MediumKI" -> new MediumAI(name, sleeptime, manualNextMsg,true);
+                            case "AIPLayer3" -> new AIPLayer3(name, sleeptime, manualNextMsg,true);
+                            default -> new Player(name, sleeptime, manualNextMsg,true);
                         };
                     }else{
-                        p = new Player(name, sleeptime, manualNextMsg);
+                        p = new Player(name, sleeptime, manualNextMsg,true);
                     }
 
                     //set all attributes

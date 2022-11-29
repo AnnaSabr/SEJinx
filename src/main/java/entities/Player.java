@@ -78,16 +78,7 @@ public class Player implements Cloneable{
             this.loadHistoryFromFile();
         }
     }
-    /**
-     * Overloaded Constructor
-     * */
-    public Player(String name, int sleepTime, boolean manualNextMsg){
-        this.name = name;
-        this.sleepTime = sleepTime;
-        this.manualNextMsg = manualNextMsg;
-        this.cards = new ArrayList<Card>();
-        this.luckCards = new ArrayList<LuckCard>();
-    }
+
 
 
     public void setName(String name) {

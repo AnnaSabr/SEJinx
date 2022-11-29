@@ -26,16 +26,12 @@ public class EasyKI extends Player{
             this.loadHistoryFromDB();
         }
     }
-    public EasyKI (String name, int sleepTime, boolean manualNextMsg){
-        super(name,sleepTime,manualNextMsg);
-    }
 
     public void loadHistoryFromDB(){
         DBConnector connector=DBConnector.getInstance();
         PlayerHistory[] playerHistories = connector.getPlayerHistory("AILevel1");
         if(playerHistories!=null) {
             for (PlayerHistory ph : playerHistories) {
-                //TODO does ph.getPlayer.getScore actually get the past scores??
                 String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate()+",";
                 for (Player p : ph.getEnemys()) {
                     historyString = historyString + ph.getPlayer().name + ":" + ph.getPlayer().getScore() + "/";

@@ -219,3 +219,17 @@ Für den Spielstand nutzen wir die Speicher-Klasse welche einen Speicherstand ei
 Speicherobjekt enthält sowohl den aktuellen Stand als auch vergangene Spielzüge um so den Verlauf der Spielzüge nachvollziehen zu
 können. Der DBConnector übernimmt sowohl das Speichern als auch das Laden des Speicher-Objekts. Dazu schaut er sich jedes Attribut
 des Speicher-Objekts an und speichert die Werte in den passenden Tabellen.
+
+#### Histories
+Die Histories können aus der Datenbank oder einer Textdatei geladen werden. Dafür braucht ein Spieler ein
+Profil. Histories werden in einer Instanzvariable des Spielers gespeichert und können während des
+Spiels angezeigt werden. Dabei werden Score, Glückskarten, Datum und Gegner gespeichert bzw. angezeigt.
+Am Ende einer Runde werden die Histories aller Spieler gespeichert. Um die Histories in der Datei
+zu speichern, werden Strings verwendet. Um sie in der Datenbank zu speichern, wird ein PlayerHistory
+Objekt erzeugt.
+
+#### Profile
+Spieler haben ein Profil mit Name und Passwort. Das Passwort wird sowohl in Datenbank als auch in der
+Textdatei nur verschlüsselt gespeichert. Die KIs haben die Profile AILevel1, AILevel2 und AILevel3.
+Diese Profile kann der Spieler nicht auswählen. Zu Beginn eines Spiels muss ein Spieler ein Profil
+auswählen oder erstellen.
