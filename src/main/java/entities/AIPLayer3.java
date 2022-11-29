@@ -37,7 +37,6 @@ public class AIPLayer3 extends Player{
         PlayerHistory[] playerHistories = connector.getPlayerHistory("AILevel3");
         if(playerHistories!=null) {
             for (PlayerHistory ph : playerHistories) {
-                //TODO does ph.getPlayer.getScore actually get the past scores??
                 String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate()+",";
                 for (Player p : ph.getEnemys()) {
                     historyString = historyString + ph.getPlayer().name + ":" + ph.getPlayer().getScore() + "/";

@@ -864,75 +864,7 @@ public class GameLoop {
         return true;
     }
 
-    /**
-     * choose a profile for the player from text-file
-     *
-     * @return name of the chosen profile
-     *///TODO delete when replaced
-    public String chooseProfileFromFile(){
-        Scanner s=new Scanner(System.in);
-        this.log("Would you like to choose a profile? y/n");
-        if(s.nextLine().equals("y")){
-            this.log("Which profile do you want?");
-            boolean found=false;
-            String newName=s.nextLine();
-            for(String line:this.availableProfiles){
-                String[] name=line.split(",");
-                if(name[0].equals(newName)){
-                    for(Player p:this.players){
-                        if(p.equals(null)){
-                            break;
-                        } else if (p.name.equals(newName)) {
-                            this.log("This profile is taken! Please choose a different profile!");
-                            return this.chooseProfileFromFile();
-                        }
-                        found=true;
-                    }
-                }
-            }
-            if(!found){
-                log("Profile not found!");
-                return this.chooseProfileFromFile();
-            }
-            for(String line:this.profiles){
-                String[] name=line.split(",");
-                if(name[0]==newName){
-                    this.log("Please enter the password!");
-                    String pw=s.nextLine();
-                    boolean access=this.matchPasswordToProfile(name[0],pw);
-                    if(access){
-                        this.availableProfiles.add(line);
-                        return name[0];
-                    }
-                }
-            }
-        }else{
-            String name="";
-            boolean a=true;
-            while(a){
-                a=false;
-                this.log("Please choose a name for your new profile!");
-                name = s.nextLine().replaceAll(" ", "");
-                for(String line:this.profiles){
-                    String[] strings=line.split(",");
-                    if(strings[0]==name){
-                        this.log("This already exists! Please choose a new name!");
-                        a=true;
-                        break;
-                    }
-                }
-            }
-            this.log("Please choose a password!");
-            String pw=s.nextLine();
-            this.profiles.add(name+","+this.calculatePassword(pw));
-            this.availableProfiles.add(name+","+this.calculatePassword(pw));
-            for(String p:profiles){
-                log(p);
-            }
-            return name;
-        }
-        return null;
-    }
+
 
     /**
      * calculates the password that will be saved in textfile

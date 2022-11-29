@@ -1407,7 +1407,6 @@ public class Player implements Cloneable{
      * loads player's histories from database
      */
     public void loadHistoryFromDB(){
-        //TODO fix, in extended classes as well!!!
         DBConnector connector=DBConnector.getInstance();
         PlayerHistory[] playerHistories = connector.getPlayerHistory(this.name);
         if(playerHistories!=null) {
