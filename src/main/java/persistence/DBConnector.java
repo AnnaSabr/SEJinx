@@ -27,12 +27,9 @@ public class DBConnector {
 
         try {
             con = DriverManager.getConnection(url, user, pass);
-            System.out.println("Database connection established");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
-        System.out.println("DB-Connector initialized");
     }
 
     public static DBConnector getInstance(){

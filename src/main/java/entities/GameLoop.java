@@ -216,7 +216,6 @@ public class GameLoop {
                         }
                         case "X" ->{
 
-                            log("You can choose one of the following save states! Choose 0 to stop the selection");
                             DBConnector dbConnector = DBConnector.getInstance();
 
                             Integer[] speicherObjekte = dbConnector.getSpeicherList();
@@ -226,6 +225,8 @@ public class GameLoop {
                                 log("You have no saved games!");
                                 break;
                             }
+
+                            log("You can choose one of the following save states! Choose 0 to stop the selection");
                             //present player with selection of save states
                             for(int i = 0; i < speicherObjekte.length; i++){
                                 log("Speicherstand " + speicherObjekte[i] + " - " + (i + 1));
