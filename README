@@ -165,10 +165,10 @@ wenn die Playermethoden funktional sind.
 ---
 # Änderungen zu Abgabe 3
 
-### Datenbank - MySQL mit JDBC-Connector
+### Datenbank - MySQL mit JDBC-Connector [ER-Diagramm in jinx_db.png]
 Mit den neuen Anforderungen ist es nötig geworden, eine relationale Datenbank zu verwenden um alle wichtigen Informationen über einen
 Spieler und den Spielverlauf zu speichern.
-Als Datenbank nutzen wir MySQL mit einem JDBC-Connector. Ein SQL-Script welches ein Schema sowie alle Tabellen und Constraints anlegt ist in jinx.sql zu finden.
+Als Datenbank nutzen wir MySQL mit einem JDBC-Connector. Ein SQL-Script welches ein Schema sowie alle Tabellen und Constraints anlegt ist in **jinx.sql** zu finden.
 Damit Jinx eine Verbindung zur Datenbank herstellen kann, müssen in DB-Connector die richtigen Zugangsdaten eingetragen werden. Standardmäßig
 sucht Jinx in **jdbc:mysql://localhost:3306/jinx** nach einem **root** User mit den Passwort **passwort**.
 Um CardStacks und das Kartenfeld sinnvoll speichern zu können nutzen wir GSON, welches diese Objekte in JSON serialisiert, wodurch
