@@ -21,7 +21,7 @@ public class DBConnector {
     private static final DBConnector singleton = new DBConnector();
     private Connection con;
     private DBConnector(){
-        String url = "jdbc:mysql://localhost:3306/jinx_test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+        String url = "jdbc:mysql://localhost:3306/jinx?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
         String user = "root";
         String pass = "passwort";
 

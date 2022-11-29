@@ -171,6 +171,11 @@ Spieler und den Spielverlauf zu speichern.
 Als Datenbank nutzen wir MySQL mit einem JDBC-Connector. Ein SQL-Script welches ein Schema sowie alle Tabellen und Constraints anlegt ist in jinx.sql zu finden.
 Damit Jinx eine Verbindung zur Datenbank herstellen kann, müssen in DB-Connector die richtigen Zugangsdaten eingetragen werden. Standardmäßig
 sucht Jinx in **jdbc:mysql://localhost:3306/jinx** nach einem **root** User mit den Passwort **passwort**.
+Um CardStacks und das Kartenfeld sinnvoll speichern zu können nutzen wir GSON, welches diese Objekte in JSON serialisiert, wodurch
+wir dann den JSON-String als Feld in der entsprechenden Tabelle speichern können. GSON übernimmt dann beim laden auch das zurück
+Serialisieren.
+Um alle neuen Bibliotheken zu laden und zu installieren, das Projekt mit Gradle bauen und dann ausführen, Gradle sollte dann
+alle benötigten Bibliotheken herunterladen.
 
 #### Schema
 Ein Spieler legt einen Account mit einem Passwort und einem Namen an. Der Name ist Primary Key der Tabelle Player, so kann
@@ -180,7 +185,27 @@ Zu einer Spielhistorie gehört der Tag an dem das Spiel stattgefunden hat, ein S
 der benutzten LuckCards in diesem Spiel. Außerdem wird ein Verweis auf die Gegner des Spielers in diesem Spiel festgehalten.
 Zu den Gegnern wird gespeichert, welchen Score sie hatten.
 
-//TODO Hier noch das Spielablaufschema erklären
+Um den aktuellen Spielablauf zu speicher und laden zu können haben wir die Tabellen action, spieler, speicher, tisch und runde
+erstellt. (Siehe jinx_db.png)
+Speicher - Stellt einen Speicherstand da und verbindet alle wichtigen Entities miteinander
+Besteht nur aus einer ID und dem Datum an dem der Speicherstand gespeichert wurde
+
+Runde - Ein Spiel kann aus mehreren gespielten Runden bestehen, dies soll auch persistiert werden
+Hat ebenfalls eine ID und einen Verweis auf den Speicherstand zu dem sie gehört
+
+Spieler - Nimmt am Spiel teil und muss mit seinem aktuellen Stand gespeichert werden
+Speichert alle wichtigen Felder eines Spielers. CardStacks werden als JSON gespeichert und mittels GSON serialisiert.
+Wenn der Spieler eine KI ist wird dies festgehalten, damit diese beim Laden auch wieder initialisiert werden kann.
+Hat einen Verweis auf eine Runde, da sich der Stand der Attribute jederzeit ändern kann.
+
+Tisch - Verändert sich mit jedem Zug und muss ebenfalls jeden Speicherstand berücksichtigen
+Auch beim Tisch werden die CardStacks mittels GSON serialisiert und als JSON-String in der Datenbank gepeichert.
+Der Tisch hat genauso wie der Spieler einen Verweis auf eine Runde, da sich auch hier die Attribute mit jedem Spielzug ändern
+können.
+
+Action - Zeigt den Verlauf der einzelnen Aktionen des Spielers
+Beinhaltet einen Zug sowie die Karte die an diesem Zug beteiligt war. Außerdem enthält die Aktion einen Verweis auf den
+Speicherstand, sowie die Runde in der sie ausgeführt wurde.
 
 #### Code - Datenbankzugriff
 Der Zugriff auf die Datenbank erfolgt über den DBConnector. Dieser ist als Singleton implementiert, um unnötig viele Verbindungen
@@ -190,3 +215,7 @@ dokumentiert.
 Um die PlayerHistory möglichst simple speichern zu können, haben wir eine PlayerHistory-Klasse implementiert, die alle wichtigen
 Daten für diese History zentral verwalten soll. So kann dieses Objekt einfach mit Informationen gefüllt werden und dann von
 jedem genutzt werden, der mit diesen Informationen arbeiten möchte.
+Für den Spielstand nutzen wir die Speicher-Klasse welche einen Speicherstand eines aktuellen Spiels repräsentiert. Ein
+Speicherobjekt enthält sowohl den aktuellen Stand als auch vergangene Spielzüge um so den Verlauf der Spielzüge nachvollziehen zu
+können. Der DBConnector übernimmt sowohl das Speichern als auch das Laden des Speicher-Objekts. Dazu schaut er sich jedes Attribut
+des Speicher-Objekts an und speichert die Werte in den passenden Tabellen.
