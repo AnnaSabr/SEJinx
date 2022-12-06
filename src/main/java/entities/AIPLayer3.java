@@ -776,25 +776,15 @@ public class AIPLayer3 extends Player{
      * adds previous histories of this player to arraylist history
      */
     public void loadHistoryFromFile(){
-        try{
-            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/userProfiles.txt"));
+        TextfileAdapter textfileAdapter=new TextfileAdapter();
+        ArrayList<String> historiesFromFile=textfileAdapter.getFileInput("src/main/java/entities/playerHistories.txt");
 
-            String line=br.readLine();
-            while(!line.equals("histories")){
-                line=br.readLine();
+        for(String entry:historiesFromFile){
+            String[] a=entry.split(",");
+            if(a[0].equals("AILevel3")){
+                this.history.add(entry);
             }
-            while(line!=null){
-                String[] a=line.split(",");
-                if(a[0].equals("AILevel3")){
-                    this.history.add(line);
-                }
-                line=br.readLine();
-            }
-
-        }catch (FileNotFoundException e){
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
+
     }
 }

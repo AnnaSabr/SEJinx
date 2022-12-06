@@ -1,0 +1,15 @@
+AILevel1,19,0,2022-11-29,x (AILevel2): 9 /bob: 0 /
+AILevel1,4,0,2022-11-29,b (AILevel1): 1 /c (AILevel1): 0 /anna: 0 /
+AILevel1,1,0,2022-11-29,a (AILevel1): 4 /c (AILevel1): 0 /anna: 0 /
+AILevel1,0,0,2022-11-29,a (AILevel1): 4 /b (AILevel1): 1 /anna: 0 /
+anna,0,0,2022-11-29,a (AILevel1): 4 /b (AILevel1): 1 /c (AILevel1): 0 /
+AILevel2,35,0,2022-12-07,jana (AILevel3): 40 /
+AILevel2,10,0,2022-12-07,jana (AILevel3): 21 /
+AILevel2,9,0,2022-11-29,z (AILevel1): 19 /bob: 0 /
+AILevel2,7,0,2022-12-07,jana (AILevel3): 22 /
+AILevel2,6,0,2022-12-07,jana (AILevel3): 20 /
+bob,0,0,2022-11-29,z (AILevel1): 19 /x (AILevel2): 9 /
+AILevel3,40,0,2022-12-07,emma (AILevel2): 35 /
+AILevel3,22,1,2022-12-07,emma (AILevel2): 7 /
+AILevel3,21,0,2022-12-07,emma (AILevel2): 10 /
+AILevel3,20,0,2022-12-07,emma (AILevel2): 6 /

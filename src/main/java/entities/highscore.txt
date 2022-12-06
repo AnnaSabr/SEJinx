@@ -1,7 +1,17 @@
+jana 40
+emma 35
+jana 22
+jana 21
+jana 20
 z 19
+emma 10
 x 9
+emma 7
+emma 6
 a 4
 b 1
 c 0
 anna 0
 bob 0
+e 0
+m 0

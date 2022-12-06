@@ -50,6 +50,7 @@ public class GameLoop {
     ArrayList<String> availableProfiles=new ArrayList<>();
     boolean db;
     DBConnector connector=DBConnector.getInstance();
+    TextfileAdapter textfileAdapter=new TextfileAdapter();
 
     public GameLoop(boolean rff, boolean manualNextMsg, int sleepTime, boolean dataFromDB) {
         this.rff=rff;
@@ -521,21 +522,7 @@ public class GameLoop {
      * loads data from Highscore file
      */
     private void getHighscore() {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/highscore.txt"));
-
-            String line = br.readLine();
-
-            while (line != null) {
-                this.highscores.add(line);
-                line = br.readLine();
-            }
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.highscores=this.textfileAdapter.getFileInput("src/main/java/entities/highscore.txt");
     }
 
 
@@ -555,16 +542,7 @@ public class GameLoop {
      * saves high scores in textfile
      */
     private void saveHighscores() {
-        try {
-            PrintWriter pw = new PrintWriter("src/main/java/entities/highscore.txt");
-
-            for (String entry : this.highscores) {
-                pw.println(entry);
-                pw.flush();
-            }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        this.textfileAdapter.saveToFile("src/main/java/entities/highscore.txt",this.highscores);
     }
 
     /**
@@ -673,19 +651,7 @@ public class GameLoop {
      *  loads existing profiles from textfile
      */
     public void getProfilesFromFile(){
-        try{
-            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/userProfiles.txt"));
-
-            String line = br.readLine();
-            while (line != null && !line.equals("histories")) {
-                this.profiles.add(line);
-                line = br.readLine();
-            }
-
-        }catch (IOException e){
-            System.out.println("Something is wrong with the file");
-        }
-
+        this.profiles=this.textfileAdapter.getFileInput("src/main/java/entities/userProfiles.txt");
     }
 
     /**
@@ -942,7 +908,7 @@ public class GameLoop {
      *  saves all new and previous histories to textfile
      */
     public void savingHistoryToFile(){
-        ArrayList<String> prevHistory = new ArrayList<>();
+        //saves new histories and shows them
         String[] histories=new String[this.players.length];
         //getting all current player histories
         for(int a=0; a<this.players.length;a++){
@@ -950,8 +916,9 @@ public class GameLoop {
             //iterate player's histories to show them in order
             boolean added=false;
             for(int b=0;b<players[a].history.size();b++){
-                String[] lHistory=players[a].history.get(b).split(",");
-                if(Integer.parseInt(lHistory[1])<players[a].getScore()){
+                String[] playersPrevHistory=players[a].history.get(b).split(",");
+                if(Integer.parseInt(playersPrevHistory[1])<players[a].getScore()){
+                    //add history of current round, in order by score
                     players[a].history.add(b,histories[a]);
                     added=true;
                     break;
@@ -962,84 +929,55 @@ public class GameLoop {
             }
             players[a].showHistory();
         }
-        ArrayList<String> content= new ArrayList<>();
+        //get profiles and histories
+        ArrayList<String> content= this.textfileAdapter.getFileInput("src/main/java/entities/userProfiles.txt");
+        ArrayList<String> prevHistory=this.textfileAdapter.getFileInput("src/main/java/entities/playerHistories.txt");
 
-        //get all previous histories from textfile
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/userProfiles.txt"));
-
-            String line = br.readLine();
-
-            while (!line.equals("histories")) {
-                content.add(line);
-                line = br.readLine();
-            }
-            content.add(line);
-            line = br.readLine();
-            while (line != null) {
-                prevHistory.add(line);
-                line = br.readLine();
-            }
-            //add all histories of this round
-            for (String h : histories) {
-                boolean profileFound = false;
-                for (int a = 0; a < prevHistory.size(); a++) {
-                    //history of this round
-                    String[] s = h.split(",");
-                    //Arraylist
-                    String[] b = prevHistory.get(a).split(",");
-                    //compare profile names
-                    if (b[0].equals(s[0])) {
-                        //if old score is lower than new score
-                        if (Integer.parseInt(b[1]) < Integer.parseInt(s[1])) {
-                            prevHistory.add(a, h);
-                            break;
-                            //if profile was found but history has not been added yet
-                        } else {
-                            profileFound = true;
-                        }
-                        //if profile was found, but value has not been added
-                    } else if (profileFound) {
+        //add all histories of this round
+        for (String h : histories) {
+            boolean profileFound = false;
+            for (int a = 0; a < prevHistory.size(); a++) {
+                //history of this round
+                String[] s = h.split(",");
+                //Arraylist
+                String[] b = prevHistory.get(a).split(",");
+                //compare profile names
+                if (b[0].equals(s[0])) {
+                    //if old score is lower than new score
+                    if (Integer.parseInt(b[1]) < Integer.parseInt(s[1])) {
                         prevHistory.add(a, h);
                         break;
+                        //if profile was found but history has not been added yet
+                    } else {
+                        profileFound = true;
                     }
-                }
-                //if no spot in Arraylist was found, add history to the end
-                if (!prevHistory.contains(h)) {
-                    prevHistory.add(h);
-                }
-            }
-            for(String prof:this.profiles){
-                boolean saved=false;
-                String[] a=prof.split(",");
-                for(String oldData:content){
-                    if(a[0].equals(oldData.split(",")[0])){
-                        saved=true;
-                    }
-                }
-                //profile needs to be added to file
-                if(!saved){
-                    content.add(content.size()-1,prof);
+                    //if profile was found, but value has not been added
+                } else if (profileFound) {
+                    prevHistory.add(a, h);
+                    break;
                 }
             }
-        }catch(IOException e) {
-            throw new RuntimeException(e);
-        }try {
-                PrintWriter pw = new PrintWriter("src/main/java/entities/userProfiles.txt");
-
-
-            for(String a:content){
-                pw.println(a);
-                pw.flush();
+            //if no spot in Arraylist was found, add history to the end
+            if (!prevHistory.contains(h)) {
+                prevHistory.add(h);
             }
-            for(String a:prevHistory){
-                pw.println(a);
-                pw.flush();
-            }
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         }
+        for(String prof:this.profiles){
+            boolean saved=false;
+            String[] a=prof.split(",");
+            for(String oldData:content){
+                if(a[0].equals(oldData.split(",")[0])){
+                    saved=true;
+                }
+            }
+            //profile needs to be added to file
+            if(!saved){
+                content.add(content.size()-1,prof);
+            }
+        }
+        textfileAdapter.saveToFile("src/main/java/entities/userProfiles.txt",content);
+        textfileAdapter.saveToFile("src/main/java/entities/playerHistories.txt",prevHistory);
+
     }
 
 }

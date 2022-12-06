@@ -9,10 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Class representing a playing field containing 2 stacks of cards and the playing field
@@ -230,31 +227,20 @@ public class Table implements Cloneable {
      * get card order for both stacks from config file
      */
     public void readConfig() {
-        String[] cardOrder;
+        CSVFileAdapter csvFileAdapter=new CSVFileAdapter();
+        ArrayList<String> input=csvFileAdapter.getFileInput("src/main/java/entities/configfile.csv");
 
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/configfile.csv"));
+        String[] cardOrder=input.get(0).split(",");
+        this.cardStack.clear();
+        for (String cardName : cardOrder) {
+            String[] cardInfo = cardName.split(" ");
+            this.cardStack.add(new Card(CardColor.valueOf(cardInfo[0]), Integer.valueOf(cardInfo[1])));
+        }
 
-            String order = br.readLine();
-            cardOrder = order.split(",");
-            this.cardStack.clear();
-            for (String cardName : cardOrder) {
-                String[] cardInfo = new String[2];
-                cardInfo = cardName.split(" ");
-                this.cardStack.add(new Card(CardColor.valueOf(cardInfo[0]), Integer.valueOf(cardInfo[1])));
-            }
-            order = br.readLine();
-            cardOrder = order.split(",");
-            this.luckStack.clear();
-            for (String cardName : cardOrder) {
-                this.luckStack.add(new LuckCard(CardType.valueOf(cardName)));
-            }
-
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        cardOrder = input.get(1).split(",");
+        this.luckStack.clear();
+        for (String cardName : cardOrder) {
+            this.luckStack.add(new LuckCard(CardType.valueOf(cardName)));
         }
     }
 

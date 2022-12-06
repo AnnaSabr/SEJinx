@@ -1381,26 +1381,17 @@ public class Player implements Cloneable{
      * adds previous histories of this player to arraylist history
      */
     public void loadHistoryFromFile(){
-        try{
-            BufferedReader br = new BufferedReader(new FileReader("src/main/java/entities/userProfiles.txt"));
 
-            String line=br.readLine();
-            while(!line.equals("histories")){
-                line=br.readLine();
-            }
-            while(line!=null){
-                String[] a=line.split(",");
-                if(a[0].equals(this.name)){
-                    this.history.add(line);
-                }
-                line=br.readLine();
-            }
+        TextfileAdapter textfileAdapter=new TextfileAdapter();
+        ArrayList<String> historiesFromFile=textfileAdapter.getFileInput("src/main/java/entities/playerHistories.txt");
 
-        }catch (FileNotFoundException e){
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        for(String entry:historiesFromFile){
+            String[] a=entry.split(",");
+            if(a[0].equals(this.name)){
+                this.history.add(entry);
+            }
         }
+
     }
 
     /**
