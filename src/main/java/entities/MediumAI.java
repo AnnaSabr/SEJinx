@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class MediumAI extends Player{
+    private OutputConsole outCon;
     /**
      * Constructor for a new player
      *
@@ -27,6 +28,7 @@ public class MediumAI extends Player{
             }
             this.loadHistoryFromDB();
         }
+        this.outCon= new OutputConsole();
     }
 
 
@@ -54,28 +56,27 @@ public class MediumAI extends Player{
     @Override
     public String chooseAction(Table table){
 
-        log("Your turn " + this.name + "! Eye count - " + this.diceCount);
-        log(this.toString());
+        outCon.jinxMessage("Your turn " + this.name + "! Eye count - " + this.diceCount+"\n"+this.toString());
 
         //roll if not rolled yet
         if(this.rolls == 0){
-            log(this.name + "[AI], i didnt roll the dice yet!");
+            outCon.jinxMessage(this.name + "[AI], i didnt roll the dice yet!");
             return "R";
         }
 
         //roll again if diceCount is too low
         if(this.diceCount < 3 && this.rolls < 2){
-            log(this.name + "[AI], my diceCount is way to low!");
+            outCon.jinxMessage(this.name + "[AI], my diceCount is way to low!");
             return "R";
         }
 
         //check if there is a card that can be picked, if not and rolls are available --> roll
         if(getBestCard(table) == null && this.rolls < 2){
-            log(this.name + "[AI], there is no card i want...I´ll roll again!");
+            outCon.jinxMessage(this.name + "[AI], there is no card i want...I´ll roll again!");
             return "R";
         }
 
-        log(this.name + "[AI], i will choose a card now!");
+        outCon.jinxMessage(this.name + "[AI], i will choose a card now!");
         //nothing left to do, possibly end round
         return "C";
     }
@@ -92,7 +93,7 @@ public class MediumAI extends Player{
     public boolean chooseCard(Table table){
         //check if the AI has to end its turn because it has no options to pick a card
         if(checkEndRound(table)){
-            log(this.name + "[AI], there is no card you could choose!");
+            outCon.jinxMessage(this.name + "[AI], there is no card you could choose!");
             //set AI inactive to end its turn;
             this.active = false;
             return false;
@@ -116,11 +117,11 @@ public class MediumAI extends Player{
     @Override
     public boolean selectHighCard(){
 
-        log(this.name + "[AI], you finished the round! Choose a card to drop!");
+        outCon.jinxMessage(this.name + "[AI], you finished the round! Choose a card to drop!");
 
         //check if the AI is able to drop a card
         if(this.cards.size() == 0){
-            log(this.name + "[AI], i have no cards to drop after this round!");
+            outCon.jinxMessage(this.name + "[AI], i have no cards to drop after this round!");
             return false;
         }
 
@@ -144,7 +145,7 @@ public class MediumAI extends Player{
 
         //AI has only one card to drop
         if(maxCards.size() == 1){
-            log(this.name + "[AI], i only have one card to drop...");
+            outCon.jinxMessage(this.name + "[AI], i only have one card to drop...");
             this.cards.remove(maxCards.get(0));
             return true;
         }
@@ -189,7 +190,7 @@ public class MediumAI extends Player{
      * */
     @Override
     public boolean drawLuckCard(Table table, Player[] players){
-        log(this.name + "[AI], i would never waste points for a luck card!");
+        outCon.jinxMessage(this.name + "[AI], i would never waste points for a luck card!");
         return false;
     }
 

@@ -7,4 +7,6 @@ public interface MessageOutput {
    void jinxMessage(String text);
 
    void loggerMessage(String text);
+
+   void playerLog(String name,String text);
 }

@@ -16,4 +16,9 @@ public class OutputConsole implements MessageOutput{
     public void loggerMessage(String text) {
         System.out.println("INFO:\n"+text);
     }
+
+    @Override
+    public void playerLog(String name,String text) {
+        System.out.println(name+text);
+    }
 }
