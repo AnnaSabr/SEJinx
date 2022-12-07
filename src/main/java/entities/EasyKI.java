@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class EasyKI extends Player{
+
+    private OutputConsole outCon;
     /**
      * class to define die first Level KI easy
      * @param name name of KI
@@ -26,6 +28,7 @@ public class EasyKI extends Player{
             }
             this.loadHistoryFromDB();
         }
+        this.outCon=new OutputConsole();
     }
 
     public void loadHistoryFromDB(){
@@ -44,21 +47,21 @@ public class EasyKI extends Player{
 
     @Override
     public String chooseAction(Table table){
-        log("Your turn " + this.name + "! Eye count - " + this.diceCount);
-        log(this.toString());
+        outCon.jinxMessage("Your turn " + this.name + "! Eye count - " + this.diceCount);
+        outCon.jinxMessage(this.toString());
 
         //roll if not rolled yet
         if(this.rolls == 0){
-            log(this.name + "[AI], i didnt roll the dice yet!");
+            outCon.jinxMessage(this.name + "[AI], i didnt roll the dice yet!");
             return "R";
         }
         //check if there is a card that can be picked, if not and rolls are available --> roll
         if(cardAvailable(table) == null && this.rolls < 2){
-            log(this.name + "[AI], there is no card i want...I´ll roll again!");
+            outCon.jinxMessage(this.name + "[AI], there is no card i want...I´ll roll again!");
             return "R";
         }
 
-        log(this.name + "[AI], i will choose a card now!");
+        outCon.jinxMessage(this.name + "[AI], i will choose a card now!");
         //nothing left to do, possibly end round
         return "C";
 
@@ -76,13 +79,13 @@ public class EasyKI extends Player{
                 Card c= table.checkCard(a,b);
                 if (c!=null){
                     if (c.getValue()==this.diceCount){
-                        System.out.println(c.getValue());
+                        outCon.simpleMessage(c.getValue()+"");
                         return c;
                     }
                 }
             }
         }
-        System.out.println("Chooses the first Card wich was compatible.");
+        outCon.simpleMessage("Chooses the first Card wich was compatible.");
         return null;
     }
 
@@ -90,7 +93,7 @@ public class EasyKI extends Player{
     public boolean chooseCard(Table table){
         //check if the AI has to end its turn because it has no options to pick a card
         if(checkEndRound(table)){
-            log(this.name + "[AI], there is no card you could choose!");
+           outCon.jinxMessage(this.name + "[AI], there is no card you could choose!");
             //set AI inactive to end its turn;
             this.active = false;
             return false;
@@ -122,7 +125,7 @@ public class EasyKI extends Player{
 
     @Override
     public boolean drawLuckCard(Table table, Player[] players){
-        log(this.name + "[AI], i would never waste points for a luck card!");
+        outCon.jinxMessage(this.name + "[AI], i would never waste points for a luck card!");
         return false;
     }
 

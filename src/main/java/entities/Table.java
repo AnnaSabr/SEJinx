@@ -132,8 +132,8 @@ public class Table implements Cloneable {
             //remove card from field
             this.field[x][y] = null;
 
-        } catch (Exception e) {
-            System.out.println("");
+        } catch (Exception ignored) {
+
         }
 
         //return selected Card
@@ -179,8 +179,7 @@ public class Table implements Cloneable {
         //find card at coords (x,y) on field
         try {
             selected = this.field[x][y];
-        } catch (Exception e) {
-            System.out.println("");
+        } catch (Exception ignored) {
         }
 
         //return selected Card

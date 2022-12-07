@@ -4,6 +4,7 @@ import cards.CardColor;
 import cards.CardType;
 import cards.LuckCard;
 import entities.GameLoop;
+import entities.OutputConsole;
 import entities.Player;
 import entities.Table;
 import persistence.DBConnector;
@@ -14,6 +15,8 @@ import java.util.Scanner;
 
 public class Main {
 
+    private static OutputConsole outCon = new OutputConsole();
+
 
     public static void main(String[] args) {
         // does user want to load a default config
@@ -21,8 +24,7 @@ public class Main {
         boolean manualSleepTime = false;
         int nextMsgTime = 200;
         while(true){
-
-            System.out.println("Do you wish to load a config file? [y/n]");
+            outCon.simpleMessage("Do you wish to load a config file? [y/n]");
             Scanner s = new Scanner(System.in);
             String con = s.nextLine();
 
@@ -30,38 +32,38 @@ public class Main {
                 config = true;
                 break;
             } else if ("n".equals(con)) {
-                System.out.println("Shuffling the cards!");
+                outCon.simpleMessage("Shuffling the cards!");
                 break;
             } else {
-                System.out.println("Not an option! Try again!");
+                outCon.simpleMessage("Not an option! Try again!");
             }
         }
 
         Scanner s = new Scanner(System.in);
         while(true){
-            System.out.println("Do you wish to manually control the game flow? [y/n]");
+            outCon.simpleMessage("Do you wish to manually control the game flow? [y/n]");
             String con = s.nextLine();
 
             if ("y".equals(con)) {
                 manualSleepTime = true;
                 break;
             } else if ("n".equals(con)) {
-                System.out.println("How long should the time between messages be? [ms]");
+                outCon.simpleMessage("How long should the time between messages be? [ms]");
                 try{
                     nextMsgTime = s.nextInt();
                     break;
                 }catch (Exception e){
-                    System.out.println("Please enter a valid number!");
+                    outCon.simpleMessage("Please enter a valid number!");
                 }
             } else {
-                System.out.println("Not an option! Try again!");
+                outCon.simpleMessage("Not an option! Try again!");
             }
         }
         boolean dataSource;
         String data=s.nextLine();
 
         while(true){
-            System.out.println("Press 'y' in order to get data from the database. Press 'n' in order to get data from the textfile.");
+            outCon.simpleMessage("Press 'y' in order to get data from the database. Press 'n' in order to get data from the textfile.");
             String con = s.nextLine();
 
             if ("y".equals(con)) {
@@ -71,7 +73,7 @@ public class Main {
                 dataSource = false;
                 break;
             } else {
-                System.out.println("Not an option! Try again!");
+                outCon.simpleMessage("Not an option! Try again!");
             }
         }
         GameLoop game = new GameLoop(config,manualSleepTime,nextMsgTime, dataSource);
@@ -79,7 +81,7 @@ public class Main {
         game.run();
         boolean naechstes = true;
         while (naechstes) {
-            System.out.println("Next Game? y for yes, n for no");
+            outCon.simpleMessage("Next Game? y for yes, n for no");
             Scanner sc = new Scanner(System.in);
             String eingabe = sc.nextLine();
             if (eingabe.equals("y")) {
@@ -87,10 +89,10 @@ public class Main {
                 ZugHistorie.leeren();
                 gameA.run();
             } else if (eingabe.equals("n")) {
-                System.out.println("End initialized");
+                outCon.simpleMessage("End initialized");
                 naechstes = false;
             } else {
-                System.out.println("Wrong input.");
+                outCon.simpleMessage("Wrong input.");
             }
         }
     }

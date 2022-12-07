@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class CSVFileAdapter implements Files{
+    private OutputConsole outCon=new OutputConsole();
 
     @Override
     public ArrayList<String> getFileInput(String filename) {
@@ -23,7 +24,7 @@ public class CSVFileAdapter implements Files{
             }
 
         } catch (FileNotFoundException e) {
-            System.out.println(filename + "was not found.");
+            outCon.simpleMessage(filename + "was not found.");
         }catch (IOException e) {
             throw new RuntimeException(e);
         }

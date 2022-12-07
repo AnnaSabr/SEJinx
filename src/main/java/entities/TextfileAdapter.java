@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 public class TextfileAdapter implements Files{
 
+    private OutputConsole outCon = new OutputConsole();
+
     @Override
     public ArrayList<String> getFileInput(String filename) {
 
@@ -20,7 +22,7 @@ public class TextfileAdapter implements Files{
             }
 
         } catch (FileNotFoundException e) {
-            System.out.println(filename + "was not found.");
+            outCon.simpleMessage(filename + "was not found.");
         }catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -37,8 +39,7 @@ public class TextfileAdapter implements Files{
                 pw.flush();
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Data could not be saved. File not found.");
+            outCon.simpleMessage("Data could not be saved. File not found.");
         }
-
     }
 }

@@ -12,25 +12,28 @@ import entities.*;
 import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Stack;
 
 public class DBConnector {
 
     private static final DBConnector singleton = new DBConnector();
     private Connection con;
+    private OutputConsole outCon;
     private DBConnector(){
         String url = "jdbc:mysql://localhost:3306/jinx?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
         String user = "root";
         String pass = "passwort";
+        outCon= new OutputConsole();
 
         try {
             con = DriverManager.getConnection(url, user, pass);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            String text=e.getMessage();
+            outCon.simpleMessage(text);
         }
     }
+
+
 
     public static DBConnector getInstance(){
         return singleton;
@@ -53,7 +56,8 @@ public class DBConnector {
             }
 
         }catch (Exception e){
-            e.printStackTrace();
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return false;
         }
 
@@ -86,7 +90,8 @@ public class DBConnector {
             }
 
         } catch (SQLException e){
-            System.out.println("Something went wrong while trying to save the player");
+            String text="Something went wrong while trying to save the player";
+            outCon.simpleMessage(text);
             return false;
         }
 
@@ -115,7 +120,8 @@ public class DBConnector {
                 return false;
             }
         }catch (Exception e){
-            System.out.println("Something went wrong while checking the player login");
+            String text="Something went wrong while checking the player login";
+            outCon.simpleMessage(text);
             return false;
         }
 
@@ -185,8 +191,10 @@ public class DBConnector {
             //everything stored in DB
             return true;
         } catch (SQLException e){
-            System.out.println("Something went wrong while trying to save the playerhistory");
-            e.printStackTrace();
+            String text="Something went wrong while trying to save the playerhistory";
+            outCon.simpleMessage(text);
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return false;
         }
     }
@@ -260,7 +268,8 @@ public class DBConnector {
 
             return playerHistories.toArray(new PlayerHistory[0]);
         }catch (SQLException e){
-            e.printStackTrace();
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return null;
         }
     }
@@ -392,7 +401,8 @@ public class DBConnector {
 
 
         }catch (SQLException e){
-            e.printStackTrace();
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return 0;
         }
     }
@@ -441,10 +451,12 @@ public class DBConnector {
             return id;
 
         }catch (SQLException e){
-            e.printStackTrace();
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return 0;
         }catch (Exception e){
-            e.printStackTrace();
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return 0;
         }
 
@@ -485,7 +497,8 @@ public class DBConnector {
             return id;
 
         }catch (SQLException e){
-            e.printStackTrace();
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return 0;
         }
     }
@@ -542,7 +555,8 @@ public class DBConnector {
             //return id if found
             return id;
         }catch (Exception e){
-            e.printStackTrace();
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return 0;
         }
     }
@@ -580,8 +594,10 @@ public class DBConnector {
             return id;
 
         } catch (SQLException e){
-            System.out.println("Something went wrong while trying to save the Speicherstand");
-            e.printStackTrace();
+            String text="Something went wrong while trying to save the Speicherstand";
+            outCon.simpleMessage(text);
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return 0;
         }
     }
@@ -654,7 +670,8 @@ public class DBConnector {
             //return result
             return newSpeicher;
         }catch (SQLException e){
-            e.printStackTrace();
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return null;
         }
     }
@@ -680,7 +697,8 @@ public class DBConnector {
             }
             return speicher.toArray(new Integer[]{});
         }catch (SQLException e){
-            e.printStackTrace();
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return null;
         }
     }
@@ -734,7 +752,8 @@ public class DBConnector {
             }
             return actions;
         }catch (SQLException e){
-            e.printStackTrace();
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return null;
         }
     }
@@ -798,7 +817,8 @@ public class DBConnector {
             //return created player
             return p;
         }catch (SQLException e){
-            e.printStackTrace();
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return null;
         }
 
@@ -866,7 +886,8 @@ public class DBConnector {
 
                 return players;
             }catch (SQLException e){
-                e.printStackTrace();
+                String exception=e.toString();
+                outCon.simpleMessage(exception);
                 return null;
             }
     }
@@ -907,7 +928,8 @@ public class DBConnector {
 
             return table;
         }catch (SQLException e){
-            e.printStackTrace();
+            String exception=e.toString();
+            outCon.simpleMessage(exception);
             return null;
         }
     }

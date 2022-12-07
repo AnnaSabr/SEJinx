@@ -1,11 +1,11 @@
 package actions.ReUnDo;
 
-import actions.Zuege.Action;
-import entities.Player;
 
+import entities.OutputConsole;
+import entities.Player;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Logger;
+
 
 /**
  * Eine doppeltverkette Liste zum chronologischen Darstellen der einzelnen Runden im Spiel
@@ -15,8 +15,8 @@ public class Verlauf {
     private Runde head;
     private Runde tail;
     private Runde aktuellePosition;
+    private OutputConsole outCon;
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     public Verlauf() {
         this.head = new Runde(null, null);
@@ -25,6 +25,7 @@ public class Verlauf {
         this.head.setDahinter(tail);
         this.tail.setDavor(head);
         this.aktuellePosition = tail;
+        this.outCon=new OutputConsole();
     }
 
 
@@ -54,15 +55,6 @@ public class Verlauf {
     }
 
     /**
-     * zum Ausgeben von Text Messages
-     *
-     * @param msg
-     */
-    private void log(String msg) {
-        System.out.println("[JINX] " + msg);
-    }
-
-    /**
      * Menue zum Waehlen der geplanten Re und Un Do Schritte
      *
      * @return
@@ -72,25 +64,26 @@ public class Verlauf {
 
 
         while (true) {
-            log("""
+            String log="""
                     Choose your Manipulation!
                     S - Show regular status
                     J - choosen status
                     K - jump back
                     L - jump further
                     P - leave
-                            \n""");
+                            \n""";
+            outCon.jinxMessage(log);
             Scanner sc = new Scanner(System.in);
             String input = sc.nextLine();
             if (input.equals("S")) {
-                log("regular status:\n");
+                outCon.jinxMessage("regular status:\n");
                 rundeAnzeigen(tail.getDavor());
             } else if (input.equals("J")) {
                 if (!headOrTail(aktuellePosition)) {
-                    log("new choosen status:");
+                    outCon.jinxMessage("new choosen status:");
                     rundeAnzeigen(aktuellePosition);
                 } else {
-                    log("No new status choosen.");
+                    outCon.jinxMessage("No new status choosen.");
                 }
 
             } else if (input.equals("K")) {
@@ -103,7 +96,7 @@ public class Verlauf {
                 }
                 return tail;
             } else {
-                log("incorrect input.");
+                outCon.jinxMessage("incorrect input.");
             }
         }
     }
@@ -113,10 +106,10 @@ public class Verlauf {
      */
     public void unDo() {
         if (!headOrTail(aktuellePosition.getDavor())) {
-            log("One step back");
+            outCon.jinxMessage("One step back");
             aktuellePosition = aktuellePosition.getDavor();
         } else {
-            log("already at the beginning");
+            outCon.jinxMessage("already at the beginning");
         }
 
     }
@@ -126,10 +119,10 @@ public class Verlauf {
      */
     public void reDo() {
         if (!aktuellePosition.equals(tail)) {
-            log("One step further");
+            outCon.jinxMessage("One step further");
             aktuellePosition = aktuellePosition.getDahinter();
         } else {
-            log("already at the end");
+            outCon.jinxMessage("already at the end");
         }
     }
 
@@ -140,13 +133,15 @@ public class Verlauf {
      */
     public void rundeAnzeigen(Runde auswahl) {
         for (Player player : auswahl.getSpieler()) {
-            logger.info("Spieler: " + player.getName() + "\n" +
+            String info="Spieler: " + player.getName() + "\n" +
                     "Handkarten: " + player.getCards() + "\n" +
-                    "LuckyKarten: " + player.getLuckCards() + "\n");
+                    "LuckyKarten: " + player.getLuckCards() + "\n";
+            outCon.loggerMessage(info);
         }
-        logger.info("Tisch Kartenstapel: " + auswahl.getTischStand().getCardStack() + "\n" +
+        String info= "Tisch Kartenstapel: " + auswahl.getTischStand().getCardStack() + "\n" +
                 "Tisch Luckykartenstapel: " + auswahl.getTischStand().getLuckStack() + "\n" +
-                "Spielfeld:\n " + auswahl.getTischStand().toString());
+                "Spielfeld:\n " + auswahl.getTischStand().toString();
+        outCon.loggerMessage(info);
     }
 
     /**
@@ -156,15 +151,18 @@ public class Verlauf {
         int runde = 1;
         Runde start = head.getDahinter();
         while (!start.equals(tail)) {
-            logger.info(runde + ". Zug: \n" + runde);
+            String info=runde + ". Zug: \n" + runde;
+            outCon.loggerMessage(info);
             for (Player player : start.getSpieler()) {
-                logger.info("Spieler: " + player.getName() + "\n" +
+                info="Spieler: " + player.getName() + "\n" +
                         "Handkarten: " + player.getCards() + "\n" +
-                        "LuckyKarten: " + player.getLuckCards() + "\n");
+                        "LuckyKarten: " + player.getLuckCards() + "\n";
+                outCon.loggerMessage(info);
             }
-            logger.info("Tisch Kartenstapel: " + start.getTischStand().getCardStack() + "\n" +
+            info="Tisch Kartenstapel: " + start.getTischStand().getCardStack() + "\n" +
                     "Tisch Luckykartenstapel: " + start.getTischStand().getLuckStack() + "\n" +
-                    "Spielfeld:\n " + start.getTischStand().toString());
+                    "Spielfeld:\n " + start.getTischStand().toString();
+            outCon.loggerMessage(info);
             runde++;
             start = start.getDahinter();
         }
