@@ -51,6 +51,7 @@ public class GameLoop {
     boolean db;
     DBConnector connector=DBConnector.getInstance();
     TextfileAdapter textfileAdapter=new TextfileAdapter();
+    private OutputConsole outCon;
 
     public GameLoop(boolean rff, boolean manualNextMsg, int sleepTime, boolean dataFromDB) {
         this.rff=rff;
@@ -66,6 +67,7 @@ public class GameLoop {
         this.zuege = new ZugHistorie();
         this.speicherObjekt = new Speicher();
         this.db=dataFromDB;
+        this.outCon= new OutputConsole();
     }
 
     /**
@@ -91,7 +93,7 @@ public class GameLoop {
         if(!db){
             this.getProfilesFromFile();
         }
-        System.out.println("Welcome to JINX! How many players do you wish to play with? (2-4 Players)");
+        outCon.simpleMessage("Welcome to JINX! How many players do you wish to play with? (2-4 Players)");
         int playerCount;
         while (true) {
             try {
@@ -99,17 +101,17 @@ public class GameLoop {
                 playerCount = s.nextInt();
 
                 if (playerCount < 2 || playerCount > 4) {
-                    System.out.println("This game is designed for 2-4 Players! Choose again!");
+                    outCon.simpleMessage("This game is designed for 2-4 Players! Choose again!");
                 } else {
                     // set size of players to user specified value
                     this.players = new Player[playerCount];
 
-                    System.out.println("Please tell us if you like do modifier any player into KI: y/n");
+                    outCon.simpleMessage("Please tell us if you like do modifier any player into KI: y/n");
                     String kiInvolvieren = s.next();
                     if (kiInvolvieren.equals("y")) {
                         initKI();
                     } else {
-                        System.out.println("No KI's involved in this game.");
+                        outCon.simpleMessage("No KI's involved in this game.");
                     }
                     break;
                 }
@@ -344,25 +346,25 @@ public class GameLoop {
     }
 
     public void showActions() {
-        System.out.println("\n\n");
-        System.out.println("Bisher gespielte Zuege:");
+        outCon.simpleMessage("\n\nBisher gespielte Zuege:");
         Action start = ZugHistorie.getHead().getDahinter();
         while (!start.equals(ZugHistorie.getTail())) {
             if (start.getKarte()!=null){
                 if (start.getKarte().getValue()==420){
-                    System.out.println("Spieler: " + start.getAktiverSpieler().getName() + ",   Zug: " + start.getZug()+"\n");
+                    outCon.simpleMessage("Spieler: " + start.getAktiverSpieler().getName() + ",   Zug: " + start.getZug()+"\n");
                 }
                 else{
-                    System.out.println("Spieler: " + start.getAktiverSpieler().getName() + ",   Zug: " + start.getZug() + ",   Karte: " + start.getKarte()+"\n");
+                    outCon.simpleMessage("Spieler: " + start.getAktiverSpieler().getName() + ",   Zug: " + start.getZug() + ",   Karte: " + start.getKarte()+"\n");
                 }
 
             }
             else{
-                System.out.println("Spieler: " + start.getAktiverSpieler().getName() + ",   Zug: " + start.getZug() + ",   Karte: " + start.getGlueckskarte()+"\n");
+                outCon.simpleMessage("Spieler: " + start.getAktiverSpieler().getName() + ",   Zug: " + start.getZug() + ",   Karte: " + start.getGlueckskarte()+"\n");
             }
             start = start.getDahinter();
         }
-        System.out.println("\n\n");
+
+        outCon.simpleMessage("\n\n");
     }
 
     /**
@@ -481,16 +483,16 @@ public class GameLoop {
      */
     private void log(String msg) {
         if (manualNextMsg) {
-            System.out.println("[JINX] " + msg + " [ENTER] to continue!");
+            outCon.simpleMessage("[JINX] " + msg + " [ENTER] to continue!");
             Scanner s = new Scanner(System.in);
             s.nextLine();
         } else {
             try {
                 Thread.sleep(sleepTime);
             } catch (Exception e) {
-                System.out.println("Sleep exception!");
+                outCon.simpleMessage("Sleep exception!");
             }
-            System.out.println("[JINX] " + msg);
+            outCon.jinxMessage(msg);
         }
     }
 
@@ -582,7 +584,7 @@ public class GameLoop {
         int players = this.players.length;
         ArrayList<Player> ki = new ArrayList<>();
         while (true) {
-            System.out.println("This game will have " + players + " players. Choose between 0-" + players + ".\n" +
+            outCon.simpleMessage("This game will have " + players + " players. Choose between 0-" + players + ".\n" +
                     "How many do you want to substitute with KI's?");
             Scanner s = new Scanner(System.in);
             String kiAnzahl = s.next();
@@ -599,10 +601,10 @@ public class GameLoop {
                     }
                     break;
                 } else {
-                    System.out.println("Incorrect input.");
+                    outCon.simpleMessage("Incorrect input.");
                 }
             } catch (NumberFormatException n) {
-                System.out.println("Not an acceptable answer. You will play without any KI.");
+                outCon.simpleMessage("Not an acceptable answer. You will play without any KI.");
             }
         }
     }
@@ -618,10 +620,10 @@ public class GameLoop {
         String level = "";
         Scanner s = new Scanner(System.in);
         while (true) {
-            System.out.println("Please enter a Name for your KI:");
+            outCon.simpleMessage("Please enter a Name for your KI:");
             name = s.next();
             if (!name.equals("")) {
-                System.out.println("Please choose a level for your KI:  " +
+                outCon.simpleMessage("Please choose a level for your KI:  " +
                         "easy / medium / hard");
                 level=s.next();
                 if (level.equals("easy")){
@@ -636,13 +638,13 @@ public class GameLoop {
                     k=new AIPLayer3(name,sleepTime,manualNextMsg,db);
                     break;
                 } else {
-                    System.out.println("Not an option. Try again.");
+                    outCon.simpleMessage("Not an option. Try again.");
                 }
             } else {
-                System.out.println("Wrong input.");
+                outCon.simpleMessage("Wrong input.");
             }
         }
-        System.out.println("You created: KI: " + k.getName() + "  Level: " + k.getClass().getSimpleName());
+        outCon.simpleMessage("You created: KI: " + k.getName() + "  Level: " + k.getClass().getSimpleName());
         this.anzahlKI++;
         return k;
     }
@@ -662,10 +664,10 @@ public class GameLoop {
             String[] line=oneLine.split(",");
             if(line[0].equals(name)){
                 if(this.validatePassword(line[1],entry)){
-                    System.out.println("Correct!");
+                    outCon.simpleMessage("Correct!");
                     return true;
                 }else{
-                    System.out.println("Wrong password!");
+                    outCon.simpleMessage("Wrong password!");
                     return false;
                 }
             }

@@ -70,7 +70,7 @@ public class AIPLayer3 extends Player{
         //if no card was selected
         if (this.cardOnTable == null) {
             if (this.rolls == 0) {
-                outCon.playerLog(this.getName(),"First I roll the dice!");
+                this.playerlog("First I roll the dice!");
                 return "R";
             }
             CardColor[] desiredColour = new CardColor[8];
@@ -78,7 +78,7 @@ public class AIPLayer3 extends Player{
             String[] availableCards = this.findValidCards(table);
             //if player has no cards
             if (this.cards.size() == 0) {
-                outCon.playerLog(this.getName(),"I will try to take a card with few other cards of that colour on the table.");
+                playerlog("I will try to take a card with few other cards of that colour on the table.");
                 int[] coloursOnTable = this.findAmountByColour(table);
                 int amount = 100;
                 int c = 0;
@@ -124,7 +124,7 @@ public class AIPLayer3 extends Player{
 
                 //if player already has cards
             } else {
-                outCon.playerLog(this.getName(),"I already have cards. I will try to get a card of the same colour so I can keep them.");
+                playerlog("I already have cards. I will try to get a card of the same colour so I can keep them.");
                 //calculates value in hand by colour
                 int[] valueByColour = new int[8];
                 for (Card c : this.cards) {
@@ -191,7 +191,7 @@ public class AIPLayer3 extends Player{
                             if ((c.getColor().equals(currColour))) {
                                 this.cardOnTable = card;
                                 if (this.diceCount != c.getValue()) {
-                                    outCon.playerLog(this.getName(),"I might need a luckcard to get the card i want.");
+                                    playerlog("I might need a luckcard to get the card i want.");
                                     return "L";
                                 }
                                 break;
@@ -205,7 +205,7 @@ public class AIPLayer3 extends Player{
             }
             //if no matching card was found, roll again
             if (cardOnTable == null && this.rolls < 2) {
-                outCon.playerLog(this.getName(),"I need to roll again!");
+                playerlog("I need to roll again!");
                 return "R";
             }
             if (cardOnTable == null && this.rolls >= 2) {
@@ -230,7 +230,7 @@ public class AIPLayer3 extends Player{
         }
         for(LuckCard luckCard:this.getLuckCards()){
             if(luckCard.getCardType()==CardType.CARDSUM&&usecsum&&!this.usedCards.contains(luckCard)){
-                outCon.playerLog(this.getName(),"I will try to use my cardsum card. I cannot get a card otherwise.");
+                playerlog("I will try to use my cardsum card. I cannot get a card otherwise.");
                 return "L";
             }
         }
@@ -249,7 +249,7 @@ public class AIPLayer3 extends Player{
         }
             this.rolls=0;
             this.cardOnTable=null;
-            outCon.playerLog(this.getName(),"Something is wrong, I have to start over.");
+            playerlog("Something is wrong, I have to start over.");
         return this.chooseAction(table);
     }
 
@@ -327,10 +327,10 @@ public class AIPLayer3 extends Player{
             }
             ycoord++;
         }
-        outCon.playerLog(this.getName(),"These are the cards I could take:");
+        playerlog("These are the cards I could take:");
         for(String card:cards){
             if(card!=null){
-                outCon.playerLog(this.getName(),card+"");
+                playerlog(card);
             }
         }
         return cards;
@@ -370,7 +370,7 @@ public class AIPLayer3 extends Player{
         String[] coordsSTR = line.split(",");
 
         String coord=coordsSTR[0] + "," + coordsSTR[1];
-        outCon.jinxMessage("chosen: " + coord);
+        this.log("chosen: " + coord);
         int[] coordInt = new int[2];
         coordInt[0]=Integer.parseInt(coordsSTR[0]);
         coordInt[1]=Integer.parseInt(coordsSTR[1]);
@@ -383,7 +383,7 @@ public class AIPLayer3 extends Player{
 
         //check if the player is able to drop a card
         if(this.cards.size() == 0){
-            outCon.jinxMessage(this.getName() + " has no cards to drop after this round!");
+            log(this.getName() + " has no cards to drop after this round!");
             return false;
         }
 
@@ -404,10 +404,10 @@ public class AIPLayer3 extends Player{
             }
         }
 
-        outCon.jinxMessage(this.getName() + ", you finished the round! Choose a card to drop!");
+        log(this.getName() + ", you finished the round! Choose a card to drop!");
         //List all cards available to choose
         for (int i = 0; i < maxCards.size(); i++) {
-            outCon.simpleMessage(maxCards.get(i) + " - " + i);
+            log(maxCards.get(i) + " - " + i);
         }
 
         CardColor[] Colour = new CardColor[8];
@@ -485,10 +485,10 @@ public class AIPLayer3 extends Player{
         while(true){
             try{
                 this.cards.remove(maxCards.get(removing));
-                outCon.jinxMessage("Card "+removing+" was chosen.");
+                log("Card "+removing+" was chosen.");
                 return true;
             }catch (Exception e){
-               outCon.jinxMessage("Not a valid choice.");
+               log("Not a valid choice.");
                 this.cards.remove(maxCards.get(0));
                 return true;
             }
@@ -498,7 +498,7 @@ public class AIPLayer3 extends Player{
     @Override
     public Card selectCard(Player[] players) {
         if(this.myRound==3){
-            outCon.playerLog(this.getName(),"The game is over, I dont need more cards.");
+            playerlog("The game is over, I dont need more cards.");
             return null;
         }
         Card card1=null;
@@ -509,7 +509,7 @@ public class AIPLayer3 extends Player{
             if(p.getScore()>=(this.getScore())){
                 if(p!=this){
                     draw=false;
-                    outCon.playerLog(this.getName(),"I want to keep my cards. My opponent's score is too high.");
+                    playerlog("I want to keep my cards. My opponent's score is too high.");
                 }
             }
         }
@@ -598,7 +598,7 @@ public class AIPLayer3 extends Player{
             }
         }
         if(card1!=null){
-            outCon.playerLog(this.getName(),"I will trade " + card1.getColor() + " " + card1.getValue() + ". My score is good enough compared to my opponents.");
+            log("I will trade " + card1.getColor() + " " + card1.getValue() + ". My score is good enough compared to my opponents.");
         }
         return card1;
     }
@@ -608,14 +608,14 @@ public class AIPLayer3 extends Player{
     public LuckCard selectLuckCard(Table table) {
         //check if player has luck cards
         if(this.getLuckCards().size() == 0){
-            outCon.jinxMessage(this.getName() + ", you dont have any luck cards!");
+            log(this.getName() + ", you dont have any luck cards!");
             return null;
         }
         //EXTRATHROW
         if(this.cardOnTable==null&&this.rolls>=2){
             for(LuckCard luckCard:this.getLuckCards()){
                 if(luckCard.getCardType()==CardType.EXTRATHROW&&!this.usedCards.contains(luckCard)){
-                    outCon.playerLog(this.getName(),"I want to throw again. I will use my luckcard!");
+                    playerlog("I want to throw again. I will use my luckcard!");
                     throwAgain=true;
                     return luckCard;
                 }
@@ -646,7 +646,7 @@ public class AIPLayer3 extends Player{
                     //MINUSONE
                     for(LuckCard luckCard:this.getLuckCards()) {
                         if (luckCard.getCardType() == CardType.MINUSONE&&!this.usedCards.contains(luckCard)) {
-                            outCon.playerLog(this.getName(),"I need a smaller dice count. I will use my luckcard!");
+                            playerlog("I need a smaller dice count. I will use my luckcard!");
                             return luckCard;
                         }
                     }    }
@@ -656,7 +656,7 @@ public class AIPLayer3 extends Player{
                     //PLUSONE
                     for(LuckCard luckCard:this.getLuckCards()) {
                         if (luckCard.getCardType() == CardType.PLUSONE&&!this.usedCards.contains(luckCard)) {
-                            outCon.playerLog(this.getName(),"I need a bigger dice count. I will use my luckcard!");
+                            playerlog("I need a bigger dice count. I will use my luckcard!");
                             return luckCard;
                         }
                     }    }
@@ -664,7 +664,7 @@ public class AIPLayer3 extends Player{
             if(c.getValue()>3&&this.diceCount!=c.getValue()){
                 for(LuckCard luckCard:this.getLuckCards()){
                     if(luckCard.getCardType()==CardType.FOURTOSIX&&!this.usedCards.contains(luckCard)){
-                        outCon.simpleMessage("I will use my 4to6 card");
+                        log("I will use my 4to6 card");
                         return luckCard;
                     }
                 }
@@ -672,7 +672,7 @@ public class AIPLayer3 extends Player{
             else if(c.getValue()<4&&this.diceCount!=c.getValue()){
                 for(LuckCard luckCard:this.getLuckCards()){
                     if(luckCard.getCardType()==CardType.ONETOTHREE&&!this.usedCards.contains(luckCard)){
-                        outCon.simpleMessage("I will use my 1to3 card");
+                        log("I will use my 1to3 card");
                         return luckCard;
                     }
                 }
@@ -681,7 +681,7 @@ public class AIPLayer3 extends Player{
 
         for(LuckCard luckCard:this.getLuckCards()){
             if(luckCard.getCardType()==CardType.CARDSUM&&!this.usedCards.contains(luckCard)){
-                outCon.simpleMessage("I will use my cardsum card");
+                log("I will use my cardsum card");
                 return luckCard;
                 }
             }
@@ -740,7 +740,7 @@ public class AIPLayer3 extends Player{
         }
         if(card1==null||card2==null){
             usecsum=false;
-            outCon.playerLog(this.getName(),"My Luckcard is not helping me here! I have to try something different");
+            playerlog("My Luckcard is not helping me here! I have to try something different");
             return "0";
         }
         String coordinate1="";
@@ -761,6 +761,9 @@ public class AIPLayer3 extends Player{
         coordinates=coordinate1+";"+coordinate2;
         usecsum=false;
         return coordinates;
+    }
+    public void playerlog(String msg){
+        System.out.println("[" + this.getName()+ "]" + msg);
     }
 
 

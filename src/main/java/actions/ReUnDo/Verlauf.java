@@ -55,6 +55,16 @@ public class Verlauf {
     }
 
     /**
+     * zum Ausgeben von Text Messages
+     *
+     * @param msg
+     */
+    private void log(String msg) {
+        outCon.jinxMessage(msg);
+    }
+
+
+    /**
      * Menue zum Waehlen der geplanten Re und Un Do Schritte
      *
      * @return
@@ -64,26 +74,25 @@ public class Verlauf {
 
 
         while (true) {
-            String log="""
+            log("""
                     Choose your Manipulation!
                     S - Show regular status
                     J - choosen status
                     K - jump back
                     L - jump further
                     P - leave
-                            \n""";
-            outCon.jinxMessage(log);
+                            \n""");
             Scanner sc = new Scanner(System.in);
             String input = sc.nextLine();
             if (input.equals("S")) {
-                outCon.jinxMessage("regular status:\n");
+                log("regular status:\n");
                 rundeAnzeigen(tail.getDavor());
             } else if (input.equals("J")) {
                 if (!headOrTail(aktuellePosition)) {
-                    outCon.jinxMessage("new choosen status:");
+                    log("new choosen status:");
                     rundeAnzeigen(aktuellePosition);
                 } else {
-                    outCon.jinxMessage("No new status choosen.");
+                    log("No new status choosen.");
                 }
 
             } else if (input.equals("K")) {
@@ -96,7 +105,7 @@ public class Verlauf {
                 }
                 return tail;
             } else {
-                outCon.jinxMessage("incorrect input.");
+                log("incorrect input.");
             }
         }
     }
@@ -106,10 +115,10 @@ public class Verlauf {
      */
     public void unDo() {
         if (!headOrTail(aktuellePosition.getDavor())) {
-            outCon.jinxMessage("One step back");
+            log("One step back");
             aktuellePosition = aktuellePosition.getDavor();
         } else {
-            outCon.jinxMessage("already at the beginning");
+            log("already at the beginning");
         }
 
     }
@@ -119,10 +128,10 @@ public class Verlauf {
      */
     public void reDo() {
         if (!aktuellePosition.equals(tail)) {
-            outCon.jinxMessage("One step further");
+            log("One step further");
             aktuellePosition = aktuellePosition.getDahinter();
         } else {
-            outCon.jinxMessage("already at the end");
+            log("already at the end");
         }
     }
 

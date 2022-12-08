@@ -60,6 +60,7 @@ public class Player implements Cloneable{
     //used to roll the dice
 
     Random rand = new Random();
+    private OutputConsole outCon;
 
     /**
     * Overloaded Constructor to support sleeptimers
@@ -77,6 +78,7 @@ public class Player implements Cloneable{
         }else{
             this.loadHistoryFromFile();
         }
+        this.outCon=new OutputConsole();
     }
 
 
@@ -901,16 +903,16 @@ public class Player implements Cloneable{
      */
     void log(String msg) {
         if (manualNextMsg) {
-            System.out.println("[JINX] " + msg + " [ENTER] to continue!");
+            outCon.simpleMessage("[JINX] " + msg + " [ENTER] to continue!");
             Scanner s = new Scanner(System.in);
             s.nextLine();
         } else {
             try {
                 Thread.sleep(sleepTime);
             } catch (Exception e) {
-                System.out.println("Sleep exception!");
+                outCon.simpleMessage("Sleep exception!");
             }
-            System.out.println("[JINX] " + msg);
+            outCon.jinxMessage(msg);
         }
     }
 
@@ -948,7 +950,7 @@ public class Player implements Cloneable{
      * @param msg
      */
     private void playerlog(String msg) {
-        System.out.println("[" + this.getName() + "] chose " + msg);
+        outCon.simpleMessage("["+this.getName() + "] chose "+msg);
     }
 
     @Override
@@ -987,7 +989,7 @@ public class Player implements Cloneable{
      * @param msg
      */
     private void adviceLog(String msg) {
-        System.out.println("[Advisor]" + msg);
+        outCon.simpleMessage("[Advisor]" + msg);
     }
 
     /**

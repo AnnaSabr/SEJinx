@@ -47,21 +47,21 @@ public class EasyKI extends Player{
 
     @Override
     public String chooseAction(Table table){
-        outCon.jinxMessage("Your turn " + this.name + "! Eye count - " + this.diceCount);
-        outCon.jinxMessage(this.toString());
+        log("Your turn " + this.name + "! Eye count - " + this.diceCount);
+        log(this.toString());
 
         //roll if not rolled yet
         if(this.rolls == 0){
-            outCon.jinxMessage(this.name + "[AI], i didnt roll the dice yet!");
+            log(this.name + "[AI], i didnt roll the dice yet!");
             return "R";
         }
         //check if there is a card that can be picked, if not and rolls are available --> roll
         if(cardAvailable(table) == null && this.rolls < 2){
-            outCon.jinxMessage(this.name + "[AI], there is no card i want...I´ll roll again!");
+            log(this.name + "[AI], there is no card i want...I´ll roll again!");
             return "R";
         }
 
-        outCon.jinxMessage(this.name + "[AI], i will choose a card now!");
+        log(this.name + "[AI], i will choose a card now!");
         //nothing left to do, possibly end round
         return "C";
 
@@ -93,7 +93,7 @@ public class EasyKI extends Player{
     public boolean chooseCard(Table table){
         //check if the AI has to end its turn because it has no options to pick a card
         if(checkEndRound(table)){
-           outCon.jinxMessage(this.name + "[AI], there is no card you could choose!");
+           log(this.name + "[AI], there is no card you could choose!");
             //set AI inactive to end its turn;
             this.active = false;
             return false;
@@ -125,7 +125,7 @@ public class EasyKI extends Player{
 
     @Override
     public boolean drawLuckCard(Table table, Player[] players){
-        outCon.jinxMessage(this.name + "[AI], i would never waste points for a luck card!");
+        log(this.name + "[AI], i would never waste points for a luck card!");
         return false;
     }
 
