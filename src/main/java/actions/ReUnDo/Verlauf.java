@@ -1,10 +1,11 @@
 package actions.ReUnDo;
 
 
+import entities.InputConsole;
 import entities.OutputConsole;
 import entities.Player;
 import java.util.ArrayList;
-import java.util.Scanner;
+
 
 
 /**
@@ -16,6 +17,7 @@ public class Verlauf {
     private Runde tail;
     private Runde aktuellePosition;
     private OutputConsole outCon;
+    private InputConsole inCon;
 
 
     public Verlauf() {
@@ -26,6 +28,7 @@ public class Verlauf {
         this.tail.setDavor(head);
         this.aktuellePosition = tail;
         this.outCon=new OutputConsole();
+        this.inCon= new InputConsole();
     }
 
 
@@ -82,8 +85,8 @@ public class Verlauf {
                     L - jump further
                     P - leave
                             \n""");
-            Scanner sc = new Scanner(System.in);
-            String input = sc.nextLine();
+
+            String input =inCon.inputConsole() ;
             if (input.equals("S")) {
                 log("regular status:\n");
                 rundeAnzeigen(tail.getDavor());

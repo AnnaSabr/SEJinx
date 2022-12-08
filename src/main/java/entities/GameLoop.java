@@ -1,13 +1,9 @@
 package entities;
 
-import java.io.*;
-import java.sql.Array;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
-//import java.util.Date;
 import java.sql.Date;
-import java.util.Scanner;
 
 import actions.ReUnDo.Runde;
 import actions.ReUnDo.Verlauf;
@@ -17,7 +13,6 @@ import actions.Zuege.ZugHistorie;
 import actions.speichern.Speicher;
 import cards.Card;
 import cards.CardColor;
-import cards.CardType;
 import cards.LuckCard;
 import persistence.DBConnector;
 import persistence.PlayerHistory;
@@ -52,6 +47,7 @@ public class GameLoop {
     DBConnector connector=DBConnector.getInstance();
     TextfileAdapter textfileAdapter=new TextfileAdapter();
     private OutputConsole outCon;
+    private InputConsole inCon;
 
     public GameLoop(boolean rff, boolean manualNextMsg, int sleepTime, boolean dataFromDB) {
         this.rff=rff;
@@ -68,6 +64,7 @@ public class GameLoop {
         this.speicherObjekt = new Speicher();
         this.db=dataFromDB;
         this.outCon= new OutputConsole();
+        this.inCon=new InputConsole();
     }
 
     /**
@@ -97,8 +94,7 @@ public class GameLoop {
         int playerCount;
         while (true) {
             try {
-                Scanner s = new Scanner(System.in);
-                playerCount = s.nextInt();
+                playerCount = inCon.inputConsoleINT();
 
                 if (playerCount < 2 || playerCount > 4) {
                     outCon.simpleMessage("This game is designed for 2-4 Players! Choose again!");
@@ -107,7 +103,7 @@ public class GameLoop {
                     this.players = new Player[playerCount];
 
                     outCon.simpleMessage("Please tell us if you like do modifier any player into KI: y/n");
-                    String kiInvolvieren = s.next();
+                    String kiInvolvieren =inCon.inputConsole();
                     if (kiInvolvieren.equals("y")) {
                         initKI();
                     } else {
@@ -484,8 +480,7 @@ public class GameLoop {
     private void log(String msg) {
         if (manualNextMsg) {
             outCon.simpleMessage("[JINX] " + msg + " [ENTER] to continue!");
-            Scanner s = new Scanner(System.in);
-            s.nextLine();
+            inCon.inputConsole();
         } else {
             try {
                 Thread.sleep(sleepTime);
@@ -503,8 +498,6 @@ public class GameLoop {
      * Function to initialize all players by name
      */
     private void initPlayers() {
-
-        Scanner s = new Scanner(System.in);
 
         //create as many players as needed
         for (int i = anzahlKI; i < players.length; i++) {
@@ -586,8 +579,7 @@ public class GameLoop {
         while (true) {
             outCon.simpleMessage("This game will have " + players + " players. Choose between 0-" + players + ".\n" +
                     "How many do you want to substitute with KI's?");
-            Scanner s = new Scanner(System.in);
-            String kiAnzahl = s.next();
+            String kiAnzahl = inCon.inputConsole();
             try {
                 int anzahl = Integer.parseInt(kiAnzahl);
                 if (anzahl > 0 && anzahl <= players) {
@@ -618,14 +610,13 @@ public class GameLoop {
         Player k;
         String name = "";
         String level = "";
-        Scanner s = new Scanner(System.in);
         while (true) {
             outCon.simpleMessage("Please enter a Name for your KI:");
-            name = s.next();
+            name = inCon.inputConsole();
             if (!name.equals("")) {
                 outCon.simpleMessage("Please choose a level for your KI:  " +
                         "easy / medium / hard");
-                level=s.next();
+                level=inCon.inputConsole();
                 if (level.equals("easy")){
                     k = new EasyKI(name,sleepTime,manualNextMsg,db);
                     break;
@@ -680,11 +671,10 @@ public class GameLoop {
      * @return name of profile
      */
     public String chooseProfile(){
-        Scanner s=new Scanner(System.in);
         this.log("Would you like to choose a profile? y/n");
-        if(s.nextLine().equals("y")){
+        if(inCon.inputConsole().equals("y")){
             this.log("Which profile do you want?");
-            String name=s.nextLine().replaceAll(" ","");
+            String name=inCon.inputConsole().replaceAll(" ","");
             if(name.equals("AILevel1")||name.equals("AILevel2")||name.equals("AILevel3")){
                 this.log("This is the AI's profile! You may not use it.");
                 return chooseProfile();
@@ -711,7 +701,7 @@ public class GameLoop {
                         }
                     }
                     this.log("Enter your password!");
-                    String enteredPassword=s.nextLine();
+                    String enteredPassword=inCon.inputConsole();
                     if(this.connector.playerLogin(name,enteredPassword)){
                         this.log("Correct!");
                         this.availableProfiles.add(name);
@@ -740,13 +730,13 @@ public class GameLoop {
             if(db){
                 String name="";
                 this.log("Please enter a name for the profile.");
-                name=s.nextLine().replaceAll(" ","");
+                name=inCon.inputConsole().replaceAll(" ","");
                 if(this.connector.checkPlayer(name)){
                     this.log("This profile already exists.");
                     return this.chooseProfile();
                 }else{
                     this.log("Now enter the new password.");
-                    String password=s.nextLine();
+                    String password=inCon.inputConsole();
                     if(this.connector.createPlayer(name,password)){
                         return name;
                     }else{
@@ -761,7 +751,7 @@ public class GameLoop {
                 while(a){
                     a=false;
                     this.log("Please choose a name for your new profile!");
-                    name = s.nextLine().replaceAll(" ", "");
+                    name = inCon.inputConsole().replaceAll(" ", "");
                     for(String line:this.profiles){
                         String[] strings=line.split(",");
                         if(strings[0].equals(name)){
@@ -772,7 +762,7 @@ public class GameLoop {
                     }
                 }
                 this.log("Please choose a password!");
-                String pw=s.nextLine();
+                String pw=inCon.inputConsole();
                 this.profiles.add(name+","+this.calculatePassword(pw));
                 this.availableProfiles.add(name+","+this.calculatePassword(pw));
                 return name;
@@ -786,12 +776,11 @@ public class GameLoop {
      * @return
      */
     public boolean accessProfileFromFile(String profileName){
-        Scanner s=new Scanner(System.in);
         for (String line : this.profiles) {
             String[] name = line.split(",");
             if (name[0].equals(profileName)) {
                 this.log("Please enter the password!");
-                String pw = s.nextLine();
+                String pw = inCon.inputConsole();
                 boolean access = this.matchPasswordToProfile(profileName, pw);
                 if (access) {
                     this.availableProfiles.add(line);

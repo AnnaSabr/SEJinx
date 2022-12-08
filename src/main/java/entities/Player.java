@@ -9,12 +9,6 @@ import cards.CardType;
 import cards.LuckCard;
 import persistence.DBConnector;
 import persistence.PlayerHistory;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.security.spec.ECField;
 import java.util.*;
 
 /**
@@ -22,7 +16,7 @@ import java.util.*;
  * */
 public class Player implements Cloneable{
 
-
+    private InputConsole inCon;
     protected String name;
 
     protected ArrayList<Card> cards;
@@ -66,6 +60,7 @@ public class Player implements Cloneable{
     * Overloaded Constructor to support sleeptimers
     * */
     public Player(String name, int sleepTime, boolean manualNextMsg, boolean database){
+        this.inCon= new InputConsole();
         this.name = name;
         this.sleepTime = sleepTime;
         this.manualNextMsg = manualNextMsg;
@@ -500,9 +495,7 @@ public class Player implements Cloneable{
                     A - Give advise
                     P - Show player's history
                     """);
-
-            Scanner s = new Scanner(System.in);
-            String action = s.nextLine();
+            String action = inCon.inputConsole();
             //check if value is acceptable
             if (Arrays.asList(actions).contains(action)) {
                 return action;
@@ -572,8 +565,7 @@ public class Player implements Cloneable{
 
 
     public int playerInputNumberInRange(int min, int max) {
-        Scanner s = new Scanner(System.in);
-        String line = s.nextLine();
+        String line = inCon.inputConsole();
         try {
             int newDiceCount = Integer.parseInt(line);
             if (newDiceCount <= max && newDiceCount >= min) {
@@ -791,8 +783,7 @@ public class Player implements Cloneable{
      * @return
      */
     public String getPlayerInputMenu() {
-        Scanner s = new Scanner(System.in);
-        String line = s.nextLine();
+        String line = inCon.inputConsole();
         if ((!line.equals("C")) && (!line.equals("L")) && (!line.equals("R") && !line.equals("M") && (!line.equals("N")) && (!line.equals("T")) && (!line.equals("H")))) {
             log("Try again!");
             return this.getPlayerInputMenu();
@@ -808,8 +799,7 @@ public class Player implements Cloneable{
      * @return
      */
     public int[] getPlayerInputCoord() {
-        Scanner s = new Scanner(System.in);
-        String line = s.nextLine();
+        String line = inCon.inputConsole();
         String[] coordsSTR = line.split(",");
         try {
             if (Integer.valueOf(coordsSTR[0]) > 4 || Integer.valueOf(coordsSTR[0]) < 1) {
@@ -839,8 +829,7 @@ public class Player implements Cloneable{
      * @return
      */
     public String getPlayerInputYesNo() {
-        Scanner s = new Scanner(System.in);
-        String line = s.nextLine();
+        String line = inCon.inputConsole();
         if ((!line.equals("y")) && (!line.equals("n"))) {
             log("Enter y or n!");
             return this.getPlayerInputYesNo();
@@ -855,8 +844,7 @@ public class Player implements Cloneable{
      * @return
      */
     public String getPlayerInputMultipleCoordinates(Table table) {
-        Scanner s = new Scanner(System.in);
-        String line = s.nextLine();
+        String line = inCon.inputConsole();
         if ((!line.equals("0"))) {
             String[] coord = line.split(";");
             for (String c : coord) {
@@ -904,8 +892,7 @@ public class Player implements Cloneable{
     void log(String msg) {
         if (manualNextMsg) {
             outCon.simpleMessage("[JINX] " + msg + " [ENTER] to continue!");
-            Scanner s = new Scanner(System.in);
-            s.nextLine();
+            inCon.inputConsole();
         } else {
             try {
                 Thread.sleep(sleepTime);

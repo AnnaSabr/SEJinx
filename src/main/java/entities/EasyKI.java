@@ -4,11 +4,6 @@ import cards.Card;
 import cards.CardColor;
 import persistence.DBConnector;
 import persistence.PlayerHistory;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class EasyKI extends Player{

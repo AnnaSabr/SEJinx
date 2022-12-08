@@ -4,11 +4,6 @@ import cards.Card;
 import cards.CardColor;
 import cards.CardType;
 import cards.LuckCard;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 /**

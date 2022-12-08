@@ -1,21 +1,14 @@
 import actions.Zuege.ZugHistorie;
-import cards.Card;
-import cards.CardColor;
-import cards.CardType;
-import cards.LuckCard;
 import entities.GameLoop;
+import entities.InputConsole;
 import entities.OutputConsole;
-import entities.Player;
-import entities.Table;
-import persistence.DBConnector;
-import persistence.PlayerHistory;
 
-import java.sql.Date;
-import java.util.Scanner;
+
 
 public class Main {
 
     private static OutputConsole outCon = new OutputConsole();
+    private static InputConsole inCon = new InputConsole();
 
 
     public static void main(String[] args) {
@@ -25,8 +18,8 @@ public class Main {
         int nextMsgTime = 200;
         while(true){
             outCon.simpleMessage("Do you wish to load a config file? [y/n]");
-            Scanner s = new Scanner(System.in);
-            String con = s.nextLine();
+
+            String con = inCon.inputConsole();
 
             if ("y".equals(con)) {
                 config = true;
@@ -39,10 +32,10 @@ public class Main {
             }
         }
 
-        Scanner s = new Scanner(System.in);
+
         while(true){
             outCon.simpleMessage("Do you wish to manually control the game flow? [y/n]");
-            String con = s.nextLine();
+            String con = inCon.inputConsole();
 
             if ("y".equals(con)) {
                 manualSleepTime = true;
@@ -50,7 +43,7 @@ public class Main {
             } else if ("n".equals(con)) {
                 outCon.simpleMessage("How long should the time between messages be? [ms]");
                 try{
-                    nextMsgTime = s.nextInt();
+                    nextMsgTime = inCon.inputConsoleINT();
                     break;
                 }catch (Exception e){
                     outCon.simpleMessage("Please enter a valid number!");
@@ -60,11 +53,11 @@ public class Main {
             }
         }
         boolean dataSource;
-        String data=s.nextLine();
+        String data=inCon.inputConsole();
 
         while(true){
             outCon.simpleMessage("Press 'y' in order to get data from the database. Press 'n' in order to get data from the textfile.");
-            String con = s.nextLine();
+            String con = inCon.inputConsole();
 
             if ("y".equals(con)) {
                 dataSource = true;
@@ -82,8 +75,8 @@ public class Main {
         boolean naechstes = true;
         while (naechstes) {
             outCon.simpleMessage("Next Game? y for yes, n for no");
-            Scanner sc = new Scanner(System.in);
-            String eingabe = sc.nextLine();
+
+            String eingabe = inCon.inputConsole();
             if (eingabe.equals("y")) {
                 GameLoop gameA = new GameLoop(config, manualSleepTime, nextMsgTime, dataSource);
                 ZugHistorie.leeren();
