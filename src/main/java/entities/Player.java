@@ -869,10 +869,9 @@ public class Player implements Cloneable{
      * Function to get input of player as INT
      */
     public int getPlayerInputINT(int min, int max) {
-        Scanner s = new Scanner(System.in);
         while (true) {
             try {
-                int ret = s.nextInt();
+                int ret = inCon.inputConsoleINT();
                 if (ret > max || ret < min) {
                     log("Choose a number in the specified range!" + "[" + min + "," + max + "]");
                 } else {
@@ -881,7 +880,7 @@ public class Player implements Cloneable{
             } catch (Exception e) {
                 log("Enter a valid Number!");
                 //read line out of stream to clear it
-                s.nextLine();
+                inCon.inputConsole();
             }
         }
     }
