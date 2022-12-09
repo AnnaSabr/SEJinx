@@ -1,7 +1,7 @@
 import actions.Zuege.ZugHistorie;
 import entities.GameLoop;
-import entities.InputConsole;
-import entities.OutputConsole;
+import adapter.primary.InputConsole;
+import adapter.secondary.OutputConsole;
 
 
 

@@ -1,12 +1,11 @@
-import cards.Card;
-import cards.CardColor;
+import actions.ReUnDo.cards.Card;
+import actions.ReUnDo.cards.CardColor;
 import entities.MediumAI;
 import entities.Player;
 import entities.Table;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;

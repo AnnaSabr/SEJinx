@@ -1,9 +1,11 @@
-package entities;
+package adapter.secondary;
+
+import ports.outbound.Files;
 
 import java.io.*;
 import java.util.ArrayList;
 
-public class TextfileAdapter implements Files{
+public class TextfileAdapter implements Files {
 
     private OutputConsole outCon = new OutputConsole();
 

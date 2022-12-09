@@ -1,4 +1,4 @@
-package cards;
+package actions.ReUnDo.cards;
 
 /**
  * A game consists of 48 normal and 12 luck cards

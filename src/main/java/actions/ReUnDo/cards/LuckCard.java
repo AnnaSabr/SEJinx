@@ -1,4 +1,4 @@
-package cards;
+package actions.ReUnDo.cards;
 
 public class LuckCard implements Cloneable {
 

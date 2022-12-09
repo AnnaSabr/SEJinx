@@ -11,9 +11,12 @@ import actions.Zuege.Action;
 import actions.Zuege.Zuege;
 import actions.Zuege.ZugHistorie;
 import actions.speichern.Speicher;
-import cards.Card;
-import cards.CardColor;
-import cards.LuckCard;
+import adapter.primary.InputConsole;
+import adapter.secondary.OutputConsole;
+import adapter.secondary.TextfileAdapter;
+import actions.ReUnDo.cards.Card;
+import actions.ReUnDo.cards.CardColor;
+import actions.ReUnDo.cards.LuckCard;
 import persistence.DBConnector;
 import persistence.PlayerHistory;
 

@@ -1,4 +1,4 @@
-package entities;
+package ports.outbound;
 
 import java.util.ArrayList;
 

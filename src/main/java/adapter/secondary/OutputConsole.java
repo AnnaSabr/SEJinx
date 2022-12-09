@@ -1,6 +1,8 @@
-package entities;
+package adapter.secondary;
 
-public class OutputConsole implements MessageOutput{
+import ports.outbound.MessageOutput;
+
+public class OutputConsole implements MessageOutput {
 
     @Override
     public void simpleMessage(String text) {

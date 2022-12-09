@@ -1,4 +1,4 @@
-package cards;
+package actions.ReUnDo.cards;
 
 /**
  * Class representing a card from the game JINX

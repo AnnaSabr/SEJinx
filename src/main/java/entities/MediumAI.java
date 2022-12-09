@@ -1,6 +1,8 @@
 package entities;
 
-import cards.Card;
+import adapter.secondary.OutputConsole;
+import adapter.secondary.TextfileAdapter;
+import actions.ReUnDo.cards.Card;
 import persistence.DBConnector;
 import persistence.PlayerHistory;
 import java.util.ArrayList;

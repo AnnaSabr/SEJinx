@@ -1,8 +1,8 @@
 package actions.ReUnDo;
 
 
-import entities.InputConsole;
-import entities.OutputConsole;
+import adapter.primary.InputConsole;
+import adapter.secondary.OutputConsole;
 import entities.Player;
 import java.util.ArrayList;
 

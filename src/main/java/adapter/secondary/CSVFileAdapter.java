@@ -1,4 +1,6 @@
-package entities;
+package adapter.secondary;
+
+import ports.outbound.Files;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -6,7 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CSVFileAdapter implements Files{
+public class CSVFileAdapter implements Files {
     private OutputConsole outCon=new OutputConsole();
 
     @Override

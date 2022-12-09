@@ -1,7 +1,7 @@
-import cards.Card;
-import cards.CardColor;
-import cards.CardType;
-import cards.LuckCard;
+import actions.ReUnDo.cards.Card;
+import actions.ReUnDo.cards.CardColor;
+import actions.ReUnDo.cards.CardType;
+import actions.ReUnDo.cards.LuckCard;
 import entities.AIPLayer3;
 import entities.Player;
 import entities.Table;

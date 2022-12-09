@@ -1,8 +1,8 @@
 package actions.Zuege;
 
 
-import cards.Card;
-import cards.CardColor;
+import actions.ReUnDo.cards.Card;
+import actions.ReUnDo.cards.CardColor;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;

@@ -1,7 +1,7 @@
 package actions.Zuege;
 
-import cards.Card;
-import cards.LuckCard;
+import actions.ReUnDo.cards.Card;
+import actions.ReUnDo.cards.LuckCard;
 import entities.Player;
 
 /**

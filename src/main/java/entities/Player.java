@@ -3,10 +3,13 @@ package entities;
 import actions.Zuege.Action;
 import actions.Zuege.Zuege;
 import actions.Zuege.ZugHistorie;
-import cards.Card;
-import cards.CardColor;
-import cards.CardType;
-import cards.LuckCard;
+import adapter.primary.InputConsole;
+import adapter.secondary.OutputConsole;
+import adapter.secondary.TextfileAdapter;
+import actions.ReUnDo.cards.Card;
+import actions.ReUnDo.cards.CardColor;
+import actions.ReUnDo.cards.CardType;
+import actions.ReUnDo.cards.LuckCard;
 import persistence.DBConnector;
 import persistence.PlayerHistory;
 import java.util.*;
@@ -128,11 +131,6 @@ public class Player implements Cloneable{
     public void setLuckCards(ArrayList<LuckCard> luckyKarten) {
         this.luckCards = copyL(luckyKarten);
     }
-
-
-
-
-
 
     /**
      * returns current hand of player

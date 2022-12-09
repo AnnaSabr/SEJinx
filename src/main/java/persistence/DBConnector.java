@@ -3,8 +3,9 @@ import actions.ReUnDo.Runde;
 import actions.Zuege.Action;
 import actions.Zuege.Zuege;
 import actions.speichern.Speicher;
-import cards.Card;
-import cards.LuckCard;
+import adapter.secondary.OutputConsole;
+import actions.ReUnDo.cards.Card;
+import actions.ReUnDo.cards.LuckCard;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import entities.*;
@@ -782,7 +783,7 @@ public class DBConnector {
             Player p = null;
             while(rs.next()){
                 String name = rs.getString("name");
-                ArrayList<Card> cards = gson.fromJson(rs.getString("cards"),cardToken);
+                ArrayList<Card> cards = gson.fromJson(rs.getString("actions/ReUnDo/cards"),cardToken);
                 ArrayList<LuckCard> luckCards = gson.fromJson(rs.getString("luckCards"), luckToken);
                 int score = rs.getInt("score");
                 int sleeptime = rs.getInt("sleeptime");
@@ -848,7 +849,7 @@ public class DBConnector {
                 while(rs.next()){
                     Player p;
                     String name = rs.getString("name");
-                    ArrayList<Card> cards = gson.fromJson(rs.getString("cards"),cardToken);
+                    ArrayList<Card> cards = gson.fromJson(rs.getString("actions/ReUnDo/cards"),cardToken);
                     ArrayList<LuckCard> luckCards = gson.fromJson(rs.getString("luckCards"), luckToken);
                     int score = rs.getInt("score");
                     int sleeptime = rs.getInt("sleeptime");

@@ -1,8 +1,10 @@
-package entities;
+package adapter.primary;
+
+import ports.inbound.MessageInput;
 
 import java.util.Scanner;
 
-public class InputConsole implements MessageInput{
+public class InputConsole implements MessageInput {
 
     @Override
     public String inputConsole() {

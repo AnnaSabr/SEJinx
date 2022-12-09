@@ -1,4 +1,4 @@
-package entities;
+package ports.inbound;
 
 public interface MessageInput {
 
