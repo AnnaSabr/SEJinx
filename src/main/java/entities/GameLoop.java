@@ -51,8 +51,10 @@ public class GameLoop {
     TextfileAdapter textfileAdapter=new TextfileAdapter();
     private OutputConsole outCon;
     private InputConsole inCon;
+    boolean showGui;
+    GUI gui;
 
-    public GameLoop(boolean rff, boolean manualNextMsg, int sleepTime, boolean dataFromDB) {
+    public GameLoop(boolean rff, boolean manualNextMsg, int sleepTime, boolean dataFromDB, boolean showGui) {
         this.rff=rff;
         this.table = new Table(rff);
         this.highscores = new ArrayList<>();
@@ -68,6 +70,10 @@ public class GameLoop {
         this.db=dataFromDB;
         this.outCon= new OutputConsole();
         this.inCon=new InputConsole();
+        this.showGui=showGui;
+        if(showGui){
+            gui=new GUI();
+        }
     }
 
     /**
@@ -131,6 +137,7 @@ public class GameLoop {
     private void impLoop() {
 
 
+        this.gui.runGUI();
         //current player counter
         cP = 0;
         //determines if a round is over

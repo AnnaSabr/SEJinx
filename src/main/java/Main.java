@@ -1,4 +1,5 @@
 import actions.Zuege.ZugHistorie;
+import entities.GUI;
 import entities.GameLoop;
 import adapter.primary.InputConsole;
 import adapter.secondary.OutputConsole;
@@ -16,8 +17,22 @@ public class Main {
         boolean config = false ;
         boolean manualSleepTime = false;
         int nextMsgTime = 200;
+        boolean gui=false;
         while(true){
-            outCon.simpleMessage("Do you wish to load a config file? [y/n]");
+            outCon.simpleMessage("Do you want to use a GUI? [y/n]");
+            String choice=inCon.inputConsole();
+
+            if("y".equals(choice)){
+                gui=true;
+                break;
+            }else if("n".equals(choice)){
+                gui=false;
+                break;
+            }
+            outCon.simpleMessage("Invalid choice");
+        }
+        while(true){
+           /* outCon.simpleMessage("Do you wish to load a config file? [y/n]");
 
             String con = inCon.inputConsole();
 
@@ -29,7 +44,10 @@ public class Main {
                 break;
             } else {
                 outCon.simpleMessage("Not an option! Try again!");
-            }
+            }*/
+            GUI g=new GUI();
+            config=g.returningYesOrNO("Do you wish to load a config file?");
+            break;
         }
 
 
@@ -53,7 +71,7 @@ public class Main {
             }
         }
         boolean dataSource;
-        String data=inCon.inputConsole();
+        //String data=inCon.inputConsole();
 
         while(true){
             outCon.simpleMessage("Press 'y' in order to get data from the database. Press 'n' in order to get data from the textfile.");
@@ -69,7 +87,7 @@ public class Main {
                 outCon.simpleMessage("Not an option! Try again!");
             }
         }
-        GameLoop game = new GameLoop(config,manualSleepTime,nextMsgTime, dataSource);
+        GameLoop game = new GameLoop(config,manualSleepTime,nextMsgTime, dataSource, gui);
 
         game.run();
         boolean naechstes = true;
@@ -78,7 +96,7 @@ public class Main {
 
             String eingabe = inCon.inputConsole();
             if (eingabe.equals("y")) {
-                GameLoop gameA = new GameLoop(config, manualSleepTime, nextMsgTime, dataSource);
+                GameLoop gameA = new GameLoop(config, manualSleepTime, nextMsgTime, dataSource, gui);
                 ZugHistorie.leeren();
                 gameA.run();
             } else if (eingabe.equals("n")) {
