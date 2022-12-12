@@ -30,7 +30,7 @@ public class DBConnector {
             con = DriverManager.getConnection(url, user, pass);
         } catch (SQLException e) {
             String text=e.getMessage();
-            outCon.simpleMessage(text);
+            outCon.exceptionMessage(text);
         }
     }
 
@@ -57,8 +57,8 @@ public class DBConnector {
             }
 
         }catch (Exception e){
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return false;
         }
 
@@ -92,7 +92,9 @@ public class DBConnector {
 
         } catch (SQLException e){
             String text="Something went wrong while trying to save the player";
-            outCon.simpleMessage(text);
+            outCon.errorSelfMessage(text);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return false;
         }
 
@@ -122,7 +124,9 @@ public class DBConnector {
             }
         }catch (Exception e){
             String text="Something went wrong while checking the player login";
-            outCon.simpleMessage(text);
+            outCon.errorSelfMessage(text);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return false;
         }
 
@@ -193,9 +197,9 @@ public class DBConnector {
             return true;
         } catch (SQLException e){
             String text="Something went wrong while trying to save the playerhistory";
-            outCon.simpleMessage(text);
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            outCon.errorSelfMessage(text);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return false;
         }
     }
@@ -269,8 +273,8 @@ public class DBConnector {
 
             return playerHistories.toArray(new PlayerHistory[0]);
         }catch (SQLException e){
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return null;
         }
     }
@@ -402,8 +406,8 @@ public class DBConnector {
 
 
         }catch (SQLException e){
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return 0;
         }
     }
@@ -452,12 +456,12 @@ public class DBConnector {
             return id;
 
         }catch (SQLException e){
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return 0;
         }catch (Exception e){
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return 0;
         }
 
@@ -498,8 +502,8 @@ public class DBConnector {
             return id;
 
         }catch (SQLException e){
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return 0;
         }
     }
@@ -556,8 +560,8 @@ public class DBConnector {
             //return id if found
             return id;
         }catch (Exception e){
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return 0;
         }
     }
@@ -596,9 +600,9 @@ public class DBConnector {
 
         } catch (SQLException e){
             String text="Something went wrong while trying to save the Speicherstand";
-            outCon.simpleMessage(text);
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            outCon.errorSelfMessage(text);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return 0;
         }
     }
@@ -671,8 +675,8 @@ public class DBConnector {
             //return result
             return newSpeicher;
         }catch (SQLException e){
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return null;
         }
     }
@@ -698,8 +702,8 @@ public class DBConnector {
             }
             return speicher.toArray(new Integer[]{});
         }catch (SQLException e){
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return null;
         }
     }
@@ -753,8 +757,8 @@ public class DBConnector {
             }
             return actions;
         }catch (SQLException e){
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return null;
         }
     }
@@ -818,8 +822,8 @@ public class DBConnector {
             //return created player
             return p;
         }catch (SQLException e){
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return null;
         }
 
@@ -887,8 +891,8 @@ public class DBConnector {
 
                 return players;
             }catch (SQLException e){
-                String exception=e.toString();
-                outCon.simpleMessage(exception);
+                String exception=e.getMessage();
+                outCon.exceptionMessage(exception);
                 return null;
             }
     }
@@ -929,8 +933,8 @@ public class DBConnector {
 
             return table;
         }catch (SQLException e){
-            String exception=e.toString();
-            outCon.simpleMessage(exception);
+            String exception=e.getMessage();
+            outCon.exceptionMessage(exception);
             return null;
         }
     }

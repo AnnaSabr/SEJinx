@@ -19,4 +19,11 @@ public class InputConsole implements MessageInput {
         int inputPlayer=sc.nextInt();
         return inputPlayer;
     }
+
+    @Override
+    public String letterInput() {
+        Scanner sc= new Scanner(System.in);
+        String inputLetter=sc.nextLine();
+        return inputLetter;
+    }
 }

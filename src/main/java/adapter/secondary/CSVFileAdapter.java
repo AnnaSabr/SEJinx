@@ -26,7 +26,7 @@ public class CSVFileAdapter implements Files {
             }
 
         } catch (FileNotFoundException e) {
-            outCon.simpleMessage(filename + "was not found.");
+            outCon.errorSelfMessage(filename + "was not found.");
         }catch (IOException e) {
             throw new RuntimeException(e);
         }

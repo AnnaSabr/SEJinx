@@ -24,7 +24,7 @@ public class TextfileAdapter implements Files {
             }
 
         } catch (FileNotFoundException e) {
-            outCon.simpleMessage(filename + "was not found.");
+            outCon.errorSelfMessage(filename + "was not found.");
         }catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -41,7 +41,7 @@ public class TextfileAdapter implements Files {
                 pw.flush();
             }
         } catch (FileNotFoundException e) {
-            outCon.simpleMessage("Data could not be saved. File not found.");
+            outCon.errorSelfMessage("Data could not be saved. File not found.");
         }
     }
 }

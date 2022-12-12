@@ -23,4 +23,16 @@ public class OutputConsole implements MessageOutput {
     public void playerLog(String name,String text) {
         System.out.println(name+text);
     }
+
+
+
+
+    @Override
+    public void errorSelfMessage(String text) {
+        System.out.println(text);
+    }
+    @Override
+    public void exceptionMessage(String text) {
+        System.out.println(text);
+    }
 }

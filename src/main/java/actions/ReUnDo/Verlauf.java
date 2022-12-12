@@ -1,11 +1,8 @@
 package actions.ReUnDo;
-
-
 import adapter.primary.InputConsole;
 import adapter.secondary.OutputConsole;
 import entities.Player;
 import java.util.ArrayList;
-
 
 
 /**
@@ -86,7 +83,7 @@ public class Verlauf {
                     P - leave
                             \n""");
 
-            String input =inCon.inputConsole() ;
+            String input =inCon.letterInput();
             if (input.equals("S")) {
                 log("regular status:\n");
                 rundeAnzeigen(tail.getDavor());
