@@ -1,5 +1,4 @@
 package entities;
-
 import adapter.secondary.OutputConsole;
 import adapter.secondary.TextfileAdapter;
 import actions.ReUnDo.cards.Card;
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class MediumAI extends Player{
+
     private OutputConsole outCon;
     /**
      * Constructor for a new player
@@ -25,7 +25,7 @@ public class MediumAI extends Player{
             }
             this.loadHistoryFromDB();
         }
-        this.outCon= new OutputConsole();
+        this.outCon=new OutputConsole();
     }
 
 
@@ -57,23 +57,23 @@ public class MediumAI extends Player{
 
         //roll if not rolled yet
         if(this.rolls == 0){
-            log(this.name + "[AI], i didnt roll the dice yet!");
+            outCon.logKiPlayer(this.getName(),"[AI], i didnt roll the dice yet!");
             return "R";
         }
 
         //roll again if diceCount is too low
         if(this.diceCount < 3 && this.rolls < 2){
-            log(this.name + "[AI], my diceCount is way to low!");
+            outCon.logKiPlayer(this.getName(),"[AI], my diceCount is way to low!");
             return "R";
         }
 
         //check if there is a card that can be picked, if not and rolls are available --> roll
         if(getBestCard(table) == null && this.rolls < 2){
-            log(this.name + "[AI], there is no card i want...I´ll roll again!");
+            outCon.logKiPlayer(this.getName(),"[AI], there is no card i want...I´ll roll again!");
             return "R";
         }
 
-        log(this.name + "[AI], i will choose a card now!");
+        outCon.logKiPlayer(this.getName(),"[AI], i will choose a card now!");
         //nothing left to do, possibly end round
         return "C";
     }
@@ -118,7 +118,7 @@ public class MediumAI extends Player{
 
         //check if the AI is able to drop a card
         if(this.cards.size() == 0){
-            log(this.name + "[AI], i have no cards to drop after this round!");
+            outCon.logKiPlayer(this.getName(),"[AI], i have no cards to drop after this round!");
             return false;
         }
 
@@ -142,7 +142,7 @@ public class MediumAI extends Player{
 
         //AI has only one card to drop
         if(maxCards.size() == 1){
-            log(this.name + "[AI], i only have one card to drop...");
+            outCon.logKiPlayer(this.getName(),"[AI], i only have one card to drop...");
             this.cards.remove(maxCards.get(0));
             return true;
         }
@@ -187,7 +187,7 @@ public class MediumAI extends Player{
      * */
     @Override
     public boolean drawLuckCard(Table table, Player[] players){
-        log(this.name + "[AI], i would never waste points for a luck card!");
+        outCon.logKiPlayer(this.getName(), "[AI], i would never waste points for a luck card!");
         return false;
     }
 

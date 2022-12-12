@@ -7,7 +7,7 @@ public interface MessageOutput {
 
 
 
-   void playerLog(String name,String text);
+   void logKiPlayer(String name,String text);
 
 
    /**

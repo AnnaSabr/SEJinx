@@ -17,9 +17,6 @@ public class ZugHistorie {
     static Action tail = new Action(null, platzhalter, null);
 
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-
-
     /**
      * Fuegt einen weiteren Spielzug der Historie hinzu
      *
