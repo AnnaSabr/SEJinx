@@ -493,7 +493,7 @@ public class Player implements Cloneable{
                     A - Give advise
                     P - Show player's history
                     """);
-            String action = inCon.inputConsole();
+            String action = inCon.inputAnything();
             //check if value is acceptable
             if (Arrays.asList(actions).contains(action)) {
                 return action;
@@ -563,7 +563,7 @@ public class Player implements Cloneable{
 
 
     public int playerInputNumberInRange(int min, int max) {
-        String line = inCon.inputConsole();
+        String line = inCon.inputAnything();
         try {
             int newDiceCount = Integer.parseInt(line);
             if (newDiceCount <= max && newDiceCount >= min) {
@@ -781,7 +781,7 @@ public class Player implements Cloneable{
      * @return
      */
     public String getPlayerInputMenu() {
-        String line = inCon.inputConsole();
+        String line = inCon.inputAnything();
         if ((!line.equals("C")) && (!line.equals("L")) && (!line.equals("R") && !line.equals("M") && (!line.equals("N")) && (!line.equals("T")) && (!line.equals("H")))) {
             log("Try again!");
             return this.getPlayerInputMenu();
@@ -797,7 +797,7 @@ public class Player implements Cloneable{
      * @return
      */
     public int[] getPlayerInputCoord() {
-        String line = inCon.inputConsole();
+        String line = inCon.inputAnything();
         String[] coordsSTR = line.split(",");
         try {
             if (Integer.valueOf(coordsSTR[0]) > 4 || Integer.valueOf(coordsSTR[0]) < 1) {
@@ -827,7 +827,7 @@ public class Player implements Cloneable{
      * @return
      */
     public String getPlayerInputYesNo() {
-        String line = inCon.inputConsole();
+        String line = inCon.inputAnything();
         if ((!line.equals("y")) && (!line.equals("n"))) {
             log("Enter y or n!");
             return this.getPlayerInputYesNo();
@@ -842,7 +842,7 @@ public class Player implements Cloneable{
      * @return
      */
     public String getPlayerInputMultipleCoordinates(Table table) {
-        String line = inCon.inputConsole();
+        String line = inCon.inputAnything();
         if ((!line.equals("0"))) {
             String[] coord = line.split(";");
             for (String c : coord) {
@@ -869,7 +869,7 @@ public class Player implements Cloneable{
     public int getPlayerInputINT(int min, int max) {
         while (true) {
             try {
-                int ret = inCon.inputConsoleINT();
+                int ret = inCon.inputINT();
                 if (ret > max || ret < min) {
                     log("Choose a number in the specified range!" + "[" + min + "," + max + "]");
                 } else {
@@ -878,7 +878,7 @@ public class Player implements Cloneable{
             } catch (Exception e) {
                 log("Enter a valid Number!");
                 //read line out of stream to clear it
-                inCon.inputConsole();
+                inCon.inputAnything();
             }
         }
     }
@@ -889,7 +889,7 @@ public class Player implements Cloneable{
     void log(String msg) {
         if (manualNextMsg) {
             outCon.simpleMessage("[JINX] " + msg + " [ENTER] to continue!");
-            inCon.inputConsole();
+            inCon.inputAnything();
         } else {
             try {
                 Thread.sleep(sleepTime);

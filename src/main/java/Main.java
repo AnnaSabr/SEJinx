@@ -17,47 +17,47 @@ public class Main {
         boolean manualSleepTime = false;
         int nextMsgTime = 200;
         while(true){
-            outCon.simpleMessage("Do you wish to load a config file? [y/n]");
+            outCon.jinxMessage("Do you wish to load a config file? [y/n]");
 
-            String con = inCon.inputConsole();
+            String con = inCon.letterInput();
 
             if ("y".equals(con)) {
                 config = true;
                 break;
             } else if ("n".equals(con)) {
-                outCon.simpleMessage("Shuffling the cards!");
+                outCon.jinxMessage("Shuffling the cards!");
                 break;
             } else {
-                outCon.simpleMessage("Not an option! Try again!");
+                outCon.jinxMessage("Not an option! Try again!");
             }
         }
 
 
         while(true){
-            outCon.simpleMessage("Do you wish to manually control the game flow? [y/n]");
-            String con = inCon.inputConsole();
+            outCon.jinxMessage("Do you wish to manually control the game flow? [y/n]");
+            String con = inCon.letterInput();
 
             if ("y".equals(con)) {
                 manualSleepTime = true;
                 break;
             } else if ("n".equals(con)) {
-                outCon.simpleMessage("How long should the time between messages be? [ms]");
+                outCon.jinxMessage("How long should the time between messages be? [ms]");
                 try{
-                    nextMsgTime = inCon.inputConsoleINT();
+                    nextMsgTime = inCon.inputINTTime();
                     break;
                 }catch (Exception e){
-                    outCon.simpleMessage("Please enter a valid number!");
+                    outCon.errorSelfMessage("Please enter a valid number!");
                 }
             } else {
-                outCon.simpleMessage("Not an option! Try again!");
+                outCon.jinxMessage("Not an option! Try again!");
             }
         }
         boolean dataSource;
-        String data=inCon.inputConsole();
+        String data=inCon.inputAnything();
 
         while(true){
-            outCon.simpleMessage("Press 'y' in order to get data from the database. Press 'n' in order to get data from the textfile.");
-            String con = inCon.inputConsole();
+            outCon.jinxMessage("Press 'y' in order to get data from the database. Press 'n' in order to get data from the textfile.");
+            String con = inCon.letterInput();
 
             if ("y".equals(con)) {
                 dataSource = true;
@@ -66,7 +66,7 @@ public class Main {
                 dataSource = false;
                 break;
             } else {
-                outCon.simpleMessage("Not an option! Try again!");
+                outCon.jinxMessage("Not an option! Try again!");
             }
         }
         GameLoop game = new GameLoop(config,manualSleepTime,nextMsgTime, dataSource);
@@ -74,18 +74,18 @@ public class Main {
         game.run();
         boolean naechstes = true;
         while (naechstes) {
-            outCon.simpleMessage("Next Game? y for yes, n for no");
+            outCon.jinxMessage("Next Game? y for yes, n for no");
 
-            String eingabe = inCon.inputConsole();
+            String eingabe = inCon.letterInput();
             if (eingabe.equals("y")) {
                 GameLoop gameA = new GameLoop(config, manualSleepTime, nextMsgTime, dataSource);
                 ZugHistorie.leeren();
                 gameA.run();
             } else if (eingabe.equals("n")) {
-                outCon.simpleMessage("End initialized");
+                outCon.jinxMessage("End initialized");
                 naechstes = false;
             } else {
-                outCon.simpleMessage("Wrong input.");
+                outCon.errorSelfMessage("Wrong input.");
             }
         }
     }

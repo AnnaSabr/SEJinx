@@ -7,14 +7,14 @@ import java.util.Scanner;
 public class InputConsole implements MessageInput {
 
     @Override
-    public String inputConsole() {
+    public String inputAnything() {
         Scanner sc = new Scanner(System.in);
         String inputPlayer = sc.nextLine();
         return inputPlayer;
     }
 
     @Override
-    public int inputConsoleINT() {
+    public int inputINTTime() {
         Scanner sc = new Scanner(System.in);
         int inputPlayer=sc.nextInt();
         return inputPlayer;
@@ -25,5 +25,33 @@ public class InputConsole implements MessageInput {
         Scanner sc= new Scanner(System.in);
         String inputLetter=sc.nextLine();
         return inputLetter;
+    }
+
+    @Override
+    public int inputINTPlayerInitialization() {
+        Scanner sc = new Scanner(System.in);
+        int inputPlayer=sc.nextInt();
+        return inputPlayer;
+    }
+
+    @Override
+    public String inputName() {
+        Scanner sc= new Scanner(System.in);
+        String inputName=sc.nextLine();
+        return inputName;
+    }
+
+    @Override
+    public String inputLevel() {
+        Scanner sc= new Scanner(System.in);
+        String level=sc.nextLine();
+        return level;
+    }
+
+    @Override
+    public String inputPasswort() {
+        Scanner sc= new Scanner(System.in);
+        String passwort=sc.nextLine();
+        return passwort;
     }
 }

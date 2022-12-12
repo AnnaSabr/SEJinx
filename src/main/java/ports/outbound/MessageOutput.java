@@ -1,14 +1,18 @@
 package ports.outbound;
 
+import entities.Table;
+
 public interface MessageOutput {
 
    void simpleMessage(String text);
 
 
-
-
+   /**
+    * everything a Ki says
+    * @param name activ KI
+    * @param text
+    */
    void logKiPlayer(String name,String text);
-
 
    /**
     * Output function for exceptions
@@ -33,4 +37,10 @@ public interface MessageOutput {
     * @param text
     */
    void jinxMessage(String text);
+
+   /**
+    * shows gamefield
+    * @param table staus of the table
+    */
+   void tablePicture(Table table);
 }

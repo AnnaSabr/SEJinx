@@ -1,5 +1,6 @@
 package adapter.secondary;
 
+import entities.Table;
 import ports.outbound.MessageOutput;
 
 public class OutputConsole implements MessageOutput {
@@ -10,7 +11,10 @@ public class OutputConsole implements MessageOutput {
     }
 
 
-
+    @Override
+    public void tablePicture(Table table) {
+        System.out.println("\n"+table.toString());
+    }
 
     @Override
     public void logKiPlayer(String name,String text) {
