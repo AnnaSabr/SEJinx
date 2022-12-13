@@ -43,4 +43,6 @@ public interface MessageOutput {
     * @param table staus of the table
     */
    void tablePicture(Table table);
+
+   int inputCoord();
 }

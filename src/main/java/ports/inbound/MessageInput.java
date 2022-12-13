@@ -32,4 +32,6 @@ public interface MessageInput {
      * @return
      */
     int inputINT();
+
+    String inputCoord();
 }

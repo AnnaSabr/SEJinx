@@ -21,6 +21,13 @@ public class InputConsole implements MessageInput {
     }
 
     @Override
+    public int inputINT() {
+        Scanner sc = new Scanner(System.in);
+        int inputINT=sc.nextInt();
+        return inputINT;
+    }
+
+    @Override
     public String letterInput() {
         Scanner sc= new Scanner(System.in);
         String inputLetter=sc.nextLine();
@@ -53,5 +60,12 @@ public class InputConsole implements MessageInput {
         Scanner sc= new Scanner(System.in);
         String passwort=sc.nextLine();
         return passwort;
+    }
+
+    @Override
+    public String inputCoord() {
+        Scanner sc = new Scanner(System.in);
+        String inputINT = sc.nextLine();
+        return inputINT;
     }
 }

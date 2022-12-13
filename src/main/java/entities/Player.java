@@ -246,7 +246,7 @@ public class Player implements Cloneable{
 
         //check if the player has an option to choose from
         if (checkEndRound(table)) {
-            log(this.name + ", there is no card you could choose!");
+            outCon.logKiPlayer(this.getName(),", there is no card you could choose!");
             Card halter = new Card(CardColor.RED, 420);
             Action action6 = new Action(Zuege.SKIPPED, halter, this);
             ZugHistorie.actionHinzufuegen(action6);
@@ -323,7 +323,7 @@ public class Player implements Cloneable{
     public boolean drawLuckCard(Table table, Player[] players) {
         //check if player has cards on his hand to exchange for a luck card
         if (this.cards.size() == 0) {
-            log(this.name + ", you dont have any cards to exchange for a luck card!");
+            outCon.logKiPlayer(this.getName(),", you dont have any cards to exchange for a luck card!");
             return false;
         }
 
@@ -493,7 +493,7 @@ public class Player implements Cloneable{
                     A - Give advise
                     P - Show player's history
                     """);
-            String action = inCon.inputAnything();
+            String action = inCon.letterInput();
             //check if value is acceptable
             if (Arrays.asList(actions).contains(action)) {
                 return action;
@@ -563,9 +563,9 @@ public class Player implements Cloneable{
 
 
     public int playerInputNumberInRange(int min, int max) {
-        String line = inCon.inputAnything();
+        int line = inCon.inputINT();
         try {
-            int newDiceCount = Integer.parseInt(line);
+            int newDiceCount = line;
             if (newDiceCount <= max && newDiceCount >= min) {
                 return newDiceCount;
             } else if (newDiceCount == 0) {
@@ -797,7 +797,7 @@ public class Player implements Cloneable{
      * @return
      */
     public int[] getPlayerInputCoord() {
-        String line = inCon.inputAnything();
+        String line = inCon.inputCoord();
         String[] coordsSTR = line.split(",");
         try {
             if (Integer.valueOf(coordsSTR[0]) > 4 || Integer.valueOf(coordsSTR[0]) < 1) {
@@ -842,7 +842,7 @@ public class Player implements Cloneable{
      * @return
      */
     public String getPlayerInputMultipleCoordinates(Table table) {
-        String line = inCon.inputAnything();
+        String line = inCon.inputCoord();
         if ((!line.equals("0"))) {
             String[] coord = line.split(";");
             for (String c : coord) {
@@ -888,13 +888,13 @@ public class Player implements Cloneable{
      */
     void log(String msg) {
         if (manualNextMsg) {
-            outCon.simpleMessage("[JINX] " + msg + " [ENTER] to continue!");
+            outCon.jinxMessage(msg + " [ENTER] to continue!");
             inCon.inputAnything();
         } else {
             try {
                 Thread.sleep(sleepTime);
             } catch (Exception e) {
-                outCon.simpleMessage("Sleep exception!");
+                outCon.errorSelfMessage("Sleep exception!");
             }
             outCon.jinxMessage(msg);
         }
@@ -934,7 +934,7 @@ public class Player implements Cloneable{
      * @param msg
      */
     private void playerlog(String msg) {
-        outCon.simpleMessage("["+this.getName() + "] chose "+msg);
+        outCon.logKiPlayer(this.getName(),"choose "+msg);
     }
 
     @Override
