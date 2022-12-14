@@ -20,6 +20,8 @@ import actions.ReUnDo.cards.LuckCard;
 import persistence.DBConnector;
 import persistence.PlayerHistory;
 
+import javax.swing.*;
+
 
 /**
  * Class handling game logic
@@ -99,35 +101,45 @@ public class GameLoop {
         if(!db){
             this.getProfilesFromFile();
         }
-        outCon.simpleMessage("Welcome to JINX! How many players do you wish to play with? (2-4 Players)");
-        int playerCount;
-        while (true) {
-            try {
-                playerCount = inCon.inputConsoleINT();
+        if(!showGui){
+            outCon.simpleMessage("Welcome to JINX! How many players do you wish to play with? (2-4 Players)");
+            int playerCount;
+            while (true) {
+                try {
+                    playerCount = inCon.inputConsoleINT();
 
-                if (playerCount < 2 || playerCount > 4) {
-                    outCon.simpleMessage("This game is designed for 2-4 Players! Choose again!");
-                } else {
-                    // set size of players to user specified value
-                    this.players = new Player[playerCount];
-
-                    outCon.simpleMessage("Please tell us if you like do modifier any player into KI: y/n");
-                    String kiInvolvieren =inCon.inputConsole();
-                    if (kiInvolvieren.equals("y")) {
-                        initKI();
+                    if (playerCount < 2 || playerCount > 4) {
+                        outCon.simpleMessage("This game is designed for 2-4 Players! Choose again!");
                     } else {
-                        outCon.simpleMessage("No KI's involved in this game.");
+                        // set size of players to user specified value
+                        this.players = new Player[playerCount];
+
+                        outCon.simpleMessage("Please tell us if you like do modifier any player into KI: y/n");
+                        String kiInvolvieren =inCon.inputConsole();
+                        if (kiInvolvieren.equals("y")) {
+                            initKI();
+                        } else {
+                            outCon.simpleMessage("No KI's involved in this game.");
+                        }
+                        break;
                     }
-                    break;
+                } catch (Exception e) {
+                    log("Enter a valid number!");
                 }
-            } catch (Exception e) {
-                log("Enter a valid number!");
+            }
+            if (playerCount != anzahlKI) {
+                // init all players
+                initPlayers();
+            }
+        }else{
+            int playercount=gui.getInputNumber("Welcome to JINX! How many players do you wish to play with? (2-4 Players)",2,4);
+            this.players = new Player[playercount];
+            boolean aiInGame=gui.returningYesOrNO("Would you like to use AI in this game?");
+            if(aiInGame){
+                this.initKI();
             }
         }
-        if (playerCount != anzahlKI) {
-            // init all players
-            initPlayers();
-        }
+
     }
 
 
@@ -586,29 +598,42 @@ public class GameLoop {
     public void initKI() {
         int players = this.players.length;
         ArrayList<Player> ki = new ArrayList<>();
-        while (true) {
-            outCon.simpleMessage("This game will have " + players + " players. Choose between 0-" + players + ".\n" +
-                    "How many do you want to substitute with KI's?");
-            String kiAnzahl = inCon.inputConsole();
-            try {
-                int anzahl = Integer.parseInt(kiAnzahl);
-                if (anzahl > 0 && anzahl <= players) {
-                    for (int a = 0; a < anzahl; a++) {
-                        ki.add(buildingKI());
+        if(!showGui){
+            while (true) {
+                outCon.simpleMessage("This game will have " + players + " players. Choose between 0-" + players + ".\n" +
+                        "How many do you want to substitute with KI's?");
+                String kiAnzahl = inCon.inputConsole();
+                try {
+                    int anzahl = Integer.parseInt(kiAnzahl);
+                    if (anzahl > 0 && anzahl <= players) {
+                        for (int a = 0; a < anzahl; a++) {
+                            ki.add(buildingKI());
+                        }
+                        int b = 0;
+                        for (Player p : ki) {
+                            this.players[b] = p;
+                            b++;
+                        }
+                        break;
+                    } else {
+                        outCon.simpleMessage("Incorrect input.");
                     }
-                    int b = 0;
-                    for (Player p : ki) {
-                        this.players[b] = p;
-                        b++;
-                    }
-                    break;
-                } else {
-                    outCon.simpleMessage("Incorrect input.");
+                } catch (NumberFormatException n) {
+                    outCon.simpleMessage("Not an acceptable answer. You will play without any KI.");
                 }
-            } catch (NumberFormatException n) {
-                outCon.simpleMessage("Not an acceptable answer. You will play without any KI.");
+            }
+        }else{
+            int amountAI=gui.getInputNumber("How many AI would you like to use?",1,this.players.length);
+            for (int a = 0; a < amountAI; a++) {
+                ki.add(buildingKI());
+            }
+            int b = 0;
+            for (Player p : ki) {
+                this.players[b] = p;
+                b++;
             }
         }
+
     }
 
     /**
@@ -617,35 +642,54 @@ public class GameLoop {
      * @return einzelne KI
      */
     public Player buildingKI() {
-        Player k;
+        Player k = null;
         String name = "";
         String level = "";
-        while (true) {
-            outCon.simpleMessage("Please enter a Name for your KI:");
-            name = inCon.inputConsole();
-            if (!name.equals("")) {
-                outCon.simpleMessage("Please choose a level for your KI:  " +
-                        "easy / medium / hard");
-                level=inCon.inputConsole();
-                if (level.equals("easy")){
-                    k = new EasyKI(name,sleepTime,manualNextMsg,db);
-                    break;
-                }
-                else if (level.equals("medium")){
-                    k = new MediumAI(name,sleepTime,manualNextMsg,db);
-                    break;
-                }
-                else if (level.equals("hard")){
-                    k=new AIPLayer3(name,sleepTime,manualNextMsg,db);
-                    break;
+        if(!showGui){
+            while (true) {
+                outCon.simpleMessage("Please enter a Name for your KI:");
+                name = inCon.inputConsole();
+                if (!name.equals("")) {
+                    outCon.simpleMessage("Please choose a level for your KI:  " +
+                            "easy / medium / hard");
+                    level=inCon.inputConsole();
+                    if (level.equals("easy")){
+                        k = new EasyKI(name,sleepTime,manualNextMsg,db);
+                        break;
+                    }
+                    else if (level.equals("medium")){
+                        k = new MediumAI(name,sleepTime,manualNextMsg,db);
+                        break;
+                    }
+                    else if (level.equals("hard")){
+                        k=new AIPLayer3(name,sleepTime,manualNextMsg,db);
+                        break;
+                    } else {
+                        outCon.simpleMessage("Not an option. Try again.");
+                    }
                 } else {
-                    outCon.simpleMessage("Not an option. Try again.");
+                    outCon.simpleMessage("Wrong input.");
                 }
-            } else {
-                outCon.simpleMessage("Wrong input.");
+            }
+            outCon.simpleMessage("You created: KI: " + k.getName() + "  Level: " + k.getClass().getSimpleName());
+        }else{
+            String[] aiValues=gui.AIsettings();
+            name=aiValues[1];
+            level=aiValues[0];
+            if (level.equals("Easy")){
+                k = new EasyKI(name,sleepTime,manualNextMsg,db);
+                JOptionPane.showOptionDialog(null,"AI created","success!",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
+                System.out.println("Done");
+            }
+            else if (level.equals("Medium")){
+                k = new MediumAI(name,sleepTime,manualNextMsg,db);
+                JOptionPane.showOptionDialog(null,"AI created","success!",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
+            }
+            else if (level.equals("Hard")){
+                k=new AIPLayer3(name,sleepTime,manualNextMsg,db);
+                JOptionPane.showOptionDialog(null,"AI created","success!",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
             }
         }
-        outCon.simpleMessage("You created: KI: " + k.getName() + "  Level: " + k.getClass().getSimpleName());
         this.anzahlKI++;
         return k;
     }
