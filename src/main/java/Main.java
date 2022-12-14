@@ -21,7 +21,7 @@ public class Main {
         boolean gui=false;
         while(true){
             outCon.simpleMessage("Do you want to use a GUI? [y/n]");
-            String choice=inCon.inputConsole();
+            String choice=inCon.letterInput();
 
             if("y".equals(choice)){
                 gui=true;
