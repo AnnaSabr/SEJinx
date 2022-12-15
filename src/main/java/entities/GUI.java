@@ -1,6 +1,8 @@
 package entities;
 
 import actions.ReUnDo.Round;
+import actions.ReUnDo.cards.CardType;
+import actions.ReUnDo.cards.LuckCard;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -9,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class GUI {
 
@@ -103,10 +106,54 @@ public class GUI {
     }
 
     public static void main(String[] args){
-        CardGUI cardGUI=new CardGUI(new Table(true));
+        GUI g=new GUI();
+        Table t=new Table(true);
+        Player test=new Player("Testing",10,false,false);
+        test.addLuckCard(new LuckCard(CardType.ONETOTHREE));
+        test.addLuckCard(new LuckCard(CardType.PLUSONE));
+        ArrayList<Player> testPlayerlist=new ArrayList<>();
+        testPlayerlist.add(test);
+        Round testRound=new Round(testPlayerlist,t);
+        testRound.setActive(test);
+        g.updateGUI(testRound);
+
+        /*JPanel label1=g.luckcardGUI(test);
         JFrame frame=new JFrame();
-        frame.add(cardGUI,BorderLayout.CENTER);
+        frame.add(label1,BorderLayout.CENTER);
         frame.setVisible(true);
+        //g.luckcardGUI(test);*/
+    }
+
+    public JPanel luckcardGUI(Player currentPlayer){
+        JPanel playerLuckcards=new JPanel();
+        playerLuckcards.setBackground(new Color(160,82,45));
+        for(LuckCard card:currentPlayer.getLuckCards()){
+            ImageIcon cardImage;
+            if(card.getCardType().equals(CardType.PLUSONE)){
+                cardImage=new ImageIcon("src/main/java/cards/LuckCardImages/plus_one.png");
+            }else if(card.getCardType().equals(CardType.MINUSONE)){
+                cardImage=new ImageIcon("src/main/java/cards/LuckCardImages/minus_one.png");
+            } else if (card.getCardType().equals(CardType.EXTRATHROW)) {
+                cardImage=new ImageIcon("src/main/java/cards/LuckCardImages/throw_again.png");
+            } else if (card.getCardType().equals(CardType.FOURTOSIX)) {
+                cardImage=new ImageIcon("src/main/java/cards/LuckCardImages/four_to_six.png");
+            }else if(card.getCardType().equals(CardType.CARDSUM)){
+                cardImage=new ImageIcon("src/main/java/cards/LuckCardImages/draw_many.png");
+            }else{
+                cardImage=new ImageIcon("src/main/java/cards/LuckCardImages/one_to_three.png");
+            }
+            JButton cardButton=new JButton(cardImage);
+            ActionListener actionListener=new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    //TODO
+                    System.out.println("Luckcard button");
+                }
+            };
+            cardButton.addActionListener(actionListener);
+            playerLuckcards.add(cardButton);
+        }
+        return playerLuckcards;
     }
 
     /**
@@ -375,8 +422,42 @@ public class GUI {
     }
 
     public void updateGUI(Round displaying){
+        //JFrame = gui
+        gui.getContentPane().removeAll();
+        CardGUI tableGui=new CardGUI(displaying.getTableStatus());
+        gui.add(tableGui,BorderLayout.CENTER);
+        JPanel luckCards=this.luckcardGUI(displaying.getActive());
+        //gui.add(luckCards,BorderLayout.EAST);
 
+        JPanel compRight=new JPanel(new BorderLayout());
+        compRight.add(luckCards,BorderLayout.CENTER);
+
+        JLabel playerName=new JLabel(displaying.getActive().getName()+", it's your turn!");
+        playerName.setFont(new Font("Serif", Font.PLAIN, 24));
+        gui.add(playerName,BorderLayout.NORTH);
+
+        JButton diceRoll=new JButton("Roll the dice");
+        int dice=displaying.getActive().diceCount;
+        String diceStringValue=String.valueOf(dice);
+        if(dice==0){
+            diceStringValue="No value yet";
+        }
+        JLabel diceCount=new JLabel("Rolled :" + diceStringValue);
+        ActionListener diceListener=new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+        diceRoll.addActionListener(diceListener);
+        JPanel diceDisplay=new JPanel();
+        diceDisplay.add(diceRoll);
+        diceDisplay.add(diceCount);
+        compRight.add(diceDisplay,BorderLayout.SOUTH);
+
+        gui.add(compRight,BorderLayout.EAST);
 
         //TODO
+        gui.setVisible(true);
     }
 }

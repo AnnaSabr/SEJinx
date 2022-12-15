@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 public class CardGUI extends JPanel {
 
-    ArrayList<Rectangle> tableCards=new ArrayList<>();
     Card[][] cardTableCards;
 
     public CardGUI(Table table){
@@ -23,11 +22,6 @@ public class CardGUI extends JPanel {
         super.paintComponent(graphics);
         this.setBackground(Color.CYAN);
         Graphics2D g2d = (Graphics2D) graphics;
-        /*g2d.setColor(Color.WHITE);
-        for (Rectangle rectangle : tableCards) {
-            g2d.fill(rectangle);
-            //TODO use drawString method from g2d to draw number, first set color of g2d
-        }*/
         for(int a=0;a<this.cardTableCards.length;a++){
             for(int b=0;b<this.cardTableCards.length;b++){
                 if(cardTableCards[a][b]!=null){
@@ -50,9 +44,7 @@ public class CardGUI extends JPanel {
                     }
                     g2d.fill(drawCardToTable(cardTableCards[a][b],b,a));
                     g2d.setColor(Color.BLACK);
-                    g2d.drawString(Integer.toString(cardTableCards[a][b].getValue()),40+a*80,60+b*140);
-                }else{
-
+                    g2d.drawString(Integer.toString(cardTableCards[a][b].getValue()),40+a*80,60+b*120);
                 }
             }
 
@@ -63,8 +55,8 @@ public class CardGUI extends JPanel {
     public Rectangle drawCardToTable(Card card,int yPos,int xPos){
         //calculate position of new card
         int x=10+xPos*80;
-        int y=10+yPos*140;
-        Rectangle rectangle=new Rectangle(x,y,60,120);
+        int y=10+yPos*120;
+        Rectangle rectangle=new Rectangle(x,y,60,100);
 
         addMouseListener(new MouseAdapter() {
             @Override
