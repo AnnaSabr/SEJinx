@@ -40,12 +40,12 @@ public class GameLoop {
     Player[] players;
     Table table;
     Course course;
-    MoveHistory zuege;
+    MoveHistory moves;
 
     ArrayList<String> highscores;
     boolean rff;
     int cP;
-    int anzahlKI;
+    int kiCount;
     Storage storageObjekt;
     ArrayList<String> profiles=new ArrayList<>();
     ArrayList<String> availableProfiles=new ArrayList<>();
@@ -65,11 +65,11 @@ public class GameLoop {
         this.getHighscore();
         this.course = new Course();
         this.cP = 0;
-        this.anzahlKI = 0;
+        this.kiCount = 0;
         this.manualNextMsg = manualNextMsg;
         this.sleepTime = sleepTime;
         this.currentRound = 1;
-        this.zuege = new MoveHistory();
+        this.moves = new MoveHistory();
         this.storageObjekt = new Storage();
         this.db=dataFromDB;
         this.showGui= showGui;
@@ -124,8 +124,8 @@ public class GameLoop {
                     this.players = new Player[playerCount];
 
                     outCon.simpleMessage("Please tell us if you like do modifier any player into KI: y/n");
-                    String kiInvolvieren =inCon.letterInput();
-                    if (kiInvolvieren.equals("y")) {
+                    String kiInvolved =inCon.letterInput();
+                    if (kiInvolved.equals("y")) {
                         initKI();
                     } else {
                         outCon.simpleMessage("No KI's involved in this game.");
@@ -136,7 +136,7 @@ public class GameLoop {
                 outCon.errorSelfMessage("Enter a valid number!");
             }
         }
-        if (playerCount != anzahlKI) {
+        if (playerCount != kiCount) {
             // init all players
             initPlayers();
         }
@@ -224,11 +224,10 @@ public class GameLoop {
                         }
                         case "N" -> course.showHistory();
                         case "M" -> {
-                            Round veraendert = course.jump();
-                            if (!veraendert.equals(course.getTail())) {
-                                manipulieren(veraendert);
-                                Card platzhalter = new Card(CardColor.RED, 420);
-                                Action action7 = new Action(Moves.MANIPULATION, platzhalter, currentPlayer);
+                            Round changed = course.jump();
+                            if (!changed.equals(course.getTail())) {
+                                manipulate(changed);
+                                Card placeholder = new Card(CardColor.RED, 420);
                             }
                         }
                         case "A" -> currentPlayer.getHelp(this.table);
@@ -254,30 +253,30 @@ public class GameLoop {
 
                             DBConnector dbConnector = DBConnector.getInstance();
 
-                            Integer[] speicherObjekte = dbConnector.getSpeicherList();
+                            Integer[] saveObject = dbConnector.getSpeicherList();
 
-                            //no speicherObjekte present
-                            if(speicherObjekte == null){
+                            //no saveObject present
+                            if(saveObject == null){
                                 log("You have no saved games!");
                                 break;
                             }
 
                             log("You can choose one of the following save states! Choose 0 to stop the selection");
                             //present player with selection of save states
-                            for(int i = 0; i < speicherObjekte.length; i++){
-                                log("Speicherstand " + speicherObjekte[i] + " - " + (i + 1));
+                            for(int i = 0; i < saveObject.length; i++){
+                                log("Speicherstand " + saveObject[i] + " - " + (i + 1));
                             }
 
                             //let player choose a save state
-                            int input = currentPlayer.getPlayerInputINT(0,speicherObjekte.length);
+                            int input = currentPlayer.getPlayerInputINT(0,saveObject.length);
 
                             if(input == 0){
                                 break;
                             }
 
-                            storageObjekt = dbConnector.getSpeicher(speicherObjekte[input - 1]);
+                            storageObjekt = dbConnector.getSpeicher(saveObject[input - 1]);
 
-                            laden(storageObjekt);
+                            load(storageObjekt);
                         }
                         case "P" -> {
                             currentPlayer.showHistory();
@@ -286,7 +285,7 @@ public class GameLoop {
                 }
                 //make sure current player always loops, only when round is active
                 if (!roundOver) {
-                    verlaufAktualisieren(currentPlayer);
+                    historyUpdate(currentPlayer);
                     cP = (cP + 1) % (players.length);
                 }
             }
@@ -310,7 +309,7 @@ public class GameLoop {
 
             //deal new cards
             this.table.resetField();
-            verlaufAktualisieren(currentPlayer);
+            historyUpdate(currentPlayer);
 
             //increase the round count
             currentRound++;
@@ -366,21 +365,21 @@ public class GameLoop {
 
     public void showActions() {
         outCon.simpleMessage("\n\nBisher gespielte Zuege:");
-        Action start = MoveHistory.getHead().getBehind();
-        while (!start.equals(MoveHistory.getTail())) {
-            if (start.getCard()!=null){
-                if (start.getCard().getValue()==420){
-                    outCon.simpleMessage("Spieler: " + start.getActivePlayer().getName() + ",   Zug: " + start.getMove()+"\n");
+        Action begin = MoveHistory.getHead().getBehind();
+        while (!begin.equals(MoveHistory.getTail())) {
+            if (begin.getCard()!=null){
+                if (begin.getCard().getValue()==420){
+                    outCon.simpleMessage("Spieler: " + begin.getActivePlayer().getName() + ",   Zug: " + begin.getMove()+"\n");
                 }
                 else{
-                    outCon.simpleMessage("Spieler: " + start.getActivePlayer().getName() + ",   Zug: " + start.getMove() + ",   Karte: " + start.getCard()+"\n");
+                    outCon.simpleMessage("Spieler: " + begin.getActivePlayer().getName() + ",   Zug: " + begin.getMove() + ",   Karte: " + begin.getCard()+"\n");
                 }
 
             }
             else{
-                outCon.simpleMessage("Spieler: " + start.getActivePlayer().getName() + ",   Zug: " + start.getMove() + ",   Karte: " + start.getLuckCard()+"\n");
+                outCon.simpleMessage("Spieler: " + begin.getActivePlayer().getName() + ",   Zug: " + begin.getMove() + ",   Karte: " + begin.getLuckCard()+"\n");
             }
-            start = start.getBehind();
+            begin = begin.getBehind();
         }
 
         outCon.simpleMessage("\n\n");
@@ -391,13 +390,13 @@ public class GameLoop {
      *
      * @param aktiv Spieler der den letzten Zug gemacht hat
      */
-    public void verlaufAktualisieren(Player aktiv) {
-        Table aktuellerTisch = new Table(rff);
-        aktuellerTisch.setField(table.getField());
-        aktuellerTisch.setCardStack(table.getCardStack());
-        aktuellerTisch.setLuckStack(table.getLuckStack());
+    public void historyUpdate(Player aktiv) {
+        Table tableStatus = new Table(rff);
+        tableStatus.setField(table.getField());
+        tableStatus.setCardStack(table.getCardStack());
+        tableStatus.setLuckStack(table.getLuckStack());
 
-        ArrayList<Player> aktuelleSpielerStaende= new ArrayList<>();
+        ArrayList<Player> allPlayerStatus= new ArrayList<>();
         Player ak= new Player(aktiv.getName(),sleepTime,manualNextMsg,db);
         ak.setCards(aktiv.getCards());
         ak.setLuckCards(aktiv.getLuckCards());
@@ -405,34 +404,34 @@ public class GameLoop {
             Player dummy= new Player(players[i].getName(),sleepTime,manualNextMsg,db);
             dummy.setCards(players[i].getCards());
             dummy.setLuckCards(players[i].getLuckCards());
-            aktuelleSpielerStaende.add(dummy);
+            allPlayerStatus.add(dummy);
         }
         for (int i=0; i<cP; i++){
             Player dummy= new Player(players[i].getName(),sleepTime,manualNextMsg,db);
             dummy.setCards(players[i].getCards());
             dummy.setLuckCards(players[i].getLuckCards());
-            aktuelleSpielerStaende.add(dummy);
+            allPlayerStatus.add(dummy);
         }
 
-        Round neu = new Round(aktuelleSpielerStaende, aktuellerTisch);
-        neu.setActive(aktiv);
-        course.addRound(neu);
+        Round newOne = new Round(allPlayerStatus, tableStatus);
+        newOne.setActive(aktiv);
+        course.addRound(newOne);
     }
 
     /**
      * Ueberschreibt alle Informationen des aktuellen Spiels, mit denen des Spielstandes, welcher fortgesetzt werden soll
-     * @param altesSpiel Spielstand von dem aus weiter gespielt werden soll
+     * @param oldGame Spielstand von dem aus weiter gespielt werden soll
      */
-    public void laden(Storage altesSpiel) {
+    public void load(Storage oldGame) {
         this.course = storageObjekt.HistoryToLoad();
 
-        int spielerCount= storageObjekt.getLastRound().getPlayerCount();
-        this.players= new Player[spielerCount];
-        for (int i=0; i<spielerCount; i++){
+        int playerCount= storageObjekt.getLastRound().getPlayerCount();
+        this.players= new Player[playerCount];
+        for (int i=0; i<playerCount; i++){
             this.players[i]= storageObjekt.getLastRound().getAllPlayers().get(i+1);
         }
 
-        manipulieren(storageObjekt.getLastRound());
+        manipulate(storageObjekt.getLastRound());
 
         MoveHistory.empty();
         storageObjekt.overwriteActions();
@@ -441,25 +440,25 @@ public class GameLoop {
     /**
      * aktualisiert die aktive Runde auf eine ausgewaehlte andere Runde
      *
-     * @param neuerStand Runde, von der weiter gespielt werden soll
+     * @param newStatus Runde, von der weiter gespielt werden soll
      */
-    public void manipulieren(Round neuerStand) {
-        this.table.setField(neuerStand.getTableStatus().getField());
-        this.table.setCardStack(neuerStand.getTableStatus().getCardStack());
-        this.table.setLuckStack(neuerStand.getTableStatus().getLuckStack());
+    public void manipulate(Round newStatus) {
+        this.table.setField(newStatus.getTableStatus().getField());
+        this.table.setCardStack(newStatus.getTableStatus().getCardStack());
+        this.table.setLuckStack(newStatus.getTableStatus().getLuckStack());
 
-        int laenge = players.length;
-        this.players = new Player[laenge];
+        int lengthPlayers = players.length;
+        this.players = new Player[lengthPlayers];
         int z = 0;
-        for (Player p : neuerStand.getAllPlayers()) {
+        for (Player p : newStatus.getAllPlayers()) {
             this.players[z] = p;
             z++;
         }
-        Round vorher = course.getTail().getBefore();
-        vorher.setBehind(neuerStand);
-        course.getTail().setBefore(neuerStand);
-        neuerStand.setBefore(vorher);
-        neuerStand.setBehind(course.getTail());
+        Round before = course.getTail().getBefore();
+        before.setBehind(newStatus);
+        course.getTail().setBefore(newStatus);
+        newStatus.setBefore(before);
+        newStatus.setBehind(course.getTail());
         log("status updated");
 
     }
@@ -482,20 +481,6 @@ public class GameLoop {
                 }
             }
         }
-    }
-
-
-    /**
-     * Function to reset the game
-     */
-    private void resetGame() {
-        //create new table
-        this.table = new Table(false);
-        //delete all players
-        this.players = null;
-
-        //restart game;
-        init();
     }
 
     /**
@@ -524,7 +509,7 @@ public class GameLoop {
     private void initPlayers() {
 
         //create as many players as needed
-        for (int i = anzahlKI; i < players.length; i++) {
+        for (int i = kiCount; i < players.length; i++) {
             String name=this.chooseProfile();
             Player p=new Player(name,sleepTime,manualNextMsg,db);
             p.registerInput(inCon);
@@ -605,10 +590,10 @@ public class GameLoop {
         while (true) {
             outCon.simpleMessage("This game will have " + players + " players. Choose between 0-" + players + ".\n" +
                     "How many do you want to substitute with KI's?");
-            int kiAnzahl = inCon.inputINTPlayerInitialization();
+            int kiCounter = inCon.inputINTPlayerInitialization();
             try {
-                if (kiAnzahl > 0 && kiAnzahl <= players) {
-                    for (int a = 0; a < kiAnzahl; a++) {
+                if (kiCounter > 0 && kiCounter <= players) {
+                    for (int a = 0; a < kiCounter; a++) {
                         ki.add(buildingKI());
                     }
                     int b = 0;
@@ -661,7 +646,7 @@ public class GameLoop {
             }
         }
         outCon.simpleMessage("You created: KI: " + k.getName() + "  Level: " + k.getClass().getSimpleName());
-        this.anzahlKI++;
+        this.kiCount++;
         return k;
     }
 

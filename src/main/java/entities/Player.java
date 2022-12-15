@@ -106,48 +106,48 @@ public class Player implements Cloneable{
     /**
      * Cloned eine ArrayListe
      *
-     * @param alt Arraylist die Kopiert werden soll
+     * @param old Arraylist die Kopiert werden soll
      * @return geclonte Liste
      */
-    public static ArrayList<Card> copyC(ArrayList<Card> alt) {
-        if (alt == null) {
+    public static ArrayList<Card> copyC(ArrayList<Card> old) {
+        if (old == null) {
             return null;
         }
-        ArrayList<Card> neu = (ArrayList<Card>) alt.clone();
-        return neu;
+        ArrayList<Card> newClone = (ArrayList<Card>) old.clone();
+        return newClone;
     }
 
     /**
      * Cloned eine ArrayListe mit LuckyCards
      *
-     * @param alt ArrayListe mit LuckyCards
+     * @param old ArrayListe mit LuckyCards
      * @return geclonte Liste
      */
-    public static ArrayList<LuckCard> copyL(ArrayList<LuckCard> alt) {
-        if (alt == null) {
+    public static ArrayList<LuckCard> copyL(ArrayList<LuckCard> old) {
+        if (old == null) {
             return null;
         }
-        ArrayList<LuckCard> neu = (ArrayList<LuckCard>) alt.clone();
+        ArrayList<LuckCard> newClone = (ArrayList<LuckCard>) old.clone();
 
-        return neu;
+        return newClone;
     }
 
     /**
      * Aktualisiert die Karten auf der Spieler Hand
      *
-     * @param handkarten neue Liste der Spielerkarten im besitz
+     * @param handCards neue Liste der Spielerkarten im besitz
      */
-    public void setCards(ArrayList<Card> handkarten) {
-        this.cards = copyC(handkarten);
+    public void setCards(ArrayList<Card> handCards) {
+        this.cards = copyC(handCards);
     }
 
     /**
      * Aktualisiert die LuckyKarten des Spielers
      *
-     * @param luckyKarten neue Liste vorhandener LuckyKarten
+     * @param luckyCards neue Liste vorhandener LuckyKarten
      */
-    public void setLuckCards(ArrayList<LuckCard> luckyKarten) {
-        this.luckCards = copyL(luckyKarten);
+    public void setLuckCards(ArrayList<LuckCard> luckyCards) {
+        this.luckCards = copyL(luckyCards);
     }
 
     /**
@@ -265,8 +265,8 @@ public class Player implements Cloneable{
         //check if the player has an option to choose from
         if (checkEndRound(table)) {
             output.logKiPlayer(this.getName(),", there is no card you could choose!");
-            Card halter = new Card(CardColor.RED, 420);
-            Action action6 = new Action(Moves.SKIPPED, halter, this);
+            Card placeholder = new Card(CardColor.RED, 420);
+            Action action6 = new Action(Moves.SKIPPED, placeholder, this);
             MoveHistory.addNewAction(action6);
             //set the player as inactive to end his turn
             this.active = false;
@@ -437,9 +437,9 @@ public class Player implements Cloneable{
         int removing = this.playerInputNumberInRange(0, maxCards.size() - 1);
         while (true) {
             try {
-                Card halter = maxCards.get(removing);
+                Card placeholder = maxCards.get(removing);
                 this.cards.remove(maxCards.get(removing));
-                Action action4 = new Action(Moves.DROPPEDCARD, halter, this);
+                Action action4 = new Action(Moves.DROPPEDCARD, placeholder, this);
                 MoveHistory.addNewAction(action4);
                 return true;
             } catch (Exception e) {
