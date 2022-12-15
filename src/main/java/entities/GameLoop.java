@@ -99,7 +99,9 @@ public class GameLoop {
 
         //start the game loop
         this.showHighscore();
+
         this.saveHighscores();
+
         impLoop();
         //loop();
     }
@@ -149,7 +151,8 @@ public class GameLoop {
     private void impLoop() {
 
 
-        this.gui.runGUI();
+        //this.gui.runGUI();
+
         //current player counter
         cP = 0;
         //determines if a round is over

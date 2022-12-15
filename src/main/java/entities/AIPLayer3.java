@@ -32,6 +32,9 @@ public class AIPLayer3 extends Player{
         this.outCon=new OutputConsole();
     }
 
+    /**
+     * Function to load this AIs history from the database
+     * */
     public void loadHistoryFromDB(){
         DBConnector connector=DBConnector.getInstance();
         PlayerHistory[] playerHistories = connector.getPlayerHistory("AILevel3");
@@ -51,6 +54,11 @@ public class AIPLayer3 extends Player{
     public String cardOnTable=null;
     private boolean active = true;
 
+    /**
+     * Overwritten function of the player
+     * Handles the way the AI selects its next move
+     * @param table the current table so the AI knows what is going on
+     * */
     @Override
     public String chooseAction(Table table) {
         if(this.throwAgain){
@@ -252,10 +260,9 @@ public class AIPLayer3 extends Player{
     }
 
     /**
-     * finds all cards the AI could take
-     *
-     * @param table
-     * @return
+     * Function to find all valid card the AI can take from the field
+     * @param table representing the current field
+     * @return String[] of all possible cards
      */
     public String[] findValidCards(Table table){
         boolean oneThree = false;
@@ -335,11 +342,9 @@ public class AIPLayer3 extends Player{
     }
 
     /**
-     * gets the amount of cards on table by colour
-     * in order red, green, blue, yellow, purple, orange, grey, white
-     *
-     * @param table
-     * @return
+     *  Function to get the amount of card on table counted by colour
+     * @param table the current field
+     * @return int[] each position representing a colour -> red, green, blue, yellow, purple, orange, grey, white
      */
     public int[] findAmountByColour(Table table){
         int[] cardByColour = new int[8];
@@ -362,6 +367,10 @@ public class AIPLayer3 extends Player{
         return cardByColour;
     }
 
+    /**
+     * Function to get a coordinate of the card the AI chooses
+     * @return the coordinate of the card the AI wants to choose
+     * */
     @Override
     public int[] getPlayerInputCoord() {
         String line = this.cardOnTable;
@@ -376,6 +385,10 @@ public class AIPLayer3 extends Player{
         return coordInt;
     }
 
+    /**
+     * Function to select a highcard to drop after the round
+     * @return true if the AI dropped a card, false if not
+     * */
     @Override
     public boolean selectHighCard(){
 
@@ -493,6 +506,11 @@ public class AIPLayer3 extends Player{
         }
     }
 
+    /**
+     * Function to let the AI select a card to choose
+     * @param players the current state of the players
+     * @return the card wich was selected
+     * */
     @Override
     public Card selectCard(Player[] players) {
         if(this.myRound==3){
@@ -602,6 +620,9 @@ public class AIPLayer3 extends Player{
     }
 
     boolean throwAgain=false;
+    /**
+     * Function to let the AI choose a luck card after the round
+     * */
     @Override
     public LuckCard selectLuckCard(Table table) {
         //check if player has luck cards
