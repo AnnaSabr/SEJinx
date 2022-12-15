@@ -132,11 +132,15 @@ public class GameLoop {
                 initPlayers();
             }
         }else{
-            int playercount=gui.getInputNumber("Welcome to JINX! How many players do you wish to play with? (2-4 Players)",2,4);
-            this.players = new Player[playercount];
+            int playerCount=gui.getInputNumber("Welcome to JINX! How many players do you wish to play with? (2-4 Players)",2,4);
+            this.players = new Player[playerCount];
             boolean aiInGame=gui.returningYesOrNO("Would you like to use AI in this game?");
             if(aiInGame){
                 this.initKI();
+            }
+            if (playerCount != anzahlKI) {
+                // init all players
+                initPlayers();
             }
         }
 
@@ -725,12 +729,29 @@ public class GameLoop {
      * @return name of profile
      */
     public String chooseProfile(){
-        this.log("Would you like to choose a profile? y/n");
-        if(inCon.inputConsole().equals("y")){
-            this.log("Which profile do you want?");
-            String name=inCon.inputConsole().replaceAll(" ","");
+        boolean gettingProfile=false;
+        if(!showGui){
+            this.log("Would you like to choose a profile? y/n");
+            if(inCon.inputConsole().equals("y")){
+                gettingProfile=true;
+            }
+        }else{
+            gettingProfile=gui.returningYesOrNO("Would you like to choose a profile?");
+        }
+        if(gettingProfile){
+            String name=null;
+            if(!showGui){
+                this.log("Which profile do you want?");
+                name=inCon.inputConsole().replaceAll(" ","");
+            }else{
+                name=gui.returnProfile("Enter the profile's name");
+            }
             if(name.equals("AILevel1")||name.equals("AILevel2")||name.equals("AILevel3")){
-                this.log("This is the AI's profile! You may not use it.");
+                if(!showGui){
+                    this.log("This is the AI's profile! You may not use it.");
+                }else{
+                    JOptionPane.showOptionDialog(null,"This is not your profile!","error",JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE,null,null,null);
+                }
                 return chooseProfile();
             }
             if(db){
@@ -742,7 +763,11 @@ public class GameLoop {
                             break;
                         }else{
                             if(player.name.equals(name)){
-                                this.log("This profile is taken already");
+                                if(!showGui){
+                                    this.log("This profile is taken already");
+                                }else{
+                                    JOptionPane.showOptionDialog(null,"This profile is already taken!","error",JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE,null,null,null);
+                                }
                                 return this.chooseProfile();
                             }
                         }
@@ -750,25 +775,47 @@ public class GameLoop {
                     //if profile was not taken yet, but is already available
                     for(String entry:this.availableProfiles){
                         if(entry.equals(name)){
-                            this.log("No log-in required.");
+                            if(!showGui){
+                                this.log("No log-in required.");
+                            }else{
+                                JOptionPane.showOptionDialog(null,"No log-in required!","access granted",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
+                            }
                             return name;
                         }
                     }
-                    this.log("Enter your password!");
-                    String enteredPassword=inCon.inputConsole();
+                    String enteredPassword=null;
+                    if(!showGui){
+                        this.log("Enter your password!");
+                        enteredPassword=inCon.inputConsole();
+                    }else{
+                        enteredPassword=gui.returnProfile("Enter your password");
+                    }
                     if(this.connector.playerLogin(name,enteredPassword)){
-                        this.log("Correct!");
+                        if(!showGui){
+                            this.log("Correct!");
+                        }else{
+                            JOptionPane.showOptionDialog(null,"correct!","access granted",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
+                        }
                         this.availableProfiles.add(name);
                         return name;
                     }else{
-                        this.log("Your password is wrong.");
+                        if(!showGui){
+                            this.log("Your password is wrong.");
+                        }else{
+                            JOptionPane.showOptionDialog(null,"Wrong password!","access denied",JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE,null,null,null);
+                        }
                         return chooseProfile();
                     }
                 }else{
-                    this.log("Profile not found.");
+                    if(!showGui){
+                        this.log("Profile not found.");
+                    }else{
+                        JOptionPane.showOptionDialog(null,"profile not found","Error",JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE,null,null,null);
+                    }
                     return this.chooseProfile();
                 }
             }else{
+                //TODO add GUI
                 //log in to profile from textfile
                 if(this.findProfileFromFile(name)){
                     if(this.accessProfileFromFile(name)){
@@ -782,9 +829,14 @@ public class GameLoop {
         }else{
             //new profile to db
             if(db){
+                //TODO add optionpanes
                 String name="";
-                this.log("Please enter a name for the profile.");
-                name=inCon.inputConsole().replaceAll(" ","");
+                if(!showGui){
+                    this.log("Please enter a name for the profile.");
+                    name=inCon.inputConsole().replaceAll(" ","");
+                }else{
+                    name=gui.returnProfile("Enter a name for the profile!");
+                }
                 if(this.connector.checkPlayer(name)){
                     this.log("This profile already exists.");
                     return this.chooseProfile();
@@ -799,6 +851,7 @@ public class GameLoop {
                     }
                 }
             }else{
+                //TODO add gui
                 //new profile to textfile
                 String name="";
                 boolean a=true;
@@ -834,6 +887,7 @@ public class GameLoop {
             String[] name = line.split(",");
             if (name[0].equals(profileName)) {
                 this.log("Please enter the password!");
+                //TODO add gui
                 String pw = inCon.inputConsole();
                 boolean access = this.matchPasswordToProfile(profileName, pw);
                 if (access) {
@@ -853,6 +907,7 @@ public class GameLoop {
      * @return whether profile is available
      */
     public boolean findProfileFromFile(String newName){
+        //TODO add optionpane
         boolean found = false;
         for (String line : this.profiles) {
             String[] name = line.split(",");
