@@ -27,7 +27,6 @@ public class GUI {
      */
     public void runGUI(){
         gui.setVisible(true);
-
     }
 
     public void yesOrNo(String question){

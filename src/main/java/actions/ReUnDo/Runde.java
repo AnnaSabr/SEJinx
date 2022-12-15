@@ -14,6 +14,7 @@ public class Runde {
 
     private ArrayList<Player> spieler;
     private Table tischStand;
+    private Player aktiv;
 
     private int spielerAnzahl=0;
     private Runde davor;
@@ -24,6 +25,7 @@ public class Runde {
         this.tischStand = tischStand;
         this.davor = null;
         this.dahinter = null;
+
 
     }
 
@@ -80,5 +82,17 @@ public class Runde {
     public int getSpielerAnzahl() {
         spielerAnzahl=spieler.size();
         return spielerAnzahl;
+    }
+
+    /**
+     *
+     * @return activ Player in this Round
+     */
+    public Player getAktiv() {
+        return aktiv;
+    }
+
+    public void setAktiv(Player aktiv) {
+        this.aktiv = aktiv;
     }
 }

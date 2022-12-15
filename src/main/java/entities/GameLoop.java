@@ -413,6 +413,7 @@ public class GameLoop {
         }
 
         Runde neu = new Runde(aktuelleSpielerStaende, aktuellerTisch);
+        neu.setAktiv(aktiv);
         verlauf.rundeHinzufuegen(neu);
     }
 
