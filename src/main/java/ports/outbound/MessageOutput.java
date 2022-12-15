@@ -44,5 +44,5 @@ public interface MessageOutput {
     */
    void tablePicture(Table table);
 
-   int inputCoord();
+
 }

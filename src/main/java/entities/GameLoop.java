@@ -1,9 +1,11 @@
 package entities;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.sql.Date;
+import java.util.List;
 
 import actions.ReUnDo.Runde;
 import actions.ReUnDo.Verlauf;
@@ -11,6 +13,7 @@ import actions.Zuege.Action;
 import actions.Zuege.Zuege;
 import actions.Zuege.ZugHistorie;
 import actions.speichern.Speicher;
+import adapter.primary.InOutGUI;
 import adapter.primary.InputConsole;
 import adapter.secondary.OutputConsole;
 import adapter.secondary.TextfileAdapter;
@@ -19,6 +22,8 @@ import actions.ReUnDo.cards.CardColor;
 import actions.ReUnDo.cards.LuckCard;
 import persistence.DBConnector;
 import persistence.PlayerHistory;
+import ports.inbound.MessageInput;
+import ports.outbound.MessageOutput;
 
 
 /**
@@ -49,10 +54,11 @@ public class GameLoop {
     boolean db;
     DBConnector connector=DBConnector.getInstance();
     TextfileAdapter textfileAdapter=new TextfileAdapter();
-    private OutputConsole outCon;
-    private InputConsole inCon;
+    private MessageOutput outCon;
+    private MessageInput inCon;
     boolean showGui;
     GUI gui;
+    private InOutGUI inOut;
 
     public GameLoop(boolean rff, boolean manualNextMsg, int sleepTime, boolean dataFromDB, boolean showGui) {
         this.rff=rff;
@@ -68,11 +74,16 @@ public class GameLoop {
         this.zuege = new ZugHistorie();
         this.speicherObjekt = new Speicher();
         this.db=dataFromDB;
-        this.outCon= new OutputConsole();
-        this.inCon=new InputConsole();
-        this.showGui=showGui;
+        this.showGui= showGui;
         if(showGui){
             gui=new GUI();
+            this.inOut= new InOutGUI(gui);
+            this.outCon = this.inOut;
+            this.inCon = this.inOut;
+        }
+        else{
+            this.outCon= new OutputConsole();
+            this.inCon= new InputConsole();
         }
     }
 
