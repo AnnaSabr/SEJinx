@@ -3,6 +3,7 @@ package entities;
 import actions.ReUnDo.Runde;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -77,27 +78,36 @@ public class GUI {
         gui.repaint();
         this.yesOrNo(question);
         System.out.println("out of method");
+        boolean bool=true;
         while(true){
             //TODO only works with sleep or print
 
-            try {
+            /*try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
-            }
+            }*/
             //System.out.println(this.returnValue);
             if(returnValue!=null){
                 if(returnValue.equals("y")){
                     System.out.println(2);
-                    return true;
+                    break;
                 }
                 else{
                     System.out.println(1);
                     System.out.println(this.returnValue);
-                    return false;
+                    break;
                 }
             }
         }
+        return bool;
+    }
+
+    public static void main(String[] args){
+        CardGUI cardGUI=new CardGUI(new Table(true));
+        JFrame frame=new JFrame();
+        frame.add(cardGUI,BorderLayout.CENTER);
+        frame.setVisible(true);
     }
 
     /**
@@ -312,7 +322,7 @@ public class GUI {
             }
             if(AIname!=null){
                 aiInfo[0]=AIType;
-                aiInfo[1]=AIname;
+                aiInfo[1]=AIname.replaceAll(" ","");
                 return aiInfo;
             }
         }
@@ -320,6 +330,50 @@ public class GUI {
 
     String AIType;
     String AIname;
+    String profileName;
+
+    public String returnProfile(String question){
+        profileName=null;
+        getProfileName(question);
+        while(true){
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                System.out.println("");
+            }
+            if(profileName!=null){
+                profileName=profileName.replaceAll(" ","");
+                return profileName;
+            }
+        }
+    }
+
+    public void getProfileName(String question){
+        gui.getContentPane().removeAll();
+        gui.repaint();
+        JLabel jLabel=new JLabel(question);
+        JTextField inputField=new JTextField("Enter here");
+        inputField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                inputField.setText("");
+            }
+        });
+        JButton enter=new JButton("enter");
+        ActionListener listener=new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                profileName=inputField.getText();
+            }
+        };
+        enter.addActionListener(listener);
+        JPanel field=new JPanel();
+        field.add(inputField);
+        field.add(enter);
+        gui.add(jLabel, BorderLayout.NORTH);
+        gui.add(field,BorderLayout.CENTER);
+        gui.setVisible(true);
+    }
 
     public void updateGUI(Runde displaying){
         //TODO
