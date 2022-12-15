@@ -1,4 +1,4 @@
-import actions.Zuege.ZugHistorie;
+import actions.Zuege.MoveHistory;
 import entities.GUI;
 import entities.GameLoop;
 import adapter.primary.InputConsole;
@@ -112,19 +112,19 @@ public class Main {
         GameLoop game = new GameLoop(config,manualSleepTime,nextMsgTime, dataSource, gui);
 
         game.run();
-        boolean naechstes = true;
-        while (naechstes) {
+        boolean next = true;
+        while (next) {
             if(!gui){
                 outCon.jinxMessage("Next Game? y for yes, n for no");
 
-                String eingabe = inCon.letterInput();
-                if (eingabe.equals("y")) {
+                String nextGame = inCon.letterInput();
+                if (nextGame.equals("y")) {
                     GameLoop gameA = new GameLoop(config, manualSleepTime, nextMsgTime, dataSource, gui);
-                    ZugHistorie.leeren();
+                    MoveHistory.empty();
                     gameA.run();
-                } else if (eingabe.equals("n")) {
+                } else if (nextGame.equals("n")) {
                     outCon.jinxMessage("End initialized");
-                    naechstes = false;
+                    next = false;
                 } else {
                     outCon.errorSelfMessage("Wrong input.");
                 }
@@ -132,11 +132,11 @@ public class Main {
                 boolean startRound=g.returningYesOrNO("Would you like to start a new game?");
                 if(startRound){
                     GameLoop gameA = new GameLoop(config, manualSleepTime, nextMsgTime, dataSource, gui);
-                    ZugHistorie.leeren();
+                    MoveHistory.empty();
                     gameA.run();
                 }else{
                     //TODO show game over message on gui
-                    naechstes=false;
+                    next=false;
                 }
             }
         }

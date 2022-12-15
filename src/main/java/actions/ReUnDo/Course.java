@@ -8,22 +8,22 @@ import java.util.ArrayList;
 /**
  * Eine doppeltverkette Liste zum chronologischen Darstellen der einzelnen Runden im Spiel
  */
-public class Verlauf {
+public class Course {
 
-    private Runde head;
-    private Runde tail;
-    private Runde aktuellePosition;
+    private Round head;
+    private Round tail;
+    private Round position;
     private OutputConsole outCon;
     private InputConsole inCon;
 
 
-    public Verlauf() {
-        this.head = new Runde(null, null);
-        this.tail = new Runde(null, null);
+    public Course() {
+        this.head = new Round(null, null);
+        this.tail = new Round(null, null);
 
-        this.head.setDahinter(tail);
-        this.tail.setDavor(head);
-        this.aktuellePosition = tail;
+        this.head.setBehind(tail);
+        this.tail.setBefore(head);
+        this.position = tail;
         this.outCon=new OutputConsole();
         this.inCon= new InputConsole();
     }
@@ -32,26 +32,26 @@ public class Verlauf {
     /**
      * setzt eine neue Runde ans ende des Verlaufs
      *
-     * @param neu Runde die eingefuegt werden soll
+     * @param newRound Runde die eingefuegt werden soll
      */
-    public void rundeHinzufuegen(Runde neu) {
-        Runde halter = tail.getDavor();
-        halter.setDahinter(neu);
-        tail.setDavor(neu);
-        neu.setDavor(halter);
-        neu.setDahinter(tail);
+    public void addRound(Round newRound) {
+        Round placeholder = tail.getBefore();
+        placeholder.setBehind(newRound);
+        tail.setBefore(newRound);
+        newRound.setBefore(placeholder);
+        newRound.setBehind(tail);
     }
 
     /**
-     * @param runde die geprueft werden soll, ob sie der Anfang oder das Ende ist
+     * @param round die geprueft werden soll, ob sie der Anfang oder das Ende ist
      * @return ob es Kopf oder Ende ist
      */
-    public boolean headOrTail(Runde runde) {
-        boolean leer = false;
-        if (runde.equals(head) || runde.equals(tail) || runde.equals(null)) {
-            leer = true;
+    public boolean headOrTail(Round round) {
+        boolean empty = false;
+        if (round.equals(head) || round.equals(tail) || round.equals(null)) {
+            empty = true;
         }
-        return leer;
+        return empty;
     }
 
     /**
@@ -69,8 +69,8 @@ public class Verlauf {
      *
      * @return
      */
-    public Runde jump() {
-        aktuellePosition = tail;
+    public Round jump() {
+        position = tail;
 
 
         while (true) {
@@ -86,11 +86,11 @@ public class Verlauf {
             String input =inCon.letterInput();
             if (input.equals("S")) {
                 log("regular status:\n");
-                rundeAnzeigen(tail.getDavor());
+                showRound(tail.getBefore());
             } else if (input.equals("J")) {
-                if (!headOrTail(aktuellePosition)) {
+                if (!headOrTail(position)) {
                     log("new choosen status:");
-                    rundeAnzeigen(aktuellePosition);
+                    showRound(position);
                 } else {
                     log("No new status choosen.");
                 }
@@ -100,8 +100,8 @@ public class Verlauf {
             } else if (input.equals("L")) {
                 reDo();
             } else if (input.equals("P")) {
-                if (!headOrTail(aktuellePosition)) {
-                    return aktuellePosition;
+                if (!headOrTail(position)) {
+                    return position;
                 }
                 return tail;
             } else {
@@ -114,9 +114,9 @@ public class Verlauf {
      * geht im Verlauf einen Schritt zurueck
      */
     public void unDo() {
-        if (!headOrTail(aktuellePosition.getDavor())) {
+        if (!headOrTail(position.getBefore())) {
             log("One step back");
-            aktuellePosition = aktuellePosition.getDavor();
+            position = position.getBefore();
         } else {
             log("already at the beginning");
         }
@@ -127,9 +127,9 @@ public class Verlauf {
      * geht im Verlauf einen Schritt vor
      */
     public void reDo() {
-        if (!aktuellePosition.equals(tail)) {
+        if (!position.equals(tail)) {
             log("One step further");
-            aktuellePosition = aktuellePosition.getDahinter();
+            position = position.getBehind();
         } else {
             log("already at the end");
         }
@@ -138,49 +138,49 @@ public class Verlauf {
     /**
      * Gibt im Terminal eine einzelne Uebergeben Runde aus
      *
-     * @param auswahl einzelne Runde
+     * @param choice einzelne Runde
      */
-    public void rundeAnzeigen(Runde auswahl) {
-        for (Player player : auswahl.getSpieler()) {
+    public void showRound(Round choice) {
+        for (Player player : choice.getAllPlayers()) {
             String info="Spieler: " + player.getName() + "\n" +
                     "Handkarten: " + player.getCards() + "\n" +
                     "LuckyKarten: " + player.getLuckCards() + "\n";
             outCon.loggerMessage(info);
         }
-        String info= "Tisch Kartenstapel: " + auswahl.getTischStand().getCardStack() + "\n" +
-                "Tisch Luckykartenstapel: " + auswahl.getTischStand().getLuckStack() + "\n" +
-                "Spielfeld:\n " + auswahl.getTischStand().toString();
+        String info= "Tisch Kartenstapel: " + choice.getTableStatus().getCardStack() + "\n" +
+                "Tisch Luckykartenstapel: " + choice.getTableStatus().getLuckStack() + "\n" +
+                "Spielfeld:\n " + choice.getTableStatus().toString();
         outCon.loggerMessage(info);
     }
 
     /**
      * gibt im Terminal den ganzen Verlauf aus
      */
-    public void verlaufAnzeigen() {
-        int runde = 1;
-        Runde start = head.getDahinter();
-        while (!start.equals(tail)) {
-            String info=runde + ". Zug: \n" + runde;
+    public void showHistory() {
+        int round = 1;
+        Round begin = head.getBehind();
+        while (!begin.equals(tail)) {
+            String info=round + ". Zug: \n" + round;
             outCon.loggerMessage(info);
-            for (Player player : start.getSpieler()) {
+            for (Player player : begin.getAllPlayers()) {
                 info="Spieler: " + player.getName() + "\n" +
                         "Handkarten: " + player.getCards() + "\n" +
                         "LuckyKarten: " + player.getLuckCards() + "\n";
                 outCon.loggerMessage(info);
             }
-            info="Tisch Kartenstapel: " + start.getTischStand().getCardStack() + "\n" +
-                    "Tisch Luckykartenstapel: " + start.getTischStand().getLuckStack() + "\n" +
-                    "Spielfeld:\n " + start.getTischStand().toString();
+            info="Tisch Kartenstapel: " + begin.getTableStatus().getCardStack() + "\n" +
+                    "Tisch Luckykartenstapel: " + begin.getTableStatus().getLuckStack() + "\n" +
+                    "Spielfeld:\n " + begin.getTableStatus().toString();
             outCon.loggerMessage(info);
-            runde++;
-            start = start.getDahinter();
+            round++;
+            begin = begin.getBehind();
         }
     }
 
     /**
      * @return das Ende der Liste
      */
-    public Runde getTail() {
+    public Round getTail() {
         return tail;
     }
 
@@ -190,14 +190,14 @@ public class Verlauf {
      *
      * @return
      */
-    public ArrayList<Runde> zumSpeichern() {
-        ArrayList<Runde> zugVerlauf = new ArrayList<>();
-        Runde start = head;
-        start = start.getDahinter();
-        while (!start.equals(tail)) {
-            zugVerlauf.add(start);
-            start = start.getDahinter();
+    public ArrayList<Round> toSave() {
+        ArrayList<Round> moveHistory = new ArrayList<>();
+        Round begin = head;
+        begin = begin.getBehind();
+        while (!begin.equals(tail)) {
+            moveHistory.add(begin);
+            begin = begin.getBehind();
         }
-        return zugVerlauf;
+        return moveHistory;
     }
 }

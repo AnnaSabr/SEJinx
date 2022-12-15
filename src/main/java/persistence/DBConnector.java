@@ -1,8 +1,8 @@
 package persistence;
-import actions.ReUnDo.Runde;
+import actions.ReUnDo.Round;
 import actions.Zuege.Action;
-import actions.Zuege.Zuege;
-import actions.speichern.Speicher;
+import actions.Zuege.Moves;
+import actions.speichern.Storage;
 import adapter.secondary.OutputConsole;
 import actions.ReUnDo.cards.Card;
 import actions.ReUnDo.cards.LuckCard;
@@ -282,7 +282,7 @@ public class DBConnector {
     /**
      * Function to create a 'Speicherstand'
      * */
-    public boolean createSpeicher(Speicher speicher){
+    public boolean createSpeicher(Storage storage){
 
         //TODO CREATE ROUND 0 in DB-SCRIPT TO MAKE SURE IT EXISTS
         //create the speicher reference
@@ -293,7 +293,7 @@ public class DBConnector {
         }
 
         //create entry for every round in the speicher object
-        for(Runde r: speicher.getVerlaufRunden()){
+        for(Round r: storage.getRoundHistory()){
 
             //create the runde itself first
             int runden_id = handleRunde(speicher_id);
@@ -304,7 +304,7 @@ public class DBConnector {
             }
 
             //add tisch for runde
-            int tisch_id = handleTisch(r.getTischStand(), runden_id);
+            int tisch_id = handleTisch(r.getTableStatus(), runden_id);
 
             //make sure tisch was created
             if(tisch_id == 0){
@@ -312,7 +312,7 @@ public class DBConnector {
             }
 
             //add all players for this round
-            for(Player p: r.getSpieler()){
+            for(Player p: r.getAllPlayers()){
 
                 //create each player
                 int spieler_id = handleSpieler(p, runden_id);
@@ -325,7 +325,7 @@ public class DBConnector {
         }
 
         //create entry for every action in the speicher object
-        for(Action a : speicher.getVerlaufAction()){
+        for(Action a : storage.getActionHistory()){
             //handle the action separately
             int action_id = handleAction(a, speicher_id);
 
@@ -518,7 +518,7 @@ public class DBConnector {
 
         try{
             //create player for this action, runde = 0 default
-            int player_id = handleSpieler(action.getAktiverSpieler(), 0);
+            int player_id = handleSpieler(action.getActivePlayer(), 0);
 
             //check if player created
             if(player_id == 0){
@@ -531,11 +531,11 @@ public class DBConnector {
 
             //parse cards into JSON
             Gson gson = new Gson();
-            String luckCard = gson.toJson(action.getGlueckskarte());
-            String card = gson.toJson(action.getKarte());
+            String luckCard = gson.toJson(action.getLuckCard());
+            String card = gson.toJson(action.getCard());
 
             //set information
-            stm.setString(1, action.getZug().toString());
+            stm.setString(1, action.getMove().toString());
             stm.setString(2, luckCard);
             stm.setString(3, card);
             stm.setInt(4, player_id);
@@ -612,9 +612,9 @@ public class DBConnector {
      * @param speicher_id the id of the speicher object
      * @return a fully constructed speicher object
      * */
-    public Speicher getSpeicher(int speicher_id){
+    public Storage getSpeicher(int speicher_id){
         //Speicher object to be returned
-        Speicher newSpeicher = new Speicher();
+        Storage newStorage = new Storage();
         try{
             //only load something if the Speicher exists in DB
             Statement stm = con.createStatement();
@@ -635,12 +635,12 @@ public class DBConnector {
                 return null;
             }
 
-            ArrayList<Runde> runden = new ArrayList<>();
+            ArrayList<Round> runden = new ArrayList<>();
 
             //create all existing rounds
             while(rs.next()){
                 //runde to be added when filled
-                Runde runde;
+                Round round;
 
                 //look for table
                 Table table = loadTable(rs.getInt("id"));
@@ -659,7 +659,7 @@ public class DBConnector {
                 }
 
                 //create new runde with loaded information
-                runden.add(new Runde(players, table));
+                runden.add(new Round(players, table));
             }
 
             //load the action of this speicher
@@ -670,10 +670,10 @@ public class DBConnector {
             }
 
             //setup new speicher object
-            newSpeicher.setVerlaufRunden(runden);
-            newSpeicher.setVerlaufAction(actions);
+            newStorage.setRoundHistory(runden);
+            newStorage.setActionHistory(actions);
             //return result
-            return newSpeicher;
+            return newStorage;
         }catch (SQLException e){
             String exception=e.getMessage();
             outCon.exceptionMessage(exception);
@@ -731,14 +731,14 @@ public class DBConnector {
                 Action action = null;
 
                 String zug_s = rs.getString("zug");
-                Zuege zug = null;
+                Moves zug = null;
                 switch (zug_s){
-                    case "SKIPPED" -> zug = Zuege.SKIPPED;
-                    case "GOTCARDFROMTABLE" -> zug = Zuege.GOTCARDFROMTABLE;
-                    case "USEDLUCKYCARD" -> zug = Zuege.USEDLUCKYCARD;
-                    case "DROPPEDCARD" -> zug = Zuege.DROPPEDCARD;
-                    case "GOTLUCKYCARD" -> zug = Zuege.GOTLUCKYCARD;
-                    case "MANIPULATION" -> zug = Zuege.MANIPULATION;
+                    case "SKIPPED" -> zug = Moves.SKIPPED;
+                    case "GOTCARDFROMTABLE" -> zug = Moves.GOTCARDFROMTABLE;
+                    case "USEDLUCKYCARD" -> zug = Moves.USEDLUCKYCARD;
+                    case "DROPPEDCARD" -> zug = Moves.DROPPEDCARD;
+                    case "GOTLUCKYCARD" -> zug = Moves.GOTLUCKYCARD;
+                    case "MANIPULATION" -> zug = Moves.MANIPULATION;
                 }
 
                 LuckCard luckCard = gson.fromJson(rs.getString("luckCard"),LuckCard.class);

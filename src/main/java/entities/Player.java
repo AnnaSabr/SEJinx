@@ -1,8 +1,8 @@
 package entities;
 
 import actions.Zuege.Action;
-import actions.Zuege.Zuege;
-import actions.Zuege.ZugHistorie;
+import actions.Zuege.Moves;
+import actions.Zuege.MoveHistory;
 import adapter.primary.InputConsole;
 import adapter.secondary.OutputConsole;
 import adapter.secondary.TextfileAdapter;
@@ -266,8 +266,8 @@ public class Player implements Cloneable{
         if (checkEndRound(table)) {
             output.logKiPlayer(this.getName(),", there is no card you could choose!");
             Card halter = new Card(CardColor.RED, 420);
-            Action action6 = new Action(Zuege.SKIPPED, halter, this);
-            ZugHistorie.actionHinzufuegen(action6);
+            Action action6 = new Action(Moves.SKIPPED, halter, this);
+            MoveHistory.addNewAction(action6);
             //set the player as inactive to end his turn
             this.active = false;
 
@@ -298,8 +298,8 @@ public class Player implements Cloneable{
             }
             //add card to players hand
             addCard(chosenOne);
-            Action action1 = new Action(Zuege.GOTCARDFROMTABLE, chosenOne, this);
-            ZugHistorie.actionHinzufuegen(action1);
+            Action action1 = new Action(Moves.GOTCARDFROMTABLE, chosenOne, this);
+            MoveHistory.addNewAction(action1);
             //set the player as inactive, since this action ended his turn
             this.active = false;
 
@@ -353,16 +353,16 @@ public class Player implements Cloneable{
             return false;
         } else {
             //remove the selected card from the players hand
-            Action action2 = new Action(Zuege.DROPPEDCARD, selected, this);
-            ZugHistorie.actionHinzufuegen(action2);
+            Action action2 = new Action(Moves.DROPPEDCARD, selected, this);
+            MoveHistory.addNewAction(action2);
             this.cards.remove(selected);
             //add a luckCard to the players hand
             LuckCard drawn = table.drawLuckCard();
             //check if table has luckcards left
             if (drawn != null) {
                 this.luckCards.add(drawn);
-                Action action3 = new Action(Zuege.GOTLUCKYCARD, drawn, this);
-                ZugHistorie.actionHinzufuegen(action3);
+                Action action3 = new Action(Moves.GOTLUCKYCARD, drawn, this);
+                MoveHistory.addNewAction(action3);
 
                 return true;
             } else {
@@ -439,8 +439,8 @@ public class Player implements Cloneable{
             try {
                 Card halter = maxCards.get(removing);
                 this.cards.remove(maxCards.get(removing));
-                Action action4 = new Action(Zuege.DROPPEDCARD, halter, this);
-                ZugHistorie.actionHinzufuegen(action4);
+                Action action4 = new Action(Moves.DROPPEDCARD, halter, this);
+                MoveHistory.addNewAction(action4);
                 return true;
             } catch (Exception e) {
                 log("Please choose a card!");

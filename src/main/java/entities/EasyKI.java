@@ -70,9 +70,9 @@ public class EasyKI extends Player{
      * @return the card or null if not
      */
     private Card cardAvailable(Table table){
-        Card[][] karten= table.getField();
-        for (int a=0; a<karten.length; a++){
-            for (int b=0; b<karten[0].length; b++){
+        Card[][] cards= table.getField();
+        for (int a=0; a<cards.length; a++){
+            for (int b=0; b<cards[0].length; b++){
                 Card c= table.checkCard(a,b);
                 if (c!=null){
                     if (c.getValue()==this.diceCount){

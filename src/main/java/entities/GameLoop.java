@@ -1,18 +1,16 @@
 package entities;
 
-import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.sql.Date;
-import java.util.List;
 
-import actions.ReUnDo.Runde;
-import actions.ReUnDo.Verlauf;
+import actions.ReUnDo.Round;
+import actions.ReUnDo.Course;
 import actions.Zuege.Action;
-import actions.Zuege.Zuege;
-import actions.Zuege.ZugHistorie;
-import actions.speichern.Speicher;
+import actions.Zuege.Moves;
+import actions.Zuege.MoveHistory;
+import actions.speichern.Storage;
 import adapter.primary.InOutGUI;
 import adapter.primary.InputConsole;
 import adapter.secondary.OutputConsole;
@@ -41,14 +39,14 @@ public class GameLoop {
 
     Player[] players;
     Table table;
-    Verlauf verlauf;
-    ZugHistorie zuege;
+    Course course;
+    MoveHistory zuege;
 
     ArrayList<String> highscores;
     boolean rff;
     int cP;
     int anzahlKI;
-    Speicher speicherObjekt;
+    Storage storageObjekt;
     ArrayList<String> profiles=new ArrayList<>();
     ArrayList<String> availableProfiles=new ArrayList<>();
     boolean db;
@@ -65,14 +63,14 @@ public class GameLoop {
         this.table = new Table(rff);
         this.highscores = new ArrayList<>();
         this.getHighscore();
-        this.verlauf = new Verlauf();
+        this.course = new Course();
         this.cP = 0;
         this.anzahlKI = 0;
         this.manualNextMsg = manualNextMsg;
         this.sleepTime = sleepTime;
         this.currentRound = 1;
-        this.zuege = new ZugHistorie();
-        this.speicherObjekt = new Speicher();
+        this.zuege = new MoveHistory();
+        this.storageObjekt = new Storage();
         this.db=dataFromDB;
         this.showGui= showGui;
 
@@ -190,8 +188,8 @@ public class GameLoop {
                             if (chosenOne == null) {
                                 break;
                             }
-                            Action act= new Action(Zuege.USEDLUCKYCARD,chosenOne,currentPlayer);
-                            ZugHistorie.actionHinzufuegen(act);
+                            Action act= new Action(Moves.USEDLUCKYCARD,chosenOne,currentPlayer);
+                            MoveHistory.addNewAction(act);
                             //switch over all possible card types
                             switch (chosenOne.getCardType()) {
                                 // let the player change his diceCount to a set value
@@ -224,24 +222,24 @@ public class GameLoop {
                                 roundOver = true;
                             }
                         }
-                        case "N" -> verlauf.verlaufAnzeigen();
+                        case "N" -> course.showHistory();
                         case "M" -> {
-                            Runde veraendert = verlauf.jump();
-                            if (!veraendert.equals(verlauf.getTail())) {
+                            Round veraendert = course.jump();
+                            if (!veraendert.equals(course.getTail())) {
                                 manipulieren(veraendert);
                                 Card platzhalter = new Card(CardColor.RED, 420);
-                                Action action7 = new Action(Zuege.MANIPULATION, platzhalter, currentPlayer);
+                                Action action7 = new Action(Moves.MANIPULATION, platzhalter, currentPlayer);
                             }
                         }
                         case "A" -> currentPlayer.getHelp(this.table);
                         case "Z" -> showActions();
                         case "S" -> {
                                 try {
-                                    speicherObjekt.setVerlaufAction(ZugHistorie.zumSpeichern());
-                                    speicherObjekt.setVerlaufRunden(verlauf.zumSpeichern());
+                                    storageObjekt.setActionHistory(MoveHistory.toSave());
+                                    storageObjekt.setRoundHistory(course.toSave());
                                     DBConnector dbConnector = DBConnector.getInstance();
 
-                                    boolean saved = dbConnector.createSpeicher(speicherObjekt);
+                                    boolean saved = dbConnector.createSpeicher(storageObjekt);
 
                                     if(saved){
                                         log("Your game was saved, you can load it any time!");
@@ -277,9 +275,9 @@ public class GameLoop {
                                 break;
                             }
 
-                            speicherObjekt = dbConnector.getSpeicher(speicherObjekte[input - 1]);
+                            storageObjekt = dbConnector.getSpeicher(speicherObjekte[input - 1]);
 
-                            laden(speicherObjekt);
+                            laden(storageObjekt);
                         }
                         case "P" -> {
                             currentPlayer.showHistory();
@@ -368,21 +366,21 @@ public class GameLoop {
 
     public void showActions() {
         outCon.simpleMessage("\n\nBisher gespielte Zuege:");
-        Action start = ZugHistorie.getHead().getDahinter();
-        while (!start.equals(ZugHistorie.getTail())) {
-            if (start.getKarte()!=null){
-                if (start.getKarte().getValue()==420){
-                    outCon.simpleMessage("Spieler: " + start.getAktiverSpieler().getName() + ",   Zug: " + start.getZug()+"\n");
+        Action start = MoveHistory.getHead().getBehind();
+        while (!start.equals(MoveHistory.getTail())) {
+            if (start.getCard()!=null){
+                if (start.getCard().getValue()==420){
+                    outCon.simpleMessage("Spieler: " + start.getActivePlayer().getName() + ",   Zug: " + start.getMove()+"\n");
                 }
                 else{
-                    outCon.simpleMessage("Spieler: " + start.getAktiverSpieler().getName() + ",   Zug: " + start.getZug() + ",   Karte: " + start.getKarte()+"\n");
+                    outCon.simpleMessage("Spieler: " + start.getActivePlayer().getName() + ",   Zug: " + start.getMove() + ",   Karte: " + start.getCard()+"\n");
                 }
 
             }
             else{
-                outCon.simpleMessage("Spieler: " + start.getAktiverSpieler().getName() + ",   Zug: " + start.getZug() + ",   Karte: " + start.getGlueckskarte()+"\n");
+                outCon.simpleMessage("Spieler: " + start.getActivePlayer().getName() + ",   Zug: " + start.getMove() + ",   Karte: " + start.getLuckCard()+"\n");
             }
-            start = start.getDahinter();
+            start = start.getBehind();
         }
 
         outCon.simpleMessage("\n\n");
@@ -416,28 +414,28 @@ public class GameLoop {
             aktuelleSpielerStaende.add(dummy);
         }
 
-        Runde neu = new Runde(aktuelleSpielerStaende, aktuellerTisch);
-        neu.setAktiv(aktiv);
-        verlauf.rundeHinzufuegen(neu);
+        Round neu = new Round(aktuelleSpielerStaende, aktuellerTisch);
+        neu.setActive(aktiv);
+        course.addRound(neu);
     }
 
     /**
      * Ueberschreibt alle Informationen des aktuellen Spiels, mit denen des Spielstandes, welcher fortgesetzt werden soll
      * @param altesSpiel Spielstand von dem aus weiter gespielt werden soll
      */
-    public void laden(Speicher altesSpiel) {
-        this.verlauf = speicherObjekt.zumLadenVerlauf();
+    public void laden(Storage altesSpiel) {
+        this.course = storageObjekt.HistoryToLoad();
 
-        int spielerCount= speicherObjekt.zumLadenRunden().getSpielerAnzahl();
+        int spielerCount= storageObjekt.getLastRound().getPlayerCount();
         this.players= new Player[spielerCount];
         for (int i=0; i<spielerCount; i++){
-            this.players[i]=speicherObjekt.zumLadenRunden().getSpieler().get(i+1);
+            this.players[i]= storageObjekt.getLastRound().getAllPlayers().get(i+1);
         }
 
-        manipulieren(speicherObjekt.zumLadenRunden());
+        manipulieren(storageObjekt.getLastRound());
 
-        ZugHistorie.leeren();
-        speicherObjekt.zugHistorieUeberschreiben();
+        MoveHistory.empty();
+        storageObjekt.overwriteActions();
     }
 
     /**
@@ -445,23 +443,23 @@ public class GameLoop {
      *
      * @param neuerStand Runde, von der weiter gespielt werden soll
      */
-    public void manipulieren(Runde neuerStand) {
-        this.table.setField(neuerStand.getTischStand().getField());
-        this.table.setCardStack(neuerStand.getTischStand().getCardStack());
-        this.table.setLuckStack(neuerStand.getTischStand().getLuckStack());
+    public void manipulieren(Round neuerStand) {
+        this.table.setField(neuerStand.getTableStatus().getField());
+        this.table.setCardStack(neuerStand.getTableStatus().getCardStack());
+        this.table.setLuckStack(neuerStand.getTableStatus().getLuckStack());
 
         int laenge = players.length;
         this.players = new Player[laenge];
         int z = 0;
-        for (Player p : neuerStand.getSpieler()) {
+        for (Player p : neuerStand.getAllPlayers()) {
             this.players[z] = p;
             z++;
         }
-        Runde vorher = verlauf.getTail().getDavor();
-        vorher.setDahinter(neuerStand);
-        verlauf.getTail().setDavor(neuerStand);
-        neuerStand.setDavor(vorher);
-        neuerStand.setDahinter(verlauf.getTail());
+        Round vorher = course.getTail().getBefore();
+        vorher.setBehind(neuerStand);
+        course.getTail().setBefore(neuerStand);
+        neuerStand.setBefore(vorher);
+        neuerStand.setBehind(course.getTail());
         log("status updated");
 
     }

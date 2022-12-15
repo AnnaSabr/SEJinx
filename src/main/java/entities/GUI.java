@@ -1,6 +1,6 @@
 package entities;
 
-import actions.ReUnDo.Runde;
+import actions.ReUnDo.Round;
 
 import javax.swing.*;
 import java.awt.*;
@@ -146,7 +146,7 @@ public class GUI {
 
     }
 
-    public void updateGUI(Runde displaying){
+    public void updateGUI(Round displaying){
 
 
         //TODO
