@@ -1,7 +1,7 @@
 package actions.Zuege;
 
 /**
- * Alle moeglichen Actionen die mit einer Karte durchgefuehrt werden kann
+ * all actions you can choose to play with a card
  */
 public enum Moves {
     SKIPPED,

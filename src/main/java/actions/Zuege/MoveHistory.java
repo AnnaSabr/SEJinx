@@ -7,7 +7,7 @@ import actions.ReUnDo.cards.CardColor;
 import java.util.ArrayList;
 
 /**
- * doppelt verkettete Liste mit den gespielten zuegen im Spiel
+ * double chained List with all moves from the game
  */
 public class MoveHistory {
 
@@ -17,9 +17,9 @@ public class MoveHistory {
 
 
     /**
-     * Fuegt einen weiteren Spielzug der Historie hinzu
+     * put a new Action in the History
      *
-     * @param newAction Action die hinzugefuegt werden soll
+     * @param newAction Action to put into History
      */
     public static void addNewAction(Action newAction) {
         if (tail.getBefore()==null){
@@ -34,7 +34,7 @@ public class MoveHistory {
     }
 
     /**
-     * @return eine ArrayListe mit allen bisher gespielten Zuegen
+     * @return List with all played moves in the Game
      */
     public static ArrayList<Action> toSave() {
         ArrayList<Action> moves = new ArrayList<>();
@@ -48,7 +48,7 @@ public class MoveHistory {
     }
 
     /**
-     * resetet die ZugHistorie, so dass sie leer ist
+     * reset for the MoveHistory
      */
     public static void empty() {
         head.setBehind(tail);
@@ -56,14 +56,14 @@ public class MoveHistory {
     }
 
     /**
-     * @return start der Zughistorie
+     * @return begin of History
      */
     public static Action getHead() {
         return head;
     }
 
     /**
-     * @return Ende der Zughistorie
+     * @return end of History
      */
     public static Action getTail() {
         return tail;

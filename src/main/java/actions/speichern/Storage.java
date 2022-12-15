@@ -8,7 +8,7 @@ import actions.Zuege.MoveHistory;
 import java.util.ArrayList;
 
 /**
- * ein Objekt, welches alle Relevanten Informationen zum Spielstand enthaelt und zum Speichern in der DB gedacht ist
+ * Object with all information to save the game
  */
 public class Storage {
 
@@ -21,31 +21,41 @@ public class Storage {
     }
 
     /**
-     * Aktualisert die Klassen VerlaufsListe
+     * update the ActionHistory
      *
-     * @param actionHistory ArrayListe mit den Spielzuegen die neu dem Objekt zu geschieben erden soll
+     * @param actionHistory ArrayList with the new correct order of Actions
      */
     public void setActionHistory(ArrayList<Action> actionHistory) {
         this.actionHistory = actionHistory;
     }
 
     /**
-     * @param roundHistory ArrayListe mit Verlauf die in das Speicherobjekt sollen
+     * update RoundHistory
+     * @param roundHistory ArrayListe with the new correct order of Rounds
      */
     public void setRoundHistory(ArrayList<Round> roundHistory) {
         this.roundHistory = roundHistory;
     }
 
+    /**
+     *
+     * @return ArrayList with ActionHistory
+     */
     public ArrayList<Action> getActionHistory() {
         return actionHistory;
     }
+
+    /**
+     *
+     * @return ArrayList with RoundHistory
+     */
     public ArrayList<Round> getRoundHistory() {
         return roundHistory;
     }
     /**
-     * Gibt die Letzte Runde aus der ArrayListe der Runden zurueck
+     * to get the last Round element of the Game
      *
-     * @return letzte gespielte Runde
+     * @return last played Round
      */
     public Round getLastRound() {
         int size = roundHistory.size();
@@ -54,9 +64,9 @@ public class Storage {
 
 
     /**
-     * Erstellt einen neuen Verlauf aus der ArrayListe
+     * build new Course History from List
      *
-     * @return Verlaufsobjekt
+     * @return Copy of CourseHistory
      */
     public Course HistoryToLoad() {
         Course courseCopy = new Course();
@@ -68,7 +78,7 @@ public class Storage {
     }
 
     /**
-     * Ueberschreibt die bisher gespielten Actionen
+     * Overwrite all Actions
      */
     public void overwriteActions() {
         int size = actionHistory.size();

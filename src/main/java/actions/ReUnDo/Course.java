@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 
 /**
- * Eine doppeltverkette Liste zum chronologischen Darstellen der einzelnen Runden im Spiel
+ * double chained List to realise History of played Rounds
  */
 public class Course {
 
@@ -30,9 +30,9 @@ public class Course {
 
 
     /**
-     * setzt eine neue Runde ans ende des Verlaufs
+     * put new Round at the end of the History
      *
-     * @param newRound Runde die eingefuegt werden soll
+     * @param newRound to put at the end
      */
     public void addRound(Round newRound) {
         Round placeholder = tail.getBefore();
@@ -43,8 +43,8 @@ public class Course {
     }
 
     /**
-     * @param round die geprueft werden soll, ob sie der Anfang oder das Ende ist
-     * @return ob es Kopf oder Ende ist
+     * @param round to check if it is head or tail
+     * @return true or false if head or tail
      */
     public boolean headOrTail(Round round) {
         boolean empty = false;
@@ -55,9 +55,9 @@ public class Course {
     }
 
     /**
-     * zum Ausgeben von Text Messages
+     * to log a message to output
      *
-     * @param msg
+     * @param msg for output
      */
     private void log(String msg) {
         outCon.jinxMessage(msg);
@@ -65,9 +65,9 @@ public class Course {
 
 
     /**
-     * Menue zum Waehlen der geplanten Re und Un Do Schritte
+     * menu to choose from re and un do function
      *
-     * @return
+     * @return Round wich was selected to jump to
      */
     public Round jump() {
         position = tail;
@@ -111,7 +111,7 @@ public class Course {
     }
 
     /**
-     * geht im Verlauf einen Schritt zurueck
+     * position steps one back in RoundHistory until head or tail
      */
     public void unDo() {
         if (!headOrTail(position.getBefore())) {
@@ -124,7 +124,7 @@ public class Course {
     }
 
     /**
-     * geht im Verlauf einen Schritt vor
+     * position steps one step for in RoundHistory until head or tail
      */
     public void reDo() {
         if (!position.equals(tail)) {
@@ -136,41 +136,41 @@ public class Course {
     }
 
     /**
-     * Gibt im Terminal eine einzelne Uebergeben Runde aus
+     * Output for one specific Round
      *
-     * @param choice einzelne Runde
+     * @param choice Round wich should be put in Output
      */
     public void showRound(Round choice) {
         for (Player player : choice.getAllPlayers()) {
-            String info="Spieler: " + player.getName() + "\n" +
-                    "Handkarten: " + player.getCards() + "\n" +
-                    "LuckyKarten: " + player.getLuckCards() + "\n";
+            String info="Player: " + player.getName() + "\n" +
+                    "Handcards: " + player.getCards() + "\n" +
+                    "Luckycards: " + player.getLuckCards() + "\n";
             outCon.loggerMessage(info);
         }
-        String info= "Tisch Kartenstapel: " + choice.getTableStatus().getCardStack() + "\n" +
-                "Tisch Luckykartenstapel: " + choice.getTableStatus().getLuckStack() + "\n" +
-                "Spielfeld:\n " + choice.getTableStatus().toString();
+        String info= "Table CardStack: " + choice.getTableStatus().getCardStack() + "\n" +
+                "Table LuckyStack: " + choice.getTableStatus().getLuckStack() + "\n" +
+                "Gamefield:\n " + choice.getTableStatus().toString();
         outCon.loggerMessage(info);
     }
 
     /**
-     * gibt im Terminal den ganzen Verlauf aus
+     * complete History to Output
      */
     public void showHistory() {
         int round = 1;
         Round begin = head.getBehind();
         while (!begin.equals(tail)) {
-            String info=round + ". Zug: \n" + round;
+            String info=round + ". Move: \n" + round;
             outCon.loggerMessage(info);
             for (Player player : begin.getAllPlayers()) {
-                info="Spieler: " + player.getName() + "\n" +
-                        "Handkarten: " + player.getCards() + "\n" +
-                        "LuckyKarten: " + player.getLuckCards() + "\n";
+                info="Player: " + player.getName() + "\n" +
+                        "Handcards: " + player.getCards() + "\n" +
+                        "Luckycards: " + player.getLuckCards() + "\n";
                 outCon.loggerMessage(info);
             }
-            info="Tisch Kartenstapel: " + begin.getTableStatus().getCardStack() + "\n" +
-                    "Tisch Luckykartenstapel: " + begin.getTableStatus().getLuckStack() + "\n" +
-                    "Spielfeld:\n " + begin.getTableStatus().toString();
+            info="Table CardStack: " + begin.getTableStatus().getCardStack() + "\n" +
+                    "Table Luckstack: " + begin.getTableStatus().getLuckStack() + "\n" +
+                    "Gamefield:\n " + begin.getTableStatus().toString();
             outCon.loggerMessage(info);
             round++;
             begin = begin.getBehind();
@@ -178,7 +178,7 @@ public class Course {
     }
 
     /**
-     * @return das Ende der Liste
+     * @return tail from History
      */
     public Round getTail() {
         return tail;
@@ -186,9 +186,9 @@ public class Course {
 
 
     /**
-     * wandelt den bisherigen Verlauf aus einer doppeltverketteten Liste in eine ArrayListe um
+     * put all Rounds from this History into an Arraylist
      *
-     * @return
+     * @return Arraylist with all Rounds from this Game
      */
     public ArrayList<Round> toSave() {
         ArrayList<Round> moveHistory = new ArrayList<>();

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 
 /**
- * Abbild einer gespielten Runde mit allen Spielvariablen, die sich veraendern
+ * One Round from the Game with all information about Player and Table
  */
 public class Round {
 
@@ -29,46 +29,47 @@ public class Round {
     }
 
     /**
-     * fuegt eine neue Runde vor dieser ein
+     * put new Round in front of this
      *
-     * @param before wird eingefuegt
+     * @param before round to put in front of this
      */
     public void setBefore(Round before) {
         this.before = before;
     }
 
     /**
-     * @return gibt die vorherige Runde zurueck
+     * @return round before this one
      */
     public Round getBefore() {
         return before;
     }
 
     /**
-     * fuegt eine neue Runde hinter diese ein
+     * put new Round behind this
      *
-     * @param behind die dahinter eingefuegt werden soll
+     * @param behind Round to put behind this
      */
     public void setBehind(Round behind) {
         this.behind = behind;
     }
 
     /**
-     * @return die folgende Runde
+     * @return the next Round from this
      */
     public Round getBehind() {
         return behind;
     }
 
     /**
-     * @return die Spieler der Runde und somit ihre Spielstaende
+     * List with the players from this Round
+     * @return all players from this Round
      */
     public ArrayList<Player> getAllPlayers() {
         return allPlayers;
     }
 
     /**
-     * @return die Tisch positionen der Runde
+     * @return table with his status of Cards etc
      */
     public Table getTableStatus() {
         return tableStatus;
@@ -76,7 +77,7 @@ public class Round {
 
     /**
      *
-     * @return Anzahl der Spieler in der Runde
+     * @return Count of Players in the Round
      */
     public int getPlayerCount() {
         playerCount = allPlayers.size();
@@ -91,6 +92,10 @@ public class Round {
         return active;
     }
 
+    /**
+     *
+     * @param active Player wich played this round
+     */
     public void setActive(Player active) {
         this.active = active;
     }

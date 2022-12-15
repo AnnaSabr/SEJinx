@@ -13,12 +13,19 @@ public enum CardColor implements Cloneable {
     GREY(6),
     WHITE(7);
 
+    /**
+     * value for the specific Color
+     */
     private final int value;
 
     CardColor(final int newValue) {
         value = newValue;
     }
 
+    /**
+     *
+     * @return value of the CardColor
+     */
     public int getValue() {
         return value;
     }

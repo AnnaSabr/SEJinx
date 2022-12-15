@@ -41,7 +41,7 @@ public class TestPlayer {
 
     @BeforeEach
     public void create() {
-        player = new Player("bob", 1, false);
+        player = new Player("bob", 1, false,false);
         players= new Player[1];
         card = new Card(CardColor.RED, 1);
         luckCard= new LuckCard(CardType.PLUSONE);

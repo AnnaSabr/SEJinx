@@ -5,7 +5,7 @@ import actions.ReUnDo.cards.LuckCard;
 import entities.Player;
 
 /**
- * Stellt einen einzelnen Spielzug da
+ * one Action made by a single Player
  */
 public class Action {
     private Moves move;
@@ -34,14 +34,14 @@ public class Action {
     }
 
     /**
-     * @return die Art des Spielzuges
+     * @return Kind of the move the Player did
      */
     public Moves getMove() {
         return move;
     }
 
     /**
-     * @return gespielte Karte in dem Zug
+     * @return played card
      */
     public Card getCard() {
         return card;
@@ -49,14 +49,14 @@ public class Action {
 
     /**
      *
-     * @return gespielte LuckyKarte
+     * @return played luckcard
      */
     public LuckCard getLuckCard() {
         return luckCard;
     }
 
     /**
-     * @return den Spieler, der den Zug getaetigt hat
+     * @return Player who has done the action
      */
     public Player getActivePlayer() {
         return activPlayer;
@@ -64,28 +64,28 @@ public class Action {
 
 
     /**
-     * @return den folgenden Spielzug
+     * @return Action wich was played after this
      */
     public Action getBehind() {
         return behind;
     }
 
     /**
-     * @return den vorherigen Spielzug
+     * @return Action wich was played before this
      */
     public Action getBefore() {
         return before;
     }
 
     /**
-     * @param behind neuer Zug der dem aktuelln Zug folgen soll
+     * @param behind Action wich is put after this
      */
     public void setBehind(Action behind) {
         this.behind = behind;
     }
 
     /**
-     * @param before neuer Zug der dem aktuellen vor geschobenw erden soll
+     * @param before Action wich is put before this
      */
     public void setBefore(Action before) {
         this.before = before;
