@@ -75,16 +75,17 @@ public class GameLoop {
         this.speicherObjekt = new Speicher();
         this.db=dataFromDB;
         this.showGui= showGui;
+
         if(showGui){
             gui=new GUI();
             this.inOut= new InOutGUI(gui);
             this.outCon = this.inOut;
             this.inCon = this.inOut;
-        }
-        else{
+        } else{
             this.outCon= new OutputConsole();
             this.inCon= new InputConsole();
         }
+
     }
 
     /**
@@ -525,6 +526,8 @@ public class GameLoop {
         for (int i = anzahlKI; i < players.length; i++) {
             String name=this.chooseProfile();
             Player p=new Player(name,sleepTime,manualNextMsg,db);
+            p.registerInput(inCon);
+            p.registerOutput(outCon);
             if(db){
                 p.loadHistoryFromDB();
             }
