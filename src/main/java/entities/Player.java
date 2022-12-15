@@ -1,8 +1,8 @@
 package entities;
 
 import actions.Zuege.Action;
-import actions.Zuege.Zuege;
-import actions.Zuege.ZugHistorie;
+import actions.Zuege.Moves;
+import actions.Zuege.MoveHistory;
 import adapter.primary.InputConsole;
 import adapter.secondary.OutputConsole;
 import adapter.secondary.TextfileAdapter;
@@ -12,6 +12,9 @@ import actions.ReUnDo.cards.CardType;
 import actions.ReUnDo.cards.LuckCard;
 import persistence.DBConnector;
 import persistence.PlayerHistory;
+import ports.inbound.MessageInput;
+import ports.outbound.MessageOutput;
+
 import java.util.*;
 
 /**
@@ -19,7 +22,7 @@ import java.util.*;
  * */
 public class Player implements Cloneable{
 
-    private InputConsole inCon;
+    private MessageInput input;
     protected String name;
 
     protected ArrayList<Card> cards;
@@ -57,13 +60,12 @@ public class Player implements Cloneable{
     //used to roll the dice
 
     Random rand = new Random();
-    private OutputConsole outCon;
+    private MessageOutput output;
 
     /**
-    * Overloaded Constructor to support sleeptimers
+    * Constructor of a player
     * */
     public Player(String name, int sleepTime, boolean manualNextMsg, boolean database){
-        this.inCon= new InputConsole();
         this.name = name;
         this.sleepTime = sleepTime;
         this.manualNextMsg = manualNextMsg;
@@ -76,10 +78,26 @@ public class Player implements Cloneable{
         }else{
             this.loadHistoryFromFile();
         }
-        this.outCon=new OutputConsole();
+
+        //output and input default to console, can be changed by registerX() method
+        this.input = new InputConsole();
+        this.output = new OutputConsole();
     }
 
 
+    /**
+     * Registers an output adapter to the output port
+     * */
+    public void registerOutput(MessageOutput output){
+        this.output = output;
+    }
+
+    /**
+     * Registers an input adapter to the input port
+     * */
+    public void registerInput(MessageInput input){
+        this.input = input;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -246,10 +264,10 @@ public class Player implements Cloneable{
 
         //check if the player has an option to choose from
         if (checkEndRound(table)) {
-            log(this.name + ", there is no card you could choose!");
+            output.logKiPlayer(this.getName(),", there is no card you could choose!");
             Card halter = new Card(CardColor.RED, 420);
-            Action action6 = new Action(Zuege.SKIPPED, halter, this);
-            ZugHistorie.actionHinzufuegen(action6);
+            Action action6 = new Action(Moves.SKIPPED, halter, this);
+            MoveHistory.addNewAction(action6);
             //set the player as inactive to end his turn
             this.active = false;
 
@@ -280,8 +298,8 @@ public class Player implements Cloneable{
             }
             //add card to players hand
             addCard(chosenOne);
-            Action action1 = new Action(Zuege.GOTCARDFROMTABLE, chosenOne, this);
-            ZugHistorie.actionHinzufuegen(action1);
+            Action action1 = new Action(Moves.GOTCARDFROMTABLE, chosenOne, this);
+            MoveHistory.addNewAction(action1);
             //set the player as inactive, since this action ended his turn
             this.active = false;
 
@@ -323,7 +341,7 @@ public class Player implements Cloneable{
     public boolean drawLuckCard(Table table, Player[] players) {
         //check if player has cards on his hand to exchange for a luck card
         if (this.cards.size() == 0) {
-            log(this.name + ", you dont have any cards to exchange for a luck card!");
+            output.logKiPlayer(this.getName(),", you dont have any cards to exchange for a luck card!");
             return false;
         }
 
@@ -335,16 +353,16 @@ public class Player implements Cloneable{
             return false;
         } else {
             //remove the selected card from the players hand
-            Action action2 = new Action(Zuege.DROPPEDCARD, selected, this);
-            ZugHistorie.actionHinzufuegen(action2);
+            Action action2 = new Action(Moves.DROPPEDCARD, selected, this);
+            MoveHistory.addNewAction(action2);
             this.cards.remove(selected);
             //add a luckCard to the players hand
             LuckCard drawn = table.drawLuckCard();
             //check if table has luckcards left
             if (drawn != null) {
                 this.luckCards.add(drawn);
-                Action action3 = new Action(Zuege.GOTLUCKYCARD, drawn, this);
-                ZugHistorie.actionHinzufuegen(action3);
+                Action action3 = new Action(Moves.GOTLUCKYCARD, drawn, this);
+                MoveHistory.addNewAction(action3);
 
                 return true;
             } else {
@@ -421,8 +439,8 @@ public class Player implements Cloneable{
             try {
                 Card halter = maxCards.get(removing);
                 this.cards.remove(maxCards.get(removing));
-                Action action4 = new Action(Zuege.DROPPEDCARD, halter, this);
-                ZugHistorie.actionHinzufuegen(action4);
+                Action action4 = new Action(Moves.DROPPEDCARD, halter, this);
+                MoveHistory.addNewAction(action4);
                 return true;
             } catch (Exception e) {
                 log("Please choose a card!");
@@ -493,7 +511,7 @@ public class Player implements Cloneable{
                     A - Give advise
                     P - Show player's history
                     """);
-            String action = inCon.inputConsole();
+            String action = input.letterInput();
             //check if value is acceptable
             if (Arrays.asList(actions).contains(action)) {
                 return action;
@@ -563,9 +581,9 @@ public class Player implements Cloneable{
 
 
     public int playerInputNumberInRange(int min, int max) {
-        String line = inCon.inputConsole();
+        int line = input.inputINT();
         try {
-            int newDiceCount = Integer.parseInt(line);
+            int newDiceCount = line;
             if (newDiceCount <= max && newDiceCount >= min) {
                 return newDiceCount;
             } else if (newDiceCount == 0) {
@@ -781,7 +799,7 @@ public class Player implements Cloneable{
      * @return
      */
     public String getPlayerInputMenu() {
-        String line = inCon.inputConsole();
+        String line = input.inputAnything();
         if ((!line.equals("C")) && (!line.equals("L")) && (!line.equals("R") && !line.equals("M") && (!line.equals("N")) && (!line.equals("T")) && (!line.equals("H")))) {
             log("Try again!");
             return this.getPlayerInputMenu();
@@ -797,7 +815,7 @@ public class Player implements Cloneable{
      * @return
      */
     public int[] getPlayerInputCoord() {
-        String line = inCon.inputConsole();
+        String line = input.inputCoord();
         String[] coordsSTR = line.split(",");
         try {
             if (Integer.valueOf(coordsSTR[0]) > 4 || Integer.valueOf(coordsSTR[0]) < 1) {
@@ -827,7 +845,7 @@ public class Player implements Cloneable{
      * @return
      */
     public String getPlayerInputYesNo() {
-        String line = inCon.inputConsole();
+        String line = input.inputAnything();
         if ((!line.equals("y")) && (!line.equals("n"))) {
             log("Enter y or n!");
             return this.getPlayerInputYesNo();
@@ -842,7 +860,7 @@ public class Player implements Cloneable{
      * @return
      */
     public String getPlayerInputMultipleCoordinates(Table table) {
-        String line = inCon.inputConsole();
+        String line = input.inputCoord();
         if ((!line.equals("0"))) {
             String[] coord = line.split(";");
             for (String c : coord) {
@@ -869,7 +887,7 @@ public class Player implements Cloneable{
     public int getPlayerInputINT(int min, int max) {
         while (true) {
             try {
-                int ret = inCon.inputConsoleINT();
+                int ret = input.inputINT();
                 if (ret > max || ret < min) {
                     log("Choose a number in the specified range!" + "[" + min + "," + max + "]");
                 } else {
@@ -878,7 +896,7 @@ public class Player implements Cloneable{
             } catch (Exception e) {
                 log("Enter a valid Number!");
                 //read line out of stream to clear it
-                inCon.inputConsole();
+                input.inputAnything();
             }
         }
     }
@@ -888,15 +906,15 @@ public class Player implements Cloneable{
      */
     void log(String msg) {
         if (manualNextMsg) {
-            outCon.simpleMessage("[JINX] " + msg + " [ENTER] to continue!");
-            inCon.inputConsole();
+            output.jinxMessage(msg + " [ENTER] to continue!");
+            input.inputAnything();
         } else {
             try {
                 Thread.sleep(sleepTime);
             } catch (Exception e) {
-                outCon.simpleMessage("Sleep exception!");
+                output.errorSelfMessage("Sleep exception!");
             }
-            outCon.jinxMessage(msg);
+            output.jinxMessage(msg);
         }
     }
 
@@ -934,7 +952,7 @@ public class Player implements Cloneable{
      * @param msg
      */
     private void playerlog(String msg) {
-        outCon.simpleMessage("["+this.getName() + "] chose "+msg);
+        output.logKiPlayer(this.getName(),"choose "+msg);
     }
 
     @Override
@@ -973,7 +991,7 @@ public class Player implements Cloneable{
      * @param msg
      */
     private void adviceLog(String msg) {
-        outCon.simpleMessage("[Advisor]" + msg);
+        output.simpleMessage("[Advisor]" + msg);
     }
 
     /**

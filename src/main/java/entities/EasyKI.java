@@ -49,16 +49,16 @@ public class EasyKI extends Player{
 
         //roll if not rolled yet
         if(this.rolls == 0){
-            log(this.name + "[AI], i didnt roll the dice yet!");
+            outCon.logKiPlayer(this.getName(), "[AI], i didnt roll the dice yet!");
             return "R";
         }
         //check if there is a card that can be picked, if not and rolls are available --> roll
         if(cardAvailable(table) == null && this.rolls < 2){
-            log(this.name + "[AI], there is no card i want...I´ll roll again!");
+            outCon.logKiPlayer(this.getName(),"[AI], there is no card i want...I´ll roll again!");
             return "R";
         }
 
-        log(this.name + "[AI], i will choose a card now!");
+        outCon.logKiPlayer(this.getName(),"[AI], i will choose a card now!");
         //nothing left to do, possibly end round
         return "C";
 
@@ -70,19 +70,19 @@ public class EasyKI extends Player{
      * @return the card or null if not
      */
     private Card cardAvailable(Table table){
-        Card[][] karten= table.getField();
-        for (int a=0; a<karten.length; a++){
-            for (int b=0; b<karten[0].length; b++){
+        Card[][] cards= table.getField();
+        for (int a=0; a<cards.length; a++){
+            for (int b=0; b<cards[0].length; b++){
                 Card c= table.checkCard(a,b);
                 if (c!=null){
                     if (c.getValue()==this.diceCount){
-                        outCon.simpleMessage(c.getValue()+"");
+                        outCon.logKiPlayer(this.getName(),c.getValue()+"");
                         return c;
                     }
                 }
             }
         }
-        outCon.simpleMessage("Chooses the first Card wich was compatible.");
+        outCon.logKiPlayer(this.getName(),"Chooses the first Card wich was compatible.");
         return null;
     }
 
@@ -122,7 +122,7 @@ public class EasyKI extends Player{
 
     @Override
     public boolean drawLuckCard(Table table, Player[] players){
-        log(this.name + "[AI], i would never waste points for a luck card!");
+        outCon.logKiPlayer(this.getName(),"[AI], i would never waste points for a luck card!");
         return false;
     }
 

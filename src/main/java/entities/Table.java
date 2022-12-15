@@ -263,30 +263,30 @@ public class Table implements Cloneable {
     /**
      * Erstellt eine Kopie eines KartenStacks
      *
-     * @param alt Stack der kopiert werden soll
+     * @param old Stack der kopiert werden soll
      * @return neuer Stack der die Kopie ist
      */
-    public static Stack<Card> copyC(Stack<Card> alt) {
-        if (alt == null) {
+    public static Stack<Card> copyC(Stack<Card> old) {
+        if (old == null) {
             return null;
         }
-        Stack<Card> neu = (Stack<Card>) alt.clone();
-        return neu;
+        Stack<Card> newStack = (Stack<Card>) old.clone();
+        return newStack;
     }
 
     /**
      * Erstellt eine Kopie eines LuckyKartenStacks
      *
-     * @param alt Stack der kopiert werden soll
+     * @param old Stack der kopiert werden soll
      * @return neuer Stack der die Kopie ist
      */
-    public static Stack<LuckCard> copyL(Stack<LuckCard> alt) {
-        if (alt == null) {
+    public static Stack<LuckCard> copyL(Stack<LuckCard> old) {
+        if (old == null) {
             return null;
         }
-        Stack<LuckCard> neu = (Stack<LuckCard>) alt.clone();
+        Stack<LuckCard> newStack = (Stack<LuckCard>) old.clone();
 
-        return neu;
+        return newStack;
     }
 
 

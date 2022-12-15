@@ -3,7 +3,7 @@ package actions.Zuege;
 /**
  * Alle moeglichen Actionen die mit einer Karte durchgefuehrt werden kann
  */
-public enum Zuege {
+public enum Moves {
     SKIPPED,
     GOTCARDFROMTABLE,
     USEDLUCKYCARD,

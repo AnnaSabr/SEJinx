@@ -8,87 +8,87 @@ import entities.Player;
  * Stellt einen einzelnen Spielzug da
  */
 public class Action {
-    private Zuege zug;
-    private Card karte;
-    private Player aktiverSpieler;
+    private Moves move;
+    private Card card;
+    private Player activPlayer;
 
-    private LuckCard glueckskarte;
+    private LuckCard luckCard;
 
-    private Action davor;
-    private Action dahinter;
+    private Action before;
+    private Action behind;
 
-    public Action(Zuege zug, Card karte, Player aktiv) {
-        this.zug = zug;
-        this.karte = karte;
-        this.aktiverSpieler = aktiv;
-        this.dahinter = null;
-        this.davor = null;
+    public Action(Moves move, Card card, Player active) {
+        this.move = move;
+        this.card = card;
+        this.activPlayer = active;
+        this.behind = null;
+        this.before = null;
     }
 
-    public Action(Zuege zug, LuckCard karte, Player aktiv) {
-        this.zug = zug;
-        this.glueckskarte = karte;
-        this.aktiverSpieler = aktiv;
-        this.dahinter = null;
-        this.davor = null;
+    public Action(Moves move, LuckCard luckCard, Player active) {
+        this.move = move;
+        this.luckCard = luckCard;
+        this.activPlayer = active;
+        this.behind = null;
+        this.before = null;
     }
 
     /**
      * @return die Art des Spielzuges
      */
-    public Zuege getZug() {
-        return zug;
+    public Moves getMove() {
+        return move;
     }
 
     /**
      * @return gespielte Karte in dem Zug
      */
-    public Card getKarte() {
-        return karte;
+    public Card getCard() {
+        return card;
     }
 
     /**
      *
      * @return gespielte LuckyKarte
      */
-    public LuckCard getGlueckskarte() {
-        return glueckskarte;
+    public LuckCard getLuckCard() {
+        return luckCard;
     }
 
     /**
      * @return den Spieler, der den Zug getaetigt hat
      */
-    public Player getAktiverSpieler() {
-        return aktiverSpieler;
+    public Player getActivePlayer() {
+        return activPlayer;
     }
 
 
     /**
      * @return den folgenden Spielzug
      */
-    public Action getDahinter() {
-        return dahinter;
+    public Action getBehind() {
+        return behind;
     }
 
     /**
      * @return den vorherigen Spielzug
      */
-    public Action getDavor() {
-        return davor;
+    public Action getBefore() {
+        return before;
     }
 
     /**
-     * @param dahinter neuer Zug der dem aktuelln Zug folgen soll
+     * @param behind neuer Zug der dem aktuelln Zug folgen soll
      */
-    public void setDahinter(Action dahinter) {
-        this.dahinter = dahinter;
+    public void setBehind(Action behind) {
+        this.behind = behind;
     }
 
     /**
-     * @param davor neuer Zug der dem aktuellen vor geschobenw erden soll
+     * @param before neuer Zug der dem aktuellen vor geschobenw erden soll
      */
-    public void setDavor(Action davor) {
-        this.davor = davor;
+    public void setBefore(Action before) {
+        this.before = before;
     }
 
 

@@ -1,6 +1,6 @@
 package entities;
 
-import actions.ReUnDo.Runde;
+import actions.ReUnDo.Round;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -28,7 +28,6 @@ public class GUI {
      */
     public void runGUI(){
         gui.setVisible(true);
-
     }
 
     /**
@@ -375,7 +374,9 @@ public class GUI {
         gui.setVisible(true);
     }
 
-    public void updateGUI(Runde displaying){
+    public void updateGUI(Round displaying){
+
+
         //TODO
     }
 }

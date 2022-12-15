@@ -185,7 +185,7 @@ Zu einer Spielhistorie gehört der Tag an dem das Spiel stattgefunden hat, ein S
 der benutzten LuckCards in diesem Spiel. Außerdem wird ein Verweis auf die Gegner des Spielers in diesem Spiel festgehalten.
 Zu den Gegnern wird gespeichert, welchen Score sie hatten.
 
-Um den aktuellen Spielablauf zu speicher und laden zu können haben wir die Tabellen action, spieler, speicher, tisch und runde
+Um den aktuellen Spielablauf zu storage und laden zu können haben wir die Tabellen action, spieler, storage, tisch und round
 erstellt. (Siehe jinx_db.png)
 Speicher - Stellt einen Speicherstand da und verbindet alle wichtigen Entities miteinander
 Besteht nur aus einer ID und dem Datum an dem der Speicherstand gespeichert wurde
