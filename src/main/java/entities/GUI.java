@@ -21,6 +21,7 @@ public class GUI {
     JLabel label=new JLabel();
     int returnIntValue=0;
     String returnValue;
+    int chosenLuckcard;
 
     public GUI(){
         gui=new JFrame();
@@ -87,11 +88,11 @@ public class GUI {
         while(true){
             //TODO only works with sleep or print
 
-            /*try {
+            try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
-            }*/
+            }
             //System.out.println(this.returnValue);
             if(returnValue!=null){
                 if(returnValue.equals("y")){
@@ -190,7 +191,8 @@ public class GUI {
         testPlayerlist.add(test);
         Round testRound=new Round(testPlayerlist,t);
         testRound.setActive(test);
-        g.updateGUI(testRound);
+        //g.updateGUI(testRound);
+        g.actionChosen(testRound);
 
         /*JPanel label1=g.luckcardGUI(test);
         JFrame frame=new JFrame();
@@ -209,6 +211,7 @@ public class GUI {
 
         JPanel playerLuckcards=new JPanel();
         playerLuckcards.setBackground(new Color(160,82,45));
+        int numberOfCard=0;
         for(LuckCard card:currentPlayer.getLuckCards()){
             ImageIcon cardImage;
             if(card.getCardType().equals(CardType.PLUSONE)){
@@ -228,12 +231,14 @@ public class GUI {
             ActionListener actionListener=new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    //TODO
+                    chosenLuckcard=currentPlayer.getLuckCards().indexOf(card);
+                    chosenAction="L";
                     System.out.println("Luckcard button");
                 }
             };
             cardButton.addActionListener(actionListener);
             playerLuckcards.add(cardButton);
+            numberOfCard++;
         }
         return playerLuckcards;
     }
@@ -540,7 +545,7 @@ public class GUI {
      */
     public void updateGUI(Round displaying){
         gui.getContentPane().removeAll();
-        CardGUI tableGui=new CardGUI(displaying.getTableStatus());
+        tableGui=new CardGUI(displaying.getTableStatus(),this);
         gui.add(tableGui,BorderLayout.CENTER);
         JPanel luckCards=this.luckcardGUI(displaying.getActive());
         //gui.add(luckCards,BorderLayout.EAST);
@@ -562,7 +567,7 @@ public class GUI {
         ActionListener diceListener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                chosenAction="R";
             }
         };
         diceRoll.addActionListener(diceListener);
@@ -575,7 +580,7 @@ public class GUI {
         ActionListener adviseListener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                chosenAction="A";
             }
         };
         advise.addActionListener(adviseListener);
@@ -612,12 +617,79 @@ public class GUI {
         tablePanel.add(new JScrollPane(table));
         tablePanel.add(order);
 
-        gui.add(tablePanel,BorderLayout.WEST);
+        JPanel leftComp=new JPanel(new BorderLayout());
+        leftComp.add(tablePanel,BorderLayout.CENTER);
+        JPanel leftButtons=new JPanel();
+        JButton reUnDOButton=new JButton("Re/Undo");
+        ActionListener reUnDoListener=new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chosenAction="M";
+            }
+        };
+        reUnDOButton.addActionListener(reUnDoListener);
+        leftButtons.add(reUnDOButton);
+
+        JButton verlauf=new JButton("Verlauf zeigen");
+        ActionListener verlaufListener=new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chosenAction="N";
+            }
+        };
+        verlauf.addActionListener(verlaufListener);
+        leftButtons.add(verlauf);
+
+        JButton highscores=new JButton("show Highscores");
+        ActionListener highscoreListener=new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chosenAction="H";
+            }
+        };
+        highscores.addActionListener(highscoreListener);
+        leftButtons.add(highscores);
+
+        JButton save=new JButton("save Game");
+        ActionListener saveListener=new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chosenAction="S";
+            }
+        };
+        save.addActionListener(saveListener);
+        leftButtons.add(save);
+
+        JButton showMoves=new JButton("show moves");
+        ActionListener movesListener=new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chosenAction="Z";
+            }
+        };
+        showMoves.addActionListener(movesListener);
+        leftButtons.add(showMoves);
+
+        JButton loadGame=new JButton("load a game");
+        ActionListener loadListener=new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chosenAction="X";
+            }
+        };
+        loadGame.addActionListener(loadListener);
+        leftButtons.add(loadGame);
+
+        leftComp.add(leftButtons,BorderLayout.SOUTH);
+
+        gui.add(leftComp,BorderLayout.WEST);
         gui.add(compRight,BorderLayout.EAST);
 
         //TODO
         gui.setVisible(true);
     }
+
+    CardGUI tableGui;
 
     /**
      * creates a JTable with player's histories
@@ -626,7 +698,7 @@ public class GUI {
      * @return table with player's history
      */
     public JTable historyGUI(ArrayList<String> playerHistory){
-        //5 Spalten, so viele Reihen wie histories
+        //5 columns, as many rows as histories
         String[] columnNames={"name","score","used luckcards","date","opponents with score"};
         String[][] lines=new String[playerHistory.size()][5];
         for(int a=0; a<playerHistory.size();a++){
@@ -644,5 +716,32 @@ public class GUI {
 
 
         return table;
+    }
+
+    String chosenAction;
+
+    /**
+     * returns chosen action from menu
+     *
+     * @param currentRound round that is currently shown
+     * @return player's chosen action
+     */
+    public String actionChosen(Round currentRound){
+        chosenAction=null;
+        this.updateGUI(currentRound);
+        while(true){
+            //chosen luckcard is saved in int chosenLuckcard
+            //chosen card saved in tableGui.chosenCardCoord
+
+            if(chosenAction!=null){
+                return chosenAction;
+            }
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
     }
 }

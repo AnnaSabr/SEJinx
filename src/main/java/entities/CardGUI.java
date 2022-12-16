@@ -12,9 +12,12 @@ import java.util.ArrayList;
 public class CardGUI extends JPanel {
 
     Card[][] cardTableCards;
+    GUI gui;
+    String chosenCardCoord;
 
-    public CardGUI(Table table){
+    public CardGUI(Table table, GUI gui){
         cardTableCards=table.getField();
+        this.gui=gui;
     }
 
     @Override
@@ -64,7 +67,8 @@ public class CardGUI extends JPanel {
                 super.mouseClicked(me);
 
                     if (rectangle.contains(me.getPoint())) {//check if mouse is clicked within shape
-                            System.out.println("Clicked a rectangle");
+                        gui.chosenAction="C";
+                        chosenCardCoord=yPos+1+","+xPos+1;
                     }
                 }
         });
