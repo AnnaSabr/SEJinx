@@ -31,6 +31,7 @@ public class GUI {
     /**
      * displays GUI on screen
      */
+    //TODO delete i guess...
     public void runGUI(){
         gui.setVisible(true);
     }
@@ -38,7 +39,7 @@ public class GUI {
     /**
      * shows gui for yes or no choice
      *
-     * @param question
+     * @param question question the user has to answer
      */
     public void yesOrNo(String question){
         //TODO
@@ -72,10 +73,10 @@ public class GUI {
     }
 
     /**
-     * true or false, choice
+     * returns user's answer from yes/no question
      *
-     * @param question
-     * @return
+     * @param question question for user
+     * @return true/false depending on user's choice
      */
     public boolean returningYesOrNO(String question){
         gui.getContentPane().removeAll();
@@ -179,12 +180,6 @@ public class GUI {
 
 
 
-
-
-
-
-
-
         t.getCard(1,1);
         /*PlayerHandGUI p=new PlayerHandGUI(test.getCards());
         g.gui.add(p,BorderLayout.CENTER);
@@ -204,6 +199,12 @@ public class GUI {
         //g.luckcardGUI(test);*/
     }
 
+    /**
+     * displays player's luckcards
+     *
+     * @param currentPlayer Player who is currently playing
+     * @return JPanel with a button for each luckcard
+     */
     public JPanel luckcardGUI(Player currentPlayer){
 
         JPanel playerLuckcards=new JPanel();
@@ -238,10 +239,10 @@ public class GUI {
     }
 
     /**
-     * get a number from user
+     * return a number greater than 0 from user
      *
      * @param text
-     * @return
+     * @return entry from inputNumber(String text)
      */
     public int getInputNumber(String text){
         gui.getContentPane().removeAll();
@@ -262,6 +263,14 @@ public class GUI {
         }
     }
 
+    /**
+     * returns input inputNumber(String text,int min,int max)
+     *
+     * @param text question or instruction for user
+     * @param min smallest accepted value
+     * @param max biggest accepted value
+     * @return user input from inputNumber-method
+     */
     public int getInputNumber(String text, int min, int max){
         gui.getContentPane().removeAll();
         gui.repaint();
@@ -281,6 +290,11 @@ public class GUI {
         }
     }
 
+    /**
+     * user enters a number greater than 0
+     *
+     * @param text instruction or question for user
+     */
     public void inputNumber(String text){
         returnIntValue=0;
         //label.setText(text);
@@ -322,11 +336,11 @@ public class GUI {
     }
 
     /**
-     * choose number between min and max
+     * user chooses number between min and max via textfield
      *
-     * @param text
-     * @param min
-     * @param max
+     * @param text instruction or message for user
+     * @param min smallest accepted value
+     * @param max biggest accepted value
      */
     public void inputNumber(String text, int min, int max){
         returnIntValue=0;
@@ -368,6 +382,10 @@ public class GUI {
 
     }
 
+    /**
+     * GUI to choose name and level of AI
+     *
+     */
     public void buildAI(){
         gui.getContentPane().removeAll();
         gui.repaint();
@@ -459,6 +477,12 @@ public class GUI {
     String AIname;
     String profileName;
 
+    /**
+     * returns user input from textfield
+     *
+     * @param question will be displayed on top of screen
+     * @return Profile's name
+     */
     public String returnProfile(String question){
         profileName=null;
         getProfileName(question);
@@ -475,6 +499,11 @@ public class GUI {
         }
     }
 
+    /**
+     * GUI to enter input in textfield
+     *
+     * @param question displayed on top of screen
+     */
     public void getProfileName(String question){
         gui.getContentPane().removeAll();
         gui.repaint();
@@ -504,8 +533,12 @@ public class GUI {
 
     boolean orderByScore=true;
 
+    /**
+     * creates the GUI with table, histories, luckcards and player's hand
+     *
+     * @param displaying Round the GUI will display
+     */
     public void updateGUI(Round displaying){
-        //JFrame = gui
         gui.getContentPane().removeAll();
         CardGUI tableGui=new CardGUI(displaying.getTableStatus());
         gui.add(tableGui,BorderLayout.CENTER);
@@ -549,8 +582,12 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 if(orderByScore){
                     orderByScore=false;
+                    order.setText("order by score");
+
                 }else{
                     orderByScore=true;
+                    order.setText("order by date");
+
                 }
             }
         };
@@ -572,9 +609,15 @@ public class GUI {
         gui.setVisible(true);
     }
 
+    /**
+     * creates a JTable with player's histories
+     *
+     * @param playerHistory history of currently playing player
+     * @return table with player's history
+     */
     public JTable historyGUI(ArrayList<String> playerHistory){
         //5 Spalten, so viele Reihen wie histories
-        String[] columnNames={"Name","Score","used Luckcards","Date","Opponents"};
+        String[] columnNames={"name","score","used luckcards","date","opponents with score"};
         String[][] lines=new String[playerHistory.size()][5];
         for(int a=0; a<playerHistory.size();a++){
             String[] splittedHistory=playerHistory.get(a).split(",");
@@ -583,7 +626,6 @@ public class GUI {
             }
         }
         JTable table=new JTable(lines,columnNames){
-            //private static final long serialVersionUID = 1L;
 
             public boolean isCellEditable(int row, int column) {
                 return false;
