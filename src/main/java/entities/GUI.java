@@ -162,20 +162,19 @@ public class GUI {
         test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
         test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
         test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+
+        g.scores.add("e 1");
+        g.scores.add("e 1");
+        g.scores.add("e 1");
+        g.scores.add("e 1");
+        g.scores.add("e 1");
+        g.scores.add("e 1");
+        g.scores.add("e 1");
+        g.scores.add("e 1");
+        g.scores.add("e 1");
+        g.scores.add("e 1");
+        g.scores.add("e 1");
+
 
 
 
@@ -618,7 +617,7 @@ public class GUI {
         tablePanel.add(order);
 
         JPanel leftComp=new JPanel(new BorderLayout());
-        leftComp.add(tablePanel,BorderLayout.CENTER);
+        leftComp.add(tablePanel,BorderLayout.NORTH);
         JPanel leftButtons=new JPanel();
         JButton reUnDOButton=new JButton("Re/Undo");
         ActionListener reUnDoListener=new ActionListener() {
@@ -639,16 +638,8 @@ public class GUI {
         };
         verlauf.addActionListener(verlaufListener);
         leftButtons.add(verlauf);
+        leftComp.add(new JScrollPane(showHighscores(scores)),BorderLayout.CENTER);
 
-        JButton highscores=new JButton("show Highscores");
-        ActionListener highscoreListener=new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                chosenAction="H";
-            }
-        };
-        highscores.addActionListener(highscoreListener);
-        leftButtons.add(highscores);
 
         JButton save=new JButton("save Game");
         ActionListener saveListener=new ActionListener() {
@@ -684,11 +675,10 @@ public class GUI {
 
         gui.add(leftComp,BorderLayout.WEST);
         gui.add(compRight,BorderLayout.EAST);
-
-        //TODO
         gui.setVisible(true);
     }
 
+    ArrayList<String> scores=new ArrayList<>();
     CardGUI tableGui;
 
     /**
@@ -743,5 +733,41 @@ public class GUI {
             }
 
         }
+    }
+
+    /**
+     * shows advice for player in optionpane
+     *
+     * @param advise Advice for the player
+     */
+    public void showAdvise(String advise){
+        JOptionPane.showOptionDialog(null, advise,"Help",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
+    }
+
+
+    /**
+     * creates table with values from highscore
+     *
+     * @param scores all highscores
+     * @return table with scores
+     */
+    public JTable showHighscores(ArrayList<String> scores){
+        //TODO call method after pressing button, after highscore is added to round
+        String[] columnNames={"Name","Score"};
+        String[][] lines=new String[scores.size()][2];
+        for(int a=0; a<scores.size();a++){
+            String[] splittedScore=scores.get(a).split(" ");
+            for (int b=0;b<splittedScore.length;b++) {
+                lines[a][b]=splittedScore[b];
+            }
+        }
+        JTable table=new JTable(lines,columnNames){
+
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            };
+        };
+
+        return table;
     }
 }
