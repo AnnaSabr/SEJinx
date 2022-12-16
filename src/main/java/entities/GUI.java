@@ -1,6 +1,8 @@
 package entities;
 
 import actions.ReUnDo.Round;
+import actions.ReUnDo.cards.Card;
+import actions.ReUnDo.cards.CardColor;
 import actions.ReUnDo.cards.CardType;
 import actions.ReUnDo.cards.LuckCard;
 
@@ -107,10 +109,25 @@ public class GUI {
 
     public static void main(String[] args){
         GUI g=new GUI();
+
         Table t=new Table(true);
         Player test=new Player("Testing",10,false,false);
         test.addLuckCard(new LuckCard(CardType.ONETOTHREE));
         test.addLuckCard(new LuckCard(CardType.PLUSONE));
+        test.addLuckCard(new LuckCard(CardType.PLUSONE));
+        test.addLuckCard(new LuckCard(CardType.PLUSONE));
+        test.addLuckCard(new LuckCard(CardType.PLUSONE));
+
+        test.addCard(new Card(CardColor.BLUE,3));
+        test.addCard(new Card(CardColor.BLUE,3));
+        test.addCard(new Card(CardColor.BLUE,3));
+        test.addCard(new Card(CardColor.BLUE,3));
+
+        /*PlayerHandGUI p=new PlayerHandGUI(test.getCards());
+        g.gui.add(p,BorderLayout.CENTER);
+        g.gui.setVisible(true);
+*/
+
         ArrayList<Player> testPlayerlist=new ArrayList<>();
         testPlayerlist.add(test);
         Round testRound=new Round(testPlayerlist,t);
@@ -454,6 +471,10 @@ public class GUI {
         diceDisplay.add(diceRoll);
         diceDisplay.add(diceCount);
         compRight.add(diceDisplay,BorderLayout.SOUTH);
+
+        PlayerHandGUI hand=new PlayerHandGUI(displaying.getActive().getCards());
+        hand.setPreferredSize(new Dimension(100,130));
+        gui.add(hand,BorderLayout.SOUTH);
 
         gui.add(compRight,BorderLayout.EAST);
 

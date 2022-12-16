@@ -69,7 +69,6 @@ public class CardGUI extends JPanel {
                 }
         });
         return rectangle;
-
     }
 
 }
