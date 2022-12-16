@@ -48,7 +48,6 @@ public class PlayerHandGUI extends JPanel {
     }
 
     public Rectangle drawHand(int indexInArray){
-        System.out.println("test");
         int x=10+ indexInArray*80;
         int y=10;
         Rectangle rectangle=new Rectangle(x,y,60,100);

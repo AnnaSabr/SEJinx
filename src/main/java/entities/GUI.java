@@ -114,15 +114,78 @@ public class GUI {
         Player test=new Player("Testing",10,false,false);
         test.addLuckCard(new LuckCard(CardType.ONETOTHREE));
         test.addLuckCard(new LuckCard(CardType.PLUSONE));
-        test.addLuckCard(new LuckCard(CardType.PLUSONE));
-        test.addLuckCard(new LuckCard(CardType.PLUSONE));
-        test.addLuckCard(new LuckCard(CardType.PLUSONE));
+        //test.addLuckCard(new LuckCard(CardType.PLUSONE));
+
 
         test.addCard(new Card(CardColor.BLUE,3));
         test.addCard(new Card(CardColor.BLUE,3));
         test.addCard(new Card(CardColor.BLUE,3));
         test.addCard(new Card(CardColor.BLUE,3));
 
+        test.history.add("TestHistorie1,30,15.10,2,Emma:6/");
+        test.history.add("TestHistorie2,25,20.04,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie4,5,13.04.,0,Emma:6/Emma:6/Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+
+
+
+
+
+
+
+
+
+
+
+        t.getCard(1,1);
         /*PlayerHandGUI p=new PlayerHandGUI(test.getCards());
         g.gui.add(p,BorderLayout.CENTER);
         g.gui.setVisible(true);
@@ -142,6 +205,7 @@ public class GUI {
     }
 
     public JPanel luckcardGUI(Player currentPlayer){
+
         JPanel playerLuckcards=new JPanel();
         playerLuckcards.setBackground(new Color(160,82,45));
         for(LuckCard card:currentPlayer.getLuckCards()){
@@ -438,6 +502,8 @@ public class GUI {
         gui.setVisible(true);
     }
 
+    boolean orderByScore=true;
+
     public void updateGUI(Round displaying){
         //JFrame = gui
         gui.getContentPane().removeAll();
@@ -459,7 +525,7 @@ public class GUI {
         if(dice==0){
             diceStringValue="No value yet";
         }
-        JLabel diceCount=new JLabel("Rolled :" + diceStringValue);
+        JLabel diceCount=new JLabel("Rolled: " + diceStringValue);
         ActionListener diceListener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -472,13 +538,59 @@ public class GUI {
         diceDisplay.add(diceCount);
         compRight.add(diceDisplay,BorderLayout.SOUTH);
 
+        JButton order;
+        if(orderByScore){
+            order=new JButton("order by date");
+        }else{
+            order=new JButton("order by score");
+        }
+        ActionListener orderListener=new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(orderByScore){
+                    orderByScore=false;
+                }else{
+                    orderByScore=true;
+                }
+            }
+        };
+        order.addActionListener(orderListener);
+
         PlayerHandGUI hand=new PlayerHandGUI(displaying.getActive().getCards());
         hand.setPreferredSize(new Dimension(100,130));
         gui.add(hand,BorderLayout.SOUTH);
 
+        JTable table=this.historyGUI(displaying.getActive().history);
+        JPanel tablePanel=new JPanel();
+        tablePanel.add(new JScrollPane(table));
+        tablePanel.add(order);
+
+        gui.add(tablePanel,BorderLayout.WEST);
         gui.add(compRight,BorderLayout.EAST);
 
         //TODO
         gui.setVisible(true);
+    }
+
+    public JTable historyGUI(ArrayList<String> playerHistory){
+        //5 Spalten, so viele Reihen wie histories
+        String[] columnNames={"Name","Score","used Luckcards","Date","Opponents"};
+        String[][] lines=new String[playerHistory.size()][5];
+        for(int a=0; a<playerHistory.size();a++){
+            String[] splittedHistory=playerHistory.get(a).split(",");
+            for (int b=0;b<splittedHistory.length;b++) {
+                lines[a][b]=splittedHistory[b];
+            }
+        }
+        JTable table=new JTable(lines,columnNames){
+            //private static final long serialVersionUID = 1L;
+
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            };
+        };
+
+
+        return table;
     }
 }
