@@ -571,6 +571,16 @@ public class GUI {
         diceDisplay.add(diceCount);
         compRight.add(diceDisplay,BorderLayout.SOUTH);
 
+        JButton advise=new JButton("get help");
+        ActionListener adviseListener=new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+        advise.addActionListener(adviseListener);
+        compRight.add(advise,BorderLayout.NORTH);
+
         JButton order;
         if(orderByScore){
             order=new JButton("order by date");
