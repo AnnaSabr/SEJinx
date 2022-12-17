@@ -19,6 +19,10 @@ public class Table implements Cloneable {
     // Actual playing field with a 4x4 of normal cards
     private Card[][] field;
 
+    /**
+     * Constructor of a table
+     * @param readFromFile true if the stacks should be loaded from a file
+     * */
     public Table(boolean readFromFile) {
         this.cardStack = new Stack<>();
         this.luckStack = new Stack<>();
@@ -33,9 +37,6 @@ public class Table implements Cloneable {
         }
         initField();
     }
-
-
-    //TODO: Add config to give the option of set card distribution
 
     /**
      * Function to init the card stack
@@ -201,7 +202,6 @@ public class Table implements Cloneable {
 
 
     @Override
-    //TODO: Maybe rework this to represent the field more accurate
     public String toString() {
         StringBuilder ret = new StringBuilder("");
 
@@ -241,10 +241,10 @@ public class Table implements Cloneable {
 
 
     /**
-     * Liefert ein neues Array, welches eine Kopie eines anderen ist
+     * Function to copy an array
      *
-     * @param src das alte Array, welches kopiert werden soll
-     * @return eine Kopie des uebergebenen Arrays
+     * @param src the old array to be copied into a new one
+     * @return the copy of src
      */
     public static Card[][] copyF(Card[][] src) {
         if (src == null) {
@@ -261,10 +261,10 @@ public class Table implements Cloneable {
     }
 
     /**
-     * Erstellt eine Kopie eines KartenStacks
+     * Creates a copy of a card stack
      *
-     * @param old Stack der kopiert werden soll
-     * @return neuer Stack der die Kopie ist
+     * @param old Stack to be copied
+     * @return copy of old
      */
     public static Stack<Card> copyC(Stack<Card> old) {
         if (old == null) {
@@ -275,10 +275,10 @@ public class Table implements Cloneable {
     }
 
     /**
-     * Erstellt eine Kopie eines LuckyKartenStacks
+     * Creates a copy of a luck card stack
      *
-     * @param old Stack der kopiert werden soll
-     * @return neuer Stack der die Kopie ist
+     * @param old Stack to be copied
+     * @return copy of old
      */
     public static Stack<LuckCard> copyL(Stack<LuckCard> old) {
         if (old == null) {
@@ -298,14 +298,14 @@ public class Table implements Cloneable {
     }
 
     /**
-     * @return aktuellen Kartenhand
+     * @return current card stack
      */
     public Stack<Card> getCardStack() {
         return this.cardStack;
     }
 
     /**
-     * @return aktuelle LuckyKarten im besitz
+     * @return current luck card stack
      */
     public Stack<LuckCard> getLuckStack() {
         return this.luckStack;
@@ -313,21 +313,24 @@ public class Table implements Cloneable {
 
 
     /**
-     * @param cards erzeugt eine Kopie der Kartenhand
+     * Sets the cards, copies cards into stack
+     * @param cards stack to be set
      */
     public void setCardStack(Stack<Card> cards) {
         this.cardStack = copyC(cards);
     }
 
     /**
-     * @param field erzeugt eine Kopie des Spielfeldes
+     * Sets the field, copies the cards into the field
+     * @param field cards to be set
      */
     public void setField(Card[][] field) {
         this.field = copyF(field);
     }
 
     /**
-     * @param luckStack erzeugt Kopie des vorhandenen LuckyKarten
+     * Sets the luck cards, copies cards into stack
+     * @param luckStack stack to be set
      */
     public void setLuckStack(Stack<LuckCard> luckStack) {
         this.luckStack = copyL(luckStack);

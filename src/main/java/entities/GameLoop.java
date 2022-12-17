@@ -25,8 +25,8 @@ import ports.outbound.MessageOutput;
 
 
 /**
- * Class handling game logic
- * TODO Change the way y and x are used to determine a place on the field
+ * Main class handling all the relevant game logic
+ * Includes the main game loop, controlling game flow
  */
 public class GameLoop {
 
@@ -46,7 +46,7 @@ public class GameLoop {
     boolean rff;
     int cP;
     int kiCount;
-    Storage storageObjekt;
+    Storage storageObject;
     ArrayList<String> profiles=new ArrayList<>();
     ArrayList<String> availableProfiles=new ArrayList<>();
     boolean db;
@@ -58,6 +58,15 @@ public class GameLoop {
     GUI gui;
     private InOutGUI inOut;
 
+    /**
+     * Constructor of the game loop, used to configure the game
+     *
+     * @param rff should the stack be loaded from file
+     * @param manualNextMsg does the player control the game himself
+     * @param sleepTime time between messages
+     * @param dataFromDB should game be loaded from database
+     * @param showGui should a gui be used or the console
+     * */
     public GameLoop(boolean rff, boolean manualNextMsg, int sleepTime, boolean dataFromDB, boolean showGui) {
         this.rff=rff;
         this.table = new Table(rff);
@@ -70,7 +79,7 @@ public class GameLoop {
         this.sleepTime = sleepTime;
         this.currentRound = 1;
         this.moves = new MoveHistory();
-        this.storageObjekt = new Storage();
+        this.storageObject = new Storage();
         this.db=dataFromDB;
         this.showGui= showGui;
 
@@ -88,6 +97,7 @@ public class GameLoop {
 
     /**
      * Call this function to run the game
+     * Handles creation of players and starts the loop (Never returns)
      */
     public void run() {
         //init all required fields for the first time
@@ -234,11 +244,11 @@ public class GameLoop {
                         case "Z" -> showActions();
                         case "S" -> {
                                 try {
-                                    storageObjekt.setActionHistory(MoveHistory.toSave());
-                                    storageObjekt.setRoundHistory(course.toSave());
+                                    storageObject.setActionHistory(MoveHistory.toSave());
+                                    storageObject.setRoundHistory(course.toSave());
                                     DBConnector dbConnector = DBConnector.getInstance();
 
-                                    boolean saved = dbConnector.createSpeicher(storageObjekt);
+                                    boolean saved = dbConnector.createSpeicher(storageObject);
 
                                     if(saved){
                                         log("Your game was saved, you can load it any time!");
@@ -274,9 +284,9 @@ public class GameLoop {
                                 break;
                             }
 
-                            storageObjekt = dbConnector.getSpeicher(saveObject[input - 1]);
+                            storageObject = dbConnector.getSpeicher(saveObject[input - 1]);
 
-                            load(storageObjekt);
+                            load(storageObject);
                         }
                         case "P" -> {
                             currentPlayer.showHistory();
@@ -363,6 +373,9 @@ public class GameLoop {
         log("Game Over!");
     }
 
+    /**
+     * Function to display all past actions of this game
+     * */
     public void showActions() {
         outCon.simpleMessage("\n\nBisher gespielte Zuege:");
         Action begin = MoveHistory.getHead().getBehind();
@@ -386,20 +399,20 @@ public class GameLoop {
     }
 
     /**
-     * fuegt die letzte Spielrunde in den Spielverlauf ein
+     * Add the last round to the gameHistory
      *
-     * @param aktiv Spieler der den letzten Zug gemacht hat
+     * @param active last active player
      */
-    public void historyUpdate(Player aktiv) {
+    public void historyUpdate(Player active) {
         Table tableStatus = new Table(rff);
         tableStatus.setField(table.getField());
         tableStatus.setCardStack(table.getCardStack());
         tableStatus.setLuckStack(table.getLuckStack());
 
         ArrayList<Player> allPlayerStatus= new ArrayList<>();
-        Player ak= new Player(aktiv.getName(),sleepTime,manualNextMsg,db);
-        ak.setCards(aktiv.getCards());
-        ak.setLuckCards(aktiv.getLuckCards());
+        Player ak= new Player(active.getName(),sleepTime,manualNextMsg,db);
+        ak.setCards(active.getCards());
+        ak.setLuckCards(active.getLuckCards());
         for (int i=cP; i<players.length; i++){
             Player dummy= new Player(players[i].getName(),sleepTime,manualNextMsg,db);
             dummy.setCards(players[i].getCards());
@@ -414,31 +427,32 @@ public class GameLoop {
         }
 
         Round newOne = new Round(allPlayerStatus, tableStatus);
-        newOne.setActive(aktiv);
+        newOne.setActive(active);
         course.addRound(newOne);
     }
 
     /**
-     * Ueberschreibt alle Informationen des aktuellen Spiels, mit denen des Spielstandes, welcher fortgesetzt werden soll
-     * @param oldGame Spielstand von dem aus weiter gespielt werden soll
+     * Overwrites all important information of the current game with a new game
+     * @param oldGame Game that should be loaded
      */
     public void load(Storage oldGame) {
-        this.course = storageObjekt.HistoryToLoad();
+        this.course = storageObject.HistoryToLoad();
 
-        int playerCount= storageObjekt.getLastRound().getPlayerCount();
+        int playerCount= storageObject.getLastRound().getPlayerCount();
         this.players= new Player[playerCount];
         for (int i=0; i<playerCount; i++){
-            this.players[i]= storageObjekt.getLastRound().getAllPlayers().get(i+1);
+            this.players[i]= storageObject.getLastRound().getAllPlayers().get(i+1);
         }
 
-        manipulate(storageObjekt.getLastRound());
+        manipulate(storageObject.getLastRound());
 
         MoveHistory.empty();
-        storageObjekt.overwriteActions();
+        storageObject.overwriteActions();
     }
 
     /**
-     * aktualisiert die aktive Runde auf eine ausgewaehlte andere Runde
+     * Function to manipulate the current game state
+     * Used for undo and redo mechanics
      *
      * @param newStatus Runde, von der weiter gespielt werden soll
      */
@@ -466,6 +480,7 @@ public class GameLoop {
 
     /**
      * Function to remove cards from player hand if round ends
+     * @param p player to be checked for duplicates in his hand
      */
     private void checkPlayerHand(Player p) {
         Card[] hand = p.getCards().toArray(new Card[0]);
@@ -485,6 +500,7 @@ public class GameLoop {
 
     /**
      * Function to easily log a msg on the console
+     * @param msg message to be logged
      */
     private void log(String msg) {
         if (manualNextMsg) {
@@ -612,9 +628,9 @@ public class GameLoop {
     }
 
     /**
-     * erstellt individuelle KI
+     * Creates an individual AI
      *
-     * @return einzelne KI
+     * @return the created AI
      */
     public Player buildingKI() {
         Player k;
@@ -783,7 +799,7 @@ public class GameLoop {
     /**
      * enter password for chosen profile
      * @param profileName name of chosen profile
-     * @return
+     * @return true if there is a profile and the player has access
      */
     public boolean accessProfileFromFile(String profileName){
         for (String line : this.profiles) {
@@ -835,6 +851,8 @@ public class GameLoop {
 
     /**
      * calculates the password that will be saved in textfile
+     * @param password password to be turned into a hash
+     * @return password as hash
      */
     public int calculatePassword(String password){
         int val=0;
@@ -847,7 +865,9 @@ public class GameLoop {
 
     /**
      * calculates if entered password matches password in textfile
-     * @return
+     * @param expected value for that password
+     * @param entered useres values
+     * @return true if password is valid, false if not
      */
     public boolean validatePassword(String expected,String entered){
         int enteredVal=this.calculatePassword(entered);
@@ -863,6 +883,7 @@ public class GameLoop {
      * creates history for current round
      *
      * @param player player the history is created for
+     * @return the history of given player as string
      */
     public String createHistory(Player player){
         String history="";
@@ -895,6 +916,7 @@ public class GameLoop {
 
     /**
      * get date for player history
+     * @return the date the history was created
      */
     private Date getDate(){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-[m]m-[d]d");

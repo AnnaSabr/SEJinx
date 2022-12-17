@@ -622,6 +622,8 @@ public class AIPLayer3 extends Player{
     boolean throwAgain=false;
     /**
      * Function to let the AI choose a luck card after the round
+     * @param table so the AI can evaluate the best luck card to pick
+     * @return LuckCard to be picked
      * */
     @Override
     public LuckCard selectLuckCard(Table table) {
@@ -710,6 +712,12 @@ public class AIPLayer3 extends Player{
 
     boolean drawLuck=true;
 
+    /**
+     * Function to return a number chosen by the AI
+     * @param min the min range of that number
+     * @param max the max range of that number
+     * @return diceCount if between min and max, min otherwise
+     * */
     public int playerInputNumberInRange(int min, int max){
         if(min<this.diceCount&&max>this.diceCount){
             return this.diceCount;
@@ -717,6 +725,11 @@ public class AIPLayer3 extends Player{
         return min;
     }
 
+    /**
+     * Function to let the AI choose multiple card from the field if it plays the luck card
+     * @param table the current table
+     * @return coordinates of chosen card as string (x;y,x;y,...)
+     * */
     @Override
     public String getPlayerInputMultipleCoordinates(Table table) {
         ArrayList<Card> cardsToTake = new ArrayList<>();

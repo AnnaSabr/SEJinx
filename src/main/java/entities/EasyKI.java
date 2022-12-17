@@ -7,14 +7,20 @@ import actions.ReUnDo.cards.CardColor;
 import persistence.DBConnector;
 import persistence.PlayerHistory;
 import java.util.ArrayList;
-
+/**
+ * Class to define the first Level KI easy
+ */
 public class EasyKI extends Player{
 
     private OutputConsole outCon;
+
     /**
-     * class to define die first Level KI easy
-     * @param name name of KI
-     */
+     * Constructor for a new Easy AI
+     * @param name name for AI
+     * @param sleepTime time between messages
+     * @param manualNextMsg if the player should be able to control the flow
+     * @param database if the AI should be loaded from database
+     * */
     public EasyKI (String name, int sleepTime, boolean manualNextMsg, boolean database){
         super(name,sleepTime,manualNextMsg,database);
         if(database){
@@ -28,6 +34,10 @@ public class EasyKI extends Player{
         this.outCon=new OutputConsole();
     }
 
+
+    /**
+     * Function to load an AI from the database
+     * */
     public void loadHistoryFromDB(){
         DBConnector connector=DBConnector.getInstance();
         PlayerHistory[] playerHistories = connector.getPlayerHistory("AILevel1");
@@ -42,6 +52,11 @@ public class EasyKI extends Player{
         }
     }
 
+    /**
+     * Function to let the AI chose its next move
+     * @param table not used by the easy AI
+     * @return next action as string
+     * */
     @Override
     public String chooseAction(Table table){
         log("Your turn " + this.name + "! Eye count - " + this.diceCount);
@@ -86,6 +101,12 @@ public class EasyKI extends Player{
         return null;
     }
 
+    /**
+     * Function to let the AI choose a card from the table
+     * Easy AI chooses the frist best card it can find
+     * @param table current state of the game
+     * @return true if card was found, false if not
+     * */
     @Override
     public boolean chooseCard(Table table){
         //check if the AI has to end its turn because it has no options to pick a card
@@ -106,6 +127,10 @@ public class EasyKI extends Player{
         return true;
     }
 
+    /**
+     * Function to let the Ai choose its highest card if round ends
+     * @return always false
+     * */
     @Override
     public boolean selectHighCard(){
         Card away= new Card(CardColor.BLUE,0);
@@ -120,6 +145,13 @@ public class EasyKI extends Player{
         return false;
     }
 
+    /**
+     * Funtion to let the Easy AI draw a luck card
+     * Easy Ai never chooses to draw a luck card
+     * @param table current table
+     * @param players opponents of AI
+     * @return always false
+     * */
     @Override
     public boolean drawLuckCard(Table table, Player[] players){
         outCon.logKiPlayer(this.getName(),"[AI], i would never waste points for a luck card!");

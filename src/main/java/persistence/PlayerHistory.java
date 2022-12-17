@@ -6,6 +6,7 @@ import java.sql.Date;
 
 /**
  * Object to represent a players game history
+ * Used as DTO between DBConnector and core
  * */
 public class PlayerHistory {
 

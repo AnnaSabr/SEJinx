@@ -64,6 +64,11 @@ public class Player implements Cloneable{
 
     /**
     * Constructor of a player
+     *
+     * @param name name of player
+     * @param sleepTime time between messages
+     * @param manualNextMsg true if player wants to control flow of game
+     * @param database true if data should be loaded from database
     * */
     public Player(String name, int sleepTime, boolean manualNextMsg, boolean database){
         this.name = name;
@@ -87,6 +92,7 @@ public class Player implements Cloneable{
 
     /**
      * Registers an output adapter to the output port
+     * @param output the adapter to be used for output
      * */
     public void registerOutput(MessageOutput output){
         this.output = output;
@@ -94,11 +100,16 @@ public class Player implements Cloneable{
 
     /**
      * Registers an input adapter to the input port
+     * @param input the adapter to be used for input
      * */
     public void registerInput(MessageInput input){
         this.input = input;
     }
 
+    /**
+     * sets the name of a player
+     * @param name of the player
+     * */
     public void setName(String name) {
         this.name = name;
     }
@@ -580,6 +591,12 @@ public class Player implements Cloneable{
     }
 
 
+    /**
+     * Function to handle the input of a number in a certain range
+     * @param min value of input
+     * @param max value of input
+     * @return number input of player
+     * */
     public int playerInputNumberInRange(int min, int max) {
         int line = input.inputINT();
         try {
