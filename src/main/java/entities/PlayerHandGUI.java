@@ -57,10 +57,12 @@ public class PlayerHandGUI extends JPanel {
                 super.mouseClicked(me);
 
                 if (rectangle.contains(me.getPoint())) {//check if mouse is clicked within shape
-                    System.out.println("Clicked a rectangle");
+                    chosen=indexInArray;
                 }
             }
         });
         return rectangle;
     }
+
+    int chosen=0;
 }

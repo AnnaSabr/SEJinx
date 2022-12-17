@@ -122,44 +122,12 @@ public class GUI {
         test.addCard(new Card(CardColor.BLUE,3));
         test.addCard(new Card(CardColor.BLUE,3));
 
-        test.history.add("TestHistorie1,30,15.10,2,Emma:6/");
-        test.history.add("TestHistorie2,25,20.04,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie4,5,13.04.,0,Emma:6/Emma:6/Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie1,30,0,2022-05-08,Emma:6/");
+        test.history.add("TestHistorie2,25,0,2022-04-10,Emma:6/");
+        test.history.add("TestHistorie3,10,0,2022-11-30,Emma:6/");
+        test.history.add("TestHistorie4,5,0,2022-08-12,Emma:6/Emma:6/Emma:6/");
+
+
 
         g.scores.add("e 1");
         g.scores.add("e 1");
@@ -581,36 +549,14 @@ public class GUI {
         advise.addActionListener(adviseListener);
         compRight.add(advise,BorderLayout.NORTH);
 
-        JButton order;
-        if(orderByScore){
-            order=new JButton("order by date");
-        }else{
-            order=new JButton("order by score");
-        }
-        ActionListener orderListener=new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(orderByScore){
-                    orderByScore=false;
-                    order.setText("order by score");
-
-                }else{
-                    orderByScore=true;
-                    order.setText("order by date");
-
-                }
-            }
-        };
-        order.addActionListener(orderListener);
-
         PlayerHandGUI hand=new PlayerHandGUI(displaying.getActive().getCards());
         hand.setPreferredSize(new Dimension(100,130));
         gui.add(hand,BorderLayout.SOUTH);
 
         JTable table=this.historyGUI(displaying.getActive().history);
         JPanel tablePanel=new JPanel();
+        table.setAutoCreateRowSorter(true);
         tablePanel.add(new JScrollPane(table));
-        tablePanel.add(order);
 
         JPanel leftComp=new JPanel(new BorderLayout());
         leftComp.add(tablePanel,BorderLayout.NORTH);
@@ -689,6 +635,13 @@ public class GUI {
         String[][] lines=new String[playerHistory.size()][5];
         for(int a=0; a<playerHistory.size();a++){
             String[] splittedHistory=playerHistory.get(a).split(",");
+            int valScore=Integer.parseInt(splittedHistory[1]);
+            if(valScore<100){
+                splittedHistory[1]="0"+splittedHistory[1];
+                if(valScore<10){
+                    splittedHistory[1]="0"+splittedHistory[1];
+                }
+            }
             for (int b=0;b<splittedHistory.length;b++) {
                 lines[a][b]=splittedHistory[b];
             }
@@ -763,6 +716,7 @@ public class GUI {
                 return false;
             };
         };
+        table.setAutoCreateRowSorter(true);
 
         return table;
     }
