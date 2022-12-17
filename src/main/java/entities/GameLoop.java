@@ -428,6 +428,7 @@ public class GameLoop {
 
         Round newOne = new Round(allPlayerStatus, tableStatus);
         newOne.setActive(active);
+        newOne.setHighscores(this.highscores);
         course.addRound(newOne);
     }
 

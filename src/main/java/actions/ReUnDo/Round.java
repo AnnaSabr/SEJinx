@@ -14,6 +14,7 @@ public class Round {
     private ArrayList<Player> allPlayers;
     private Table tableStatus;
     private Player active;
+    private ArrayList<String> highscores;
 
     private int playerCount =0;
     private Round before;
@@ -24,7 +25,7 @@ public class Round {
         this.tableStatus = tableStatus;
         this.before = null;
         this.behind = null;
-
+        this.highscores=new ArrayList<>();
 
     }
 
@@ -98,5 +99,21 @@ public class Round {
      */
     public void setActive(Player active) {
         this.active = active;
+    }
+
+    /**
+     *
+     * @return ArrayList with highscores
+     */
+    public ArrayList<String> getHighscores() {
+        return highscores;
+    }
+
+    /**
+     *
+     * @param highscores ArrayList to save in Round objcet
+     */
+    public void setHighscores(ArrayList<String> highscores) {
+        this.highscores = highscores;
     }
 }
