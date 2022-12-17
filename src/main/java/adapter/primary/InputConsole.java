@@ -1,5 +1,9 @@
 package adapter.primary;
 
+import adapter.secondary.OutputConsole;
+import entities.AIPLayer3;
+import entities.EasyKI;
+import entities.MediumAI;
 import ports.inbound.MessageInput;
 
 import java.util.Scanner;
@@ -9,6 +13,7 @@ import java.util.Scanner;
  * Takes input from the console and provides the gameloop with parsed input
  * */
 public class InputConsole implements MessageInput {
+    private OutputConsole outCon= new OutputConsole();
 
     /**
      * Lets the player input any string without checks
@@ -60,7 +65,7 @@ public class InputConsole implements MessageInput {
      * */
     @Override
     public int inputINTPlayerInitialization(String question) {
-        System.out.println(question);
+        outCon.jinxMessage(question);
         Scanner sc = new Scanner(System.in);
         int inputPlayer=sc.nextInt();
         return inputPlayer;
@@ -72,7 +77,7 @@ public class InputConsole implements MessageInput {
      * */
     @Override
     public String inputName(String question) {
-        System.out.println(question);
+        outCon.jinxMessage(question);
         Scanner sc= new Scanner(System.in);
         String inputName=sc.nextLine();
         return inputName;
@@ -85,9 +90,29 @@ public class InputConsole implements MessageInput {
      * */
     @Override
     public String inputLevel() {
-        Scanner sc= new Scanner(System.in);
-        String level=sc.nextLine();
-        return level;
+        String name=inputName("Please enter a Name for your KI:");
+        String level="";
+        String ki="";
+        if (!name.equals("")) {
+            ki=name;
+            outCon.simpleMessage("Please choose a level for your KI:  " +
+                    "easy / medium / hard");
+            level=inputAnything();
+            if (level.equals("easy")){
+                name=name+","+"easy";
+            }
+            else if (level.equals("medium")){
+                name=name+","+"medium";
+            }
+            else if (level.equals("hard")){
+                name=name+","+"hard";
+            } else {
+                outCon.simpleMessage("Not an option. Try again.");
+            }
+        } else {
+            outCon.simpleMessage("Wrong input.");
+        }
+        return ki;
     }
 
     /**
@@ -96,7 +121,7 @@ public class InputConsole implements MessageInput {
      * */
     @Override
     public String inputPasswort(String question) {
-        System.out.println(question);
+        outCon.jinxMessage(question);
         Scanner sc= new Scanner(System.in);
         String passwort=sc.nextLine();
         return passwort;
@@ -115,7 +140,7 @@ public class InputConsole implements MessageInput {
 
     @Override
     public String yesNo(String question) {
-        System.out.println(question);
+        outCon.jinxMessage(question);
         Scanner sc = new Scanner(System.in);
         String yesno = sc.nextLine();
         return yesno;

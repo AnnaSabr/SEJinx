@@ -638,27 +638,24 @@ public class GameLoop {
         String name = "";
         String level = "";
         while (true) {
-            name = inCon.inputName("Please enter a Name for your KI:");
-            if (!name.equals("")) {
-                outCon.simpleMessage("Please choose a level for your KI:  " +
-                        "easy / medium / hard");
-                level=inCon.inputLevel();
-                if (level.equals("easy")){
-                    k = new EasyKI(name,sleepTime,manualNextMsg,db);
-                    break;
-                }
-                else if (level.equals("medium")){
-                    k = new MediumAI(name,sleepTime,manualNextMsg,db);
-                    break;
-                }
-                else if (level.equals("hard")){
-                    k=new AIPLayer3(name,sleepTime,manualNextMsg,db);
-                    break;
-                } else {
-                    outCon.simpleMessage("Not an option. Try again.");
-                }
-            } else {
-                outCon.simpleMessage("Wrong input.");
+            String ki=inCon.inputLevel();
+            String[] kiPart=ki.split(",");
+            name=kiPart[0];
+            level=kiPart[1];
+            if (level.equals("easy")){
+                k = new EasyKI(name,sleepTime,manualNextMsg,db);
+                break;
+            }
+            else if (level.equals("medium")){
+                k = new MediumAI(name,sleepTime,manualNextMsg,db);
+                break;
+            }
+            else if (level.equals("hard")){
+                k = new AIPLayer3(name,sleepTime,manualNextMsg,db);
+                break;
+            }
+            else{
+                outCon.errorSelfMessage("Something is wrong.");
             }
         }
         outCon.simpleMessage("You created: KI: " + k.getName() + "  Level: " + k.getClass().getSimpleName());
