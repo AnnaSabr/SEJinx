@@ -7,6 +7,10 @@ import persistence.PlayerHistory;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+/**
+ * Mid-level AI
+ * Is able to choose the best possible card, doesn't play luck cards
+ * */
 public class MediumAI extends Player{
 
     private OutputConsole outCon;

@@ -1,5 +1,8 @@
 package actions.ReUnDo.cards;
 
+/**
+ * Representing a luck card from jinx with certain type
+ * */
 public class LuckCard implements Cloneable {
 
     private CardType cardType;

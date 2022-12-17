@@ -9,13 +9,17 @@ import actions.ReUnDo.cards.LuckCard;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import entities.*;
+import ports.outbound.Database;
 
 import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class DBConnector {
+/**
+ * Adapter implementation as connector to database
+ * */
+public class DBConnector{
 
     private static final DBConnector singleton = new DBConnector();
     private Connection con;
@@ -36,6 +40,9 @@ public class DBConnector {
 
 
 
+    /**
+     * Call this to get an instance of this class
+     * */
     public static DBConnector getInstance(){
         return singleton;
     }

@@ -1,5 +1,8 @@
 package ports.inbound;
 
+/**
+ * Port for simple message input
+ * */
 public interface MessageInput {
 
     String inputAnything();

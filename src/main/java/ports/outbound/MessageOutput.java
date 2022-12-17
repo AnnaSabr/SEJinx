@@ -2,6 +2,9 @@ package ports.outbound;
 
 import entities.Table;
 
+/**
+ * Port for message output
+ * */
 public interface MessageOutput {
 
    void simpleMessage(String text);

@@ -10,6 +10,10 @@ import persistence.PlayerHistory;
 
 import java.util.ArrayList;
 
+/**
+ * Highest difficulty AI
+ * Chooses cards and luck cards based on opponents
+ * */
 public class AIPLayer3 extends Player{
 
     private OutputConsole outCon;
