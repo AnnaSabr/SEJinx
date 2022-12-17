@@ -80,20 +80,18 @@ public class GUI {
      * @return true/false depending on user's choice
      */
     public boolean returningYesOrNO(String question){
+        returnValue=null;
         gui.getContentPane().removeAll();
         gui.repaint();
         this.yesOrNo(question);
         System.out.println("out of method");
         boolean bool=true;
         while(true){
-            //TODO only works with sleep or print
-
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            //System.out.println(this.returnValue);
             if(returnValue!=null){
                 if(returnValue.equals("y")){
                     System.out.println(2);
@@ -249,12 +247,11 @@ public class GUI {
      * @return entry from inputNumber(String text)
      */
     public int getInputNumber(String text){
+        returnIntValue=0;
         gui.getContentPane().removeAll();
         gui.repaint();
         inputNumber(text);
         while(true){
-            //TODO only works with sleep or print
-
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
@@ -276,12 +273,11 @@ public class GUI {
      * @return user input from inputNumber-method
      */
     public int getInputNumber(String text, int min, int max){
+        returnIntValue=0;
         gui.getContentPane().removeAll();
         gui.repaint();
         inputNumber(text, min, max);
         while(true){
-            //TODO only works with sleep or print
-
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
