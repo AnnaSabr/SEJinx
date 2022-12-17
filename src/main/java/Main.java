@@ -1,143 +1,106 @@
 import actions.Zuege.MoveHistory;
+import adapter.primary.InOutGUI;
 import entities.GUI;
 import entities.GameLoop;
 import adapter.primary.InputConsole;
 import adapter.secondary.OutputConsole;
-
+import ports.inbound.MessageInput;
+import ports.outbound.MessageOutput;
 
 
 public class Main {
 
-    private static OutputConsole outCon = new OutputConsole();
-    private static InputConsole inCon = new InputConsole();
+    private static MessageOutput outCon = new OutputConsole();
+    private static MessageInput inCon = new InputConsole();
+    private static InOutGUI inOut = null;
 
 
     public static void main(String[] args) {
-        GUI g=new GUI();
+
         // does user want to load a default config
-        boolean config = false ;
+        boolean config = false;
         boolean manualSleepTime = false;
         int nextMsgTime = 200;
-        boolean gui=false;
-        while(true){
+        boolean gui = false;
+        while (true) {
             outCon.simpleMessage("Do you want to use a GUI? [y/n]");
-            String choice=inCon.letterInput();
+            String choice = inCon.letterInput();
+            if ("y".equals(choice)) {
+                gui = true;
+                GUI g = new GUI();
+                inOut = new InOutGUI(g);
+                outCon = inOut;
+                inCon = inOut;
 
-            if("y".equals(choice)){
-                gui=true;
                 break;
-            }else if("n".equals(choice)){
-                gui=false;
+            } else if ("n".equals(choice)) {
+                gui = false;
                 break;
             }
             outCon.simpleMessage("Invalid choice");
         }
-        while(true){
-            if(!gui){
-                outCon.jinxMessage("Do you wish to load a config file? [y/n]");
-
-                String con = inCon.letterInput();
-
-                if ("y".equals(con)) {
-                    config = true;
-                    break;
-                } else if ("n".equals(con)) {
-                    outCon.jinxMessage("Shuffling the cards!");
-                    break;
-                } else {
-                    outCon.jinxMessage("Not an option! Try again!");
-                }
-            }else{
-                //TODO change with presenter
-                config=g.returningYesOrNO("Do you wish to load a config file?");
+        while (true) {
+            String con = inCon.yesNo("Do you wish to load a config file? [y/n]");
+            if ("y".equals(con)) {
+                config = true;
                 break;
+            } else if ("n".equals(con)) {
+                outCon.jinxMessage("Shuffling the cards!");
+                break;
+            } else {
+                outCon.jinxMessage("Not an option! Try again!");
             }
         }
 
-
-        while(true){
-            if(!gui){
-                outCon.jinxMessage("Do you wish to manually control the game flow? [y/n]");
-                String con = inCon.letterInput();
-
-                if ("y".equals(con)) {
-                    manualSleepTime = true;
+        while (true) {
+            String con = inCon.yesNo("Do you wish to manually control the game flow? [y/n]");
+            if ("y".equals(con)) {
+                manualSleepTime = true;
+                break;
+            } else if ("n".equals(con)) {
+                outCon.jinxMessage("How long should the time between messages be? [ms]");
+                try {
+                    nextMsgTime = inCon.inputINTTime();
                     break;
-                } else if ("n".equals(con)) {
-                    outCon.jinxMessage("How long should the time between messages be? [ms]");
-                    try{
-                        nextMsgTime = inCon.inputINTTime();
-                        break;
-                    }catch (Exception e){
-                        outCon.errorSelfMessage("Please enter a valid number!");
-                    }
-                } else {
-                    outCon.jinxMessage("Not an option! Try again!");
+                } catch (Exception e) {
+                    outCon.errorSelfMessage("Please enter a valid number!");
                 }
-            }else{
-                //TODO change to presenter
-                manualSleepTime=g.returningYesOrNO("Do you wish to manually control the game flow? [y/n]");
-                if(!manualSleepTime){
-                    nextMsgTime=g.getInputNumber("How long should the time between messages be? [ms]");
-                    break;
-                }else{
-                    break;
-                }
-
+            } else {
+                outCon.jinxMessage("Not an option! Try again!");
             }
         }
         boolean dataSource;
         //String data=inCon.inputAnything();
 
-        while(true){
-            if(!gui){
-                outCon.jinxMessage("Press 'y' in order to get data from the database. Press 'n' in order to get data from the textfile.");
-                String con = inCon.letterInput();
+        while (true) {
+            String con = inCon.yesNo("Press 'y' in order to get data from the database. Press 'n' in order to get data from the textfile.");
 
-                if ("y".equals(con)) {
-                    dataSource = true;
-                    break;
-                } else if ("n".equals(con)) {
-                    dataSource = false;
-                    break;
-                } else {
-                    outCon.jinxMessage("Not an option! Try again!");
-                }
-            }else{
-                //TODO use presenter
-                dataSource=g.returningYesOrNO("Do you wish to load data from the database? Otherwise data will be taken from a textfile.");
+            if ("y".equals(con)) {
+                dataSource = true;
                 break;
+            } else if ("n".equals(con)) {
+                dataSource = false;
+                break;
+            } else {
+                outCon.jinxMessage("Not an option! Try again!");
             }
         }
-        GameLoop game = new GameLoop(config,manualSleepTime,nextMsgTime, dataSource, gui);
 
+        GameLoop game = new GameLoop(config, manualSleepTime, nextMsgTime, dataSource, gui);
         game.run();
+
         boolean next = true;
         while (next) {
-            if(!gui){
-                outCon.jinxMessage("Next Game? y for yes, n for no");
-
-                String nextGame = inCon.letterInput();
-                if (nextGame.equals("y")) {
-                    GameLoop gameA = new GameLoop(config, manualSleepTime, nextMsgTime, dataSource, gui);
-                    MoveHistory.empty();
-                    gameA.run();
-                } else if (nextGame.equals("n")) {
-                    outCon.jinxMessage("End initialized");
-                    next = false;
-                } else {
-                    outCon.errorSelfMessage("Wrong input.");
-                }
-            }else{
-                boolean startRound=g.returningYesOrNO("Would you like to start a new game?");
-                if(startRound){
-                    GameLoop gameA = new GameLoop(config, manualSleepTime, nextMsgTime, dataSource, gui);
-                    MoveHistory.empty();
-                    gameA.run();
-                }else{
-                    //TODO show game over message on gui
-                    next=false;
-                }
+            String nextGame = inCon.yesNo("Next Game? y for yes, n for no");
+            if (nextGame.equals("y")) {
+                GameLoop gameA = new GameLoop(config, manualSleepTime, nextMsgTime, dataSource, gui);
+                MoveHistory.empty();
+                gameA.run();
+            } else if (nextGame.equals("n")) {
+                outCon.jinxMessage("End initialized");
+                next = false;
+            } else {
+                outCon.errorSelfMessage("Wrong input.");
             }
         }
     }

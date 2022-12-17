@@ -26,15 +26,8 @@ public class GUI {
     public GUI(){
         gui=new JFrame();
         gui.setTitle("Jinx");
-        gui.setExtendedState(JFrame.MAXIMIZED_BOTH);
-    }
-
-    /**
-     * displays GUI on screen
-     */
-    //TODO delete i guess...
-    public void runGUI(){
         gui.setVisible(true);
+        gui.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
     /**
@@ -107,6 +100,7 @@ public class GUI {
         return bool;
     }
 
+    /**
     public static void main(String[] args){
         GUI g=new GUI();
 
@@ -173,16 +167,11 @@ public class GUI {
         g.scores.add("e 1");
         g.scores.add("e 1");
 
-
-
-
-
-
         t.getCard(1,1);
-        /*PlayerHandGUI p=new PlayerHandGUI(test.getCards());
+        PlayerHandGUI p=new PlayerHandGUI(test.getCards());
         g.gui.add(p,BorderLayout.CENTER);
         g.gui.setVisible(true);
-*/
+
 
         ArrayList<Player> testPlayerlist=new ArrayList<>();
         testPlayerlist.add(test);
@@ -191,12 +180,13 @@ public class GUI {
         //g.updateGUI(testRound);
         g.actionChosen(testRound);
 
-        /*JPanel label1=g.luckcardGUI(test);
+        JPanel label1=g.luckcardGUI(test);
         JFrame frame=new JFrame();
         frame.add(label1,BorderLayout.CENTER);
         frame.setVisible(true);
-        //g.luckcardGUI(test);*/
-    }
+        g.luckcardGUI(test);
+    }*/
+
 
     /**
      * displays player's luckcards

@@ -59,7 +59,8 @@ public class InputConsole implements MessageInput {
      * @return int, input done by player
      * */
     @Override
-    public int inputINTPlayerInitialization() {
+    public int inputINTPlayerInitialization(String question) {
+        System.out.println(question);
         Scanner sc = new Scanner(System.in);
         int inputPlayer=sc.nextInt();
         return inputPlayer;
@@ -70,7 +71,8 @@ public class InputConsole implements MessageInput {
      * @return the name entered by the player
      * */
     @Override
-    public String inputName() {
+    public String inputName(String question) {
+        System.out.println(question);
         Scanner sc= new Scanner(System.in);
         String inputName=sc.nextLine();
         return inputName;
@@ -93,7 +95,8 @@ public class InputConsole implements MessageInput {
      * @return password as plain string !needs to be hashed after call!
      * */
     @Override
-    public String inputPasswort() {
+    public String inputPasswort(String question) {
+        System.out.println(question);
         Scanner sc= new Scanner(System.in);
         String passwort=sc.nextLine();
         return passwort;
@@ -108,5 +111,13 @@ public class InputConsole implements MessageInput {
         Scanner sc = new Scanner(System.in);
         String inputINT = sc.nextLine();
         return inputINT;
+    }
+
+    @Override
+    public String yesNo(String question) {
+        System.out.println(question);
+        Scanner sc = new Scanner(System.in);
+        String yesno = sc.nextLine();
+        return yesno;
     }
 }

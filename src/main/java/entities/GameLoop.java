@@ -123,11 +123,10 @@ public class GameLoop {
         if(!db){
             this.getProfilesFromFile();
         }
-        outCon.simpleMessage("Welcome to JINX! How many players do you wish to play with? (2-4 Players)");
         int playerCount;
         while (true) {
             try {
-                playerCount = inCon.inputINTPlayerInitialization();
+                playerCount = inCon.inputINTPlayerInitialization("Welcome to JINX! How many players do you wish to play with? (2-4 Players)");
 
                 if (playerCount < 2 || playerCount > 4) {
                     outCon.simpleMessage("This game is designed for 2-4 Players! Choose again!");
@@ -135,8 +134,8 @@ public class GameLoop {
                     // set size of players to user specified value
                     this.players = new Player[playerCount];
 
-                    outCon.simpleMessage("Please tell us if you like do modifier any player into KI: y/n");
-                    String kiInvolved =inCon.letterInput();
+                    String kiInvolved =inCon.yesNo("Please tell us if you like do modifier any player into KI: y/n");
+
                     if (kiInvolved.equals("y")) {
                         initKI();
                     } else {
@@ -607,9 +606,8 @@ public class GameLoop {
         int players = this.players.length;
         ArrayList<Player> ki = new ArrayList<>();
         while (true) {
-            outCon.simpleMessage("This game will have " + players + " players. Choose between 0-" + players + ".\n" +
+            int kiCounter = inCon.inputINTPlayerInitialization("This game will have " + players + " players. Choose between 0-" + players + ".\n" +
                     "How many do you want to substitute with KI's?");
-            int kiCounter = inCon.inputINTPlayerInitialization();
             try {
                 if (kiCounter > 0 && kiCounter <= players) {
                     for (int a = 0; a < kiCounter; a++) {
@@ -640,8 +638,7 @@ public class GameLoop {
         String name = "";
         String level = "";
         while (true) {
-            outCon.simpleMessage("Please enter a Name for your KI:");
-            name = inCon.inputName();
+            name = inCon.inputName("Please enter a Name for your KI:");
             if (!name.equals("")) {
                 outCon.simpleMessage("Please choose a level for your KI:  " +
                         "easy / medium / hard");
@@ -699,13 +696,11 @@ public class GameLoop {
      * chooses profile for player from db or file
      * @return name of profile
      */
-    //eventuell kaputt
     public String chooseProfile(){
-        boolean gettingProfile=false;
-        this.log("Would you like to choose a profile? y/n");
-        if(inCon.letterInput().equals("y")){
-            this.log("Which profile do you want?");
-            String name=inCon.inputName().replaceAll(" ","");
+        String choosePr=inCon.yesNo("Would you like to choose a profile? y/n");
+
+        if(choosePr.equals("y")){
+            String name=inCon.inputName("Which profile do you want?").replaceAll(" ","");
             if(name.equals("AILevel1")||name.equals("AILevel2")||name.equals("AILevel3")){
                 this.log("This is the AI's profile! You may not use it.");
                 return chooseProfile();
@@ -731,8 +726,7 @@ public class GameLoop {
                             return name;
                         }
                     }
-                    this.log("Enter your password!");
-                    String enteredPassword=inCon.inputPasswort();
+                    String enteredPassword=inCon.inputPasswort("Enter your password!");
                     if(this.connector.playerLogin(name,enteredPassword)){
                         this.log("Correct!");
                         this.availableProfiles.add(name);
@@ -762,14 +756,12 @@ public class GameLoop {
             if(db){
                 //TODO add optionpanes
                 String name="";
-                this.log("Please enter a name for the profile.");
-                name=inCon.inputName().replaceAll(" ","");
+                name=inCon.inputName("Please enter a name for the profile.").replaceAll(" ","");
                 if(this.connector.checkPlayer(name)){
                     this.log("This profile already exists.");
                     return this.chooseProfile();
                 }else{
-                    this.log("Now enter the new password.");
-                    String password=inCon.inputPasswort();
+                    String password=inCon.inputPasswort("Now enter the new password.");
                     if(this.connector.createPlayer(name,password)){
                         return name;
                     }else{
@@ -784,8 +776,7 @@ public class GameLoop {
                 boolean a=true;
                 while(a){
                     a=false;
-                    this.log("Please choose a name for your new profile!");
-                    name = inCon.inputName().replaceAll(" ", "");
+                    name = inCon.inputName("Please choose a name for your new profile!").replaceAll(" ", "");
                     for(String line:this.profiles){
                         String[] strings=line.split(",");
                         if(strings[0].equals(name)){
@@ -795,8 +786,7 @@ public class GameLoop {
                         }
                     }
                 }
-                this.log("Please choose a password!");
-                String pw=inCon.inputPasswort();
+                String pw=inCon.inputPasswort("Please choose a password!");
                 this.profiles.add(name+","+this.calculatePassword(pw));
                 this.availableProfiles.add(name+","+this.calculatePassword(pw));
                 return name;
@@ -813,8 +803,7 @@ public class GameLoop {
         for (String line : this.profiles) {
             String[] name = line.split(",");
             if (name[0].equals(profileName)) {
-                this.log("Please enter the password!");
-                String pw = inCon.inputPasswort();
+                String pw = inCon.inputPasswort("Please enter the password!");
                 boolean access = this.matchPasswordToProfile(profileName, pw);
                 if (access) {
                     this.availableProfiles.add(line);

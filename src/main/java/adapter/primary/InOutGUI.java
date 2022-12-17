@@ -63,13 +63,17 @@ public class InOutGUI implements MessageOutput,MessageInput{
     }
 
     @Override
-    public int inputINTPlayerInitialization() {
-        return 0;
+    public int inputINTPlayerInitialization(String question) {
+        gui.inputNumber(question);
+        int players =gui.getInputNumber(question,2,4);
+        return players;
     }
 
     @Override
-    public String inputName() {
-        return null;
+    public String inputName(String question) {
+        gui.getProfileName(question);
+        String name=gui.returnProfile(question);
+        return name;
     }
 
     @Override
@@ -78,8 +82,10 @@ public class InOutGUI implements MessageOutput,MessageInput{
     }
 
     @Override
-    public String inputPasswort() {
-        return null;
+    public String inputPasswort(String question) {
+        gui.getProfileName(question);
+        String passwort=gui.returnProfile(question);
+        return passwort;
     }
 
     @Override
@@ -91,4 +97,16 @@ public class InOutGUI implements MessageOutput,MessageInput{
     public String inputCoord() {
         return null;
     }
+
+    @Override
+    public String yesNo(String text) {
+        gui.yesOrNo(text);
+        boolean yesNo=gui.returningYesOrNO(text);
+        if (yesNo){
+            return "y";
+        }
+        return "n";
+    }
+
+
 }

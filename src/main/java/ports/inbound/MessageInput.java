@@ -26,13 +26,13 @@ public interface MessageInput {
      * For int input during the player initialization
      * @return Player input
      * */
-    int inputINTPlayerInitialization();
+    int inputINTPlayerInitialization(String question);
 
     /**
      * For name input
      * @return Player input
      * */
-    String inputName();
+    String inputName(String question);
 
     /**
      * To input an AIs difficulty
@@ -44,7 +44,7 @@ public interface MessageInput {
      * To input a password
      * @return password as string
      * */
-    String inputPasswort();
+    String inputPasswort(String question);
 
     /**
      * To input a simple int
@@ -58,4 +58,11 @@ public interface MessageInput {
      * @return coordinate as string (x,y)
      * */
     String inputCoord();
+
+    /**
+     *
+     * @param text for question
+     * @return answer yes or no
+     */
+    String yesNo (String text);
 }
