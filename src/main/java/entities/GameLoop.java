@@ -599,7 +599,7 @@ public class GameLoop {
     }
 
     /**
-     * Ki menue, Auswahl der Anzahl der KIs im Spiel und deren Initialisierung
+     * Ki menue, to initialize KIs
      */
     public void initKI() {
         int players = this.players.length;
