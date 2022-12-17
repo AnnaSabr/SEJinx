@@ -23,6 +23,8 @@ import persistence.PlayerHistory;
 import ports.inbound.MessageInput;
 import ports.outbound.MessageOutput;
 
+import javax.swing.*;
+
 
 /**
  * Main class handling all the relevant game logic
@@ -634,7 +636,7 @@ public class GameLoop {
      * @return the created AI
      */
     public Player buildingKI() {
-        Player k;
+        Player k = null;
         String name = "";
         String level = "";
         while (true) {
@@ -697,7 +699,9 @@ public class GameLoop {
      * chooses profile for player from db or file
      * @return name of profile
      */
+    //eventuell kaputt
     public String chooseProfile(){
+        boolean gettingProfile=false;
         this.log("Would you like to choose a profile? y/n");
         if(inCon.letterInput().equals("y")){
             this.log("Which profile do you want?");
@@ -742,6 +746,7 @@ public class GameLoop {
                     return this.chooseProfile();
                 }
             }else{
+                //TODO add GUI
                 //log in to profile from textfile
                 if(this.findProfileFromFile(name)){
                     if(this.accessProfileFromFile(name)){
@@ -755,6 +760,7 @@ public class GameLoop {
         }else{
             //new profile to db
             if(db){
+                //TODO add optionpanes
                 String name="";
                 this.log("Please enter a name for the profile.");
                 name=inCon.inputName().replaceAll(" ","");
@@ -772,6 +778,7 @@ public class GameLoop {
                     }
                 }
             }else{
+                //TODO add gui
                 //new profile to textfile
                 String name="";
                 boolean a=true;
@@ -826,6 +833,7 @@ public class GameLoop {
      * @return whether profile is available
      */
     public boolean findProfileFromFile(String newName){
+        //TODO add optionpane
         boolean found = false;
         for (String line : this.profiles) {
             String[] name = line.split(",");
