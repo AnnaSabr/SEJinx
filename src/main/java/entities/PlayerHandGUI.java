@@ -44,6 +44,24 @@ public class PlayerHandGUI extends JPanel {
                 g2d.setColor(Color.BLACK);
                 g2d.drawString(Integer.toString(card.getValue()),40+a*80,30);
         }
+        g2d.setColor(Color.BLACK);
+        Rectangle r=new Rectangle(10+(cardOnHand.size()+1)*80,10,60,100);
+        g2d.fill(r);
+        g2d.setColor(Color.WHITE);
+        g2d.drawString("None",40+(cardOnHand.size()+1)*80,30);
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                super.mouseClicked(me);
+
+                if (r.contains(me.getPoint())) {//check if mouse is clicked within shape
+                    //exchange for luckcard
+                    chosen=0;
+                    //forced to drop
+                    drop=0;
+                }
+            }
+        });
 
     }
 
@@ -63,12 +81,16 @@ public class PlayerHandGUI extends JPanel {
                 super.mouseClicked(me);
 
                 if (rectangle.contains(me.getPoint())) {//check if mouse is clicked within shape
-                    chosen=indexInArray;
+                    //exchange for luckcard
+                    chosen=indexInArray+1;
+                    //forced to drop
+                    drop=indexInArray;
                 }
             }
         });
         return rectangle;
     }
 
+    int drop=0;
     int chosen=-1;
 }
