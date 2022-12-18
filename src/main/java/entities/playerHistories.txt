@@ -7,7 +7,9 @@ AILevel1,19,0,2022-12-14,null (AILevel1): 28 /
 AILevel1,19,0,2022-12-14,Test (AILevel1): 2 /
 AILevel1,18,0,2022-12-14,Test (AILevel1): 24 /
 AILevel1,7,0,2022-12-14,Test (AILevel1): 5 /
+AILevel1,6,0,2022-12-18,zwei (AILevel2): 9 /drei (AILevel3): 5 /vier (AILevel2): 0 /
 AILevel1,5,0,2022-12-14,Test (AILevel1): 7 /
+AILevel1,5,0,2022-12-18,möml (AILevel2): 12 /jkl (AILevel3): 0 /hfgh: 0 /
 AILevel1,4,0,2022-11-29,b (AILevel1): 1 /c (AILevel1): 0 /anna: 0 /
 AILevel1,2,0,2022-12-14,test2 (AILevel1): 19 /
 AILevel1,1,0,2022-11-29,a (AILevel1): 4 /c (AILevel1): 0 /anna: 0 /
@@ -17,15 +19,23 @@ AILevel1,0,0,2022-12-14,test (AILevel1): 0 /
 AILevel1,0,0,2022-12-14,test (AILevel1): 0 /
 anna,0,0,2022-11-29,a (AILevel1): 4 /b (AILevel1): 1 /c (AILevel1): 0 /
 AILevel2,35,0,2022-12-07,jana (AILevel3): 40 /
+AILevel2,12,0,2022-12-18,jhxgfn (AILevel1): 5 /jkl (AILevel3): 0 /hfgh: 0 /
 AILevel2,10,0,2022-12-07,jana (AILevel3): 21 /
 AILevel2,9,0,2022-11-29,z (AILevel1): 19 /bob: 0 /
+AILevel2,9,0,2022-12-18,eins (AILevel1): 6 /drei (AILevel3): 5 /vier (AILevel2): 0 /
 AILevel2,7,0,2022-12-07,jana (AILevel3): 22 /
 AILevel2,6,0,2022-12-07,jana (AILevel3): 20 /
 AILevel2,0,0,2022-12-08,a (AILevel1): 0 /c (AILevel3): 0 /Anna: 6 /
+AILevel2,0,0,2022-12-18,eins (AILevel1): 6 /zwei (AILevel2): 9 /drei (AILevel3): 5 /
 bob,0,0,2022-11-29,z (AILevel1): 19 /x (AILevel2): 9 /
 AILevel3,40,0,2022-12-07,emma (AILevel2): 35 /
 AILevel3,22,1,2022-12-07,emma (AILevel2): 7 /
 AILevel3,21,0,2022-12-07,emma (AILevel2): 10 /
 AILevel3,20,0,2022-12-07,emma (AILevel2): 6 /
+AILevel3,5,0,2022-12-18,eins (AILevel1): 6 /zwei (AILevel2): 9 /vier (AILevel2): 0 /
 AILevel3,0,0,2022-12-08,a (AILevel1): 0 /b (AILevel2): 0 /Anna: 6 /
+AILevel3,0,0,2022-12-18,jhxgfn (AILevel1): 5 /möml (AILevel2): 12 /hfgh: 0 /
 Anna,6,0,2022-12-08,a (AILevel1): 0 /b (AILevel2): 0 /c (AILevel3): 0 /
+hfgh,0,0,2022-12-18,jhxgfn (AILevel1): 5 /möml (AILevel2): 12 /jkl (AILevel3): 0 /
+dsfcsw,16,0,2022-12-18,d<f: 6 /
+d<f,6,0,2022-12-18,dsfcsw: 16 /

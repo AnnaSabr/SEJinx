@@ -103,58 +103,6 @@ public class GUI {
         return bool;
     }
 
-    public static void main(String[] args){
-        GUI g=new GUI(true);
-
-        Table t=new Table(true);
-        Player test=new Player("Testing",10,false,false);
-        test.addLuckCard(new LuckCard(CardType.ONETOTHREE));
-        test.addLuckCard(new LuckCard(CardType.PLUSONE));
-        //test.addLuckCard(new LuckCard(CardType.PLUSONE));
-
-
-        test.addCard(new Card(CardColor.BLUE,3));
-        test.addCard(new Card(CardColor.BLUE,3));
-        test.addCard(new Card(CardColor.BLUE,3));
-        test.addCard(new Card(CardColor.BLUE,3));
-
-        test.history.add("TestHistorie1,30,0,2022-05-08,Emma:6/");
-        test.history.add("TestHistorie2,25,0,2022-04-10,Emma:6/");
-        test.history.add("TestHistorie3,10,0,2022-11-30,Emma:6/");
-        test.history.add("TestHistorie4,5,0,2022-08-12,Emma:6/Emma:6/Emma:6/");
-
-
-
-
-
-
-
-        t.getCard(1,1);
-        /*PlayerHandGUI p=new PlayerHandGUI(test.getCards());
-        g.gui.add(p,BorderLayout.CENTER);
-        g.gui.setVisible(true);
-*/
-
-        ArrayList<Player> testPlayerlist=new ArrayList<>();
-        testPlayerlist.add(test);
-        Round testRound=new Round(testPlayerlist,t);
-        testRound.setActive(test);
-        //g.updateGUI(testRound);
-        String[] testArray=new String[5];
-        testArray[0]="testtesttesttest";
-        testArray[1]="testtesttesttest";
-        testArray[2]="testtesttesttest";
-        testArray[3]="testtesttesttest";
-        testArray[4]="testtesttesttest";
-        g.actionChosen(testRound,null);
-
-        /*JPanel label1=g.luckcardGUI(test);
-        JFrame frame=new JFrame();
-        frame.add(label1,BorderLayout.CENTER);
-        frame.setVisible(true);
-        //g.luckcardGUI(test);*/
-    }
-
     /**
      * displays player's luckcards
      *
@@ -634,6 +582,14 @@ public class GUI {
         gui.add(leftComp,BorderLayout.WEST);
         gui.add(compRight,BorderLayout.EAST);
         gui.setVisible(true);
+    }
+
+    /**
+     *
+     * @return chosenAction from menu input
+     */
+    public String getChosenAction() {
+        return chosenAction;
     }
 
     CardGUI tableGui;

@@ -28,17 +28,17 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public void exceptionMessage(String text) {
-
+        simpleMessage(text);
     }
 
     @Override
     public void errorSelfMessage(String text) {
-
+        simpleMessage(text);
     }
 
     @Override
     public void loggerMessage(String text) {
-
+        simpleMessage(text);
     }
 
     @Override
@@ -105,8 +105,10 @@ public class InOutGUI implements MessageOutput,MessageInput{
     }
 
     @Override
-    public String inputCoord() {
-        return null;
+    public String inputCoord(String question) {
+        gui.getProfileName(question);
+        String coord=gui.returnProfile(question);
+        return coord;
     }
 
     @Override
@@ -125,5 +127,12 @@ public class InOutGUI implements MessageOutput,MessageInput{
     @Override
     public void configJinxMessage(String text){
         gui.showAdvice(text);
+    }
+
+    @Override
+    public String menueInput(String text) {
+        gui.actionChosen(model, new String[]{text});
+        String ac=gui.getChosenAction();
+        return ac;
     }
 }

@@ -60,6 +60,18 @@ public class InputConsole implements MessageInput {
     }
 
     /**
+     *
+     * @param text question
+     * @return wich Action should be chosen
+     */
+    @Override
+    public String menueInput(String text) {
+        Scanner sc= new Scanner(System.in);
+        String inputLetter=sc.nextLine();
+        return inputLetter;
+    }
+
+    /**
      * Takes input regarding the creation of player at the start of a game
      * @return int, input done by player
      * */
@@ -128,7 +140,7 @@ public class InputConsole implements MessageInput {
      * @return String of coordinates like x,y - comma seperated
      * */
     @Override
-    public String inputCoord() {
+    public String inputCoord(String question) {
         Scanner sc = new Scanner(System.in);
         String inputINT = sc.nextLine();
         return inputINT;

@@ -57,7 +57,7 @@ public interface MessageInput {
      * To input a coordinate
      * @return coordinate as string (x,y)
      * */
-    String inputCoord();
+    String inputCoord(String question);
 
     /**
      *
@@ -65,4 +65,11 @@ public interface MessageInput {
      * @return answer yes or no
      */
     String yesNo (String text);
+
+    /**
+     *
+     * @param text question
+     * @return choosenAction
+     */
+    String menueInput(String text);
 }

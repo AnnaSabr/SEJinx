@@ -522,7 +522,7 @@ public class Player implements Cloneable{
                     A - Give advise
                     P - Show player's history
                     """);
-            String action = input.letterInput("Choose your action!");
+            String action = input.menueInput("Choose your action!");
             //check if value is acceptable
             if (Arrays.asList(actions).contains(action)) {
                 return action;
@@ -832,7 +832,7 @@ public class Player implements Cloneable{
      * @return
      */
     public int[] getPlayerInputCoord() {
-        String line = input.inputCoord();
+        String line = input.inputCoord("");
         String[] coordsSTR = line.split(",");
         try {
             if (Integer.valueOf(coordsSTR[0]) > 4 || Integer.valueOf(coordsSTR[0]) < 1) {
@@ -877,7 +877,7 @@ public class Player implements Cloneable{
      * @return
      */
     public String getPlayerInputMultipleCoordinates(Table table) {
-        String line = input.inputCoord();
+        String line = input.inputCoord("");
         if ((!line.equals("0"))) {
             String[] coord = line.split(";");
             for (String c : coord) {
