@@ -70,5 +70,5 @@ public class PlayerHandGUI extends JPanel {
         return rectangle;
     }
 
-    int chosen=0;
+    int chosen=-1;
 }

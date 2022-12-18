@@ -22,6 +22,7 @@ public class GUI {
     String returnValue;
     int chosenLuckcard;
     boolean nextMessage;
+    PlayerHandGUI hand;
 
     public GUI(boolean nextMessage){
         gui=new JFrame();
@@ -549,7 +550,7 @@ public class GUI {
         advise.addActionListener(adviseListener);
         compRight.add(advise,BorderLayout.NORTH);
 
-        PlayerHandGUI hand=new PlayerHandGUI(displaying.getActive().getCards());
+        hand=new PlayerHandGUI(displaying.getActive().getCards());
         hand.setPreferredSize(new Dimension(100,130));
         gui.add(hand,BorderLayout.SOUTH);
 
@@ -716,14 +717,26 @@ public class GUI {
         }
     }
 
+    /**
+     * returns coordinates of card on table
+     *
+     * @return
+     */
+    public String getChosenCardCoord(){
+        return tableGui.chosenCardCoord;
+    }
+
+    public int getChosenLuckcard(){
+        return chosenLuckcard;
+    }
 
     /**
      * shows advice for player in optionpane
      *
-     * @param advise Advice for the player
+     * @param advice Advice for the player
      */
-    public void showAdvise(String advise){
-        JOptionPane.showOptionDialog(null, advise,"Help",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
+    public void showAdvice(String advice){
+        JOptionPane.showOptionDialog(null, advice,"Help",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
     }
 
 
@@ -751,5 +764,25 @@ public class GUI {
         table.setAutoCreateRowSorter(true);
 
         return table;
+    }
+
+    /**
+     * waits for player to pick a card from his hand
+     *
+     * @return index of card from player's hand
+     */
+    public int pickCardFromHand(){
+        hand.chosen=-1;
+        while(true){
+            if(hand.chosen!=-1){
+                return hand.chosen;
+            }
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
     }
 }
