@@ -1,5 +1,6 @@
 package adapter.secondary;
 
+import actions.ReUnDo.Round;
 import entities.Table;
 import ports.outbound.MessageOutput;
 
@@ -22,7 +23,7 @@ public class OutputConsole implements MessageOutput {
      * @param table the current state of the table
      * */
     @Override
-    public void tablePicture(Table table) {
+    public void tablePicture(Table table, Round current) {
         System.out.println("\n"+table.toString());
     }
 

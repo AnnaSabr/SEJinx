@@ -134,7 +134,7 @@ public class GameLoop {
                     // set size of players to user specified value
                     this.players = new Player[playerCount];
 
-                    String kiInvolved =inCon.yesNo("Please tell us if you like do modifier any player into KI: y/n");
+                    String kiInvolved =inCon.yesNo("Please tell us if you like to modifier any player into an AI: y/n");
 
                     if (kiInvolved.equals("y")) {
                         initKI();
@@ -178,12 +178,15 @@ public class GameLoop {
                 currentPlayer.clearUsedCards();
                 currentPlayer.resetRolls();
 
+                // Update history to set round object to correct instance of current game
+                historyUpdate(currentPlayer);
+
                 // Let the player perform certain actions until he is done
                 while (currentPlayer.isActive()) {
                     //display the current round
                     log("Round: " + currentRound);
                     //display the field
-                    outCon.tablePicture(this.table);
+                    outCon.tablePicture(this.table, this.course.getTail().getBefore());
 
                     // Let the player choose an action
                     String action = currentPlayer.chooseAction(this.table);

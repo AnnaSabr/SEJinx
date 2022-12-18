@@ -30,7 +30,7 @@ public class Main {
                 GUI g = new GUI();
                 inOut = new InOutGUI(g);
                 outCon = inOut;
-                inCon = inOut;
+                inCon = new InputConsole();
 
                 break;
             } else if ("n".equals(choice)) {

@@ -43,15 +43,16 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public void jinxMessage(String text) {
-
+        System.out.println("jinxMessage");
     }
 
     /**
      * Updates the model with the new representation of the table
      * */
     @Override
-    public void tablePicture(Table table) {
-        this.model.setTableStatus(table);
+    public void tablePicture(Table table, Round current) {
+        current.setTableStatus(table);
+        this.model = current;
         gui.updateGUI(this.model);
     }
 

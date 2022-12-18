@@ -1,5 +1,6 @@
 package ports.outbound;
 
+import actions.ReUnDo.Round;
 import entities.Table;
 
 /**
@@ -45,7 +46,8 @@ public interface MessageOutput {
     * shows gamefield
     * @param table staus of the table
     */
-   void tablePicture(Table table);
+   void tablePicture(Table table, Round current);
+
 
 
 }
