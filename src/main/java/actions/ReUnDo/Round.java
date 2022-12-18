@@ -20,13 +20,21 @@ public class Round {
     private Round before;
     private Round behind;
 
+
+    /**
+     * Overloaded constructor to allow usage as DTO between presenter and view
+     * !Set players and table manually!
+     * */
+    public Round(){
+
+    }
+
     public Round(ArrayList<Player> allPlayers, Table tableStatus) {
         this.allPlayers = allPlayers;
         this.tableStatus = tableStatus;
         this.before = null;
         this.behind = null;
         this.highscores=new ArrayList<>();
-
     }
 
     /**
@@ -74,6 +82,13 @@ public class Round {
      */
     public Table getTableStatus() {
         return tableStatus;
+    }
+
+    /**
+     * @param table to be set as active
+     * */
+    public void setTableStatus(Table table){
+        this.tableStatus = table;
     }
 
     /**

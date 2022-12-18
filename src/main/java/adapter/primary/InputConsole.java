@@ -98,20 +98,16 @@ public class InputConsole implements MessageInput {
             outCon.simpleMessage("Please choose a level for your KI:  " +
                     "easy / medium / hard");
             level=inputAnything();
-            if (level.equals("easy")){
-                name=name+","+"easy";
-            }
-            else if (level.equals("medium")){
-                name=name+","+"medium";
-            }
-            else if (level.equals("hard")){
-                name=name+","+"hard";
-            } else {
-                outCon.simpleMessage("Not an option. Try again.");
+            switch (level) {
+                case "easy" -> ki = name + "," + "easy";
+                case "medium" -> ki = name + "," + "medium";
+                case "hard" -> ki = name + "," + "hard";
+                default -> outCon.simpleMessage("Not an option. Try again.");
             }
         } else {
             outCon.simpleMessage("Wrong input.");
         }
+        System.out.println(ki);
         return ki;
     }
 

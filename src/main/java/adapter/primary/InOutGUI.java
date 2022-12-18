@@ -1,4 +1,5 @@
 package adapter.primary;
+import actions.ReUnDo.Round;
 import entities.GUI;
 import entities.Table;
 import ports.inbound.MessageInput;
@@ -7,8 +8,11 @@ import ports.outbound.MessageOutput;
 public class InOutGUI implements MessageOutput,MessageInput{
     private GUI gui;
 
+    private Round model;
+
     public InOutGUI(GUI gui){
         this.gui=gui;
+        this.model = new Round();
     }
 
 
@@ -42,14 +46,18 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     }
 
+    /**
+     * Updates the model with the new representation of the table
+     * */
     @Override
     public void tablePicture(Table table) {
-
+        this.model.setTableStatus(table);
+        gui.updateGUI(this.model);
     }
 
     @Override
     public String inputAnything() {
-        return null;
+        return "";
     }
 
     @Override
