@@ -86,7 +86,7 @@ public class CardGUI extends JPanel {
      * @param xPos x coordinate
      * @return
      */
-    public Rectangle drawCardToTable(Card card,int yPos,int xPos){
+    public Rectangle drawCardToTable(Card card,int yPos, int xPos){
         //calculate position of new card
         int x=10+xPos*80;
         int y=10+yPos*120;
@@ -99,7 +99,7 @@ public class CardGUI extends JPanel {
 
                     if (rectangle.contains(me.getPoint())) {//check if mouse is clicked within shape
                         gui.chosenAction="C";
-                        chosenCardCoord=yPos+1+","+xPos+1;
+                        chosenCardCoord=(xPos+1)+","+(yPos+1);
                     }
                 }
         });

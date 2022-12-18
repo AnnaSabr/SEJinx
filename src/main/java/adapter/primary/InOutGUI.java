@@ -101,13 +101,14 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public int inputINT() {
-        return 0;
+        return gui.pickCardFromHandToDrop();
     }
 
     @Override
     public String inputCoord(String question) {
         //gui.getProfileName(question);
         //String coord=gui.returnProfile(question);
+        System.out.println("WIR SIND HERE");
         return gui.tableGui.chosenCardCoord;
     }
 
@@ -140,7 +141,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
      * */
     @Override
     public void simpleText(String text) {
-        //nothing to do as GUI
+        System.out.println(text);
     }
 
 }

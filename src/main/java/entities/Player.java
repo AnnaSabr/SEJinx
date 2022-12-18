@@ -524,7 +524,6 @@ public class Player implements Cloneable{
                     """);
             String action = input.menueInput("Choose your action!");
 
-            System.out.println("WIR SIND BIS HIER ");
             //check if value is acceptable
             if (Arrays.asList(actions).contains(action)) {
                 return action;
@@ -601,6 +600,7 @@ public class Player implements Cloneable{
      * */
     public int playerInputNumberInRange(int min, int max) {
         int line = input.inputINT();
+        System.out.println("playerInputNumberInRange: " + line);
         try {
             int newDiceCount = line;
             if (newDiceCount <= max && newDiceCount >= min) {
@@ -836,6 +836,9 @@ public class Player implements Cloneable{
     public int[] getPlayerInputCoord() {
         String line = input.inputCoord("");
         String[] coordsSTR = line.split(",");
+
+        log(line);
+
         try {
             if (Integer.valueOf(coordsSTR[0]) > 4 || Integer.valueOf(coordsSTR[0]) < 1) {
                 log("Enter valid coordinates");

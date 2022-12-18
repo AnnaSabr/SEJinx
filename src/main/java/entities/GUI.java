@@ -743,4 +743,24 @@ public class GUI {
 
         }
     }
+
+    /**
+     * Player can pick a card from his hand to drop
+     *
+     * @return card that will be dropped
+     */
+    public int pickCardFromHandToDrop(){
+        hand.drop=-1;
+        while(true){
+            if(hand.chosen!=-1){
+                return hand.chosen;
+            }
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+    }
 }
