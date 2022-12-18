@@ -1,9 +1,12 @@
 package adapter.primary;
 import actions.ReUnDo.Round;
+import actions.ReUnDo.cards.Card;
 import entities.GUI;
 import entities.Table;
 import ports.inbound.MessageInput;
 import ports.outbound.MessageOutput;
+
+import java.util.ArrayList;
 
 public class InOutGUI implements MessageOutput,MessageInput{
     private GUI gui;
@@ -105,10 +108,14 @@ public class InOutGUI implements MessageOutput,MessageInput{
     }
 
     @Override
+    public int inputMaxCard(ArrayList<Card> maxCards) {
+        model.getActive().setCards(maxCards);
+        gui.updateGUI(model, new String[]{"Drop your highest card!"});
+        return gui.pickCardFromHandToDrop();
+    }
+
+    @Override
     public String inputCoord(String question) {
-        //gui.getProfileName(question);
-        //String coord=gui.returnProfile(question);
-        System.out.println("WIR SIND HERE");
         return gui.tableGui.chosenCardCoord;
     }
 

@@ -1,11 +1,13 @@
 package adapter.primary;
 
+import actions.ReUnDo.cards.Card;
 import adapter.secondary.OutputConsole;
 import entities.AIPLayer3;
 import entities.EasyKI;
 import entities.MediumAI;
 import ports.inbound.MessageInput;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -152,5 +154,16 @@ public class InputConsole implements MessageInput {
         Scanner sc = new Scanner(System.in);
         String yesno = sc.nextLine();
         return yesno;
+    }
+
+    /**
+     * Function to display the maxCards of a player
+     * @param maxCards of current player
+     * @return number in array of selected maxcard
+     * */
+    @Override
+    public int inputMaxCard(ArrayList<Card> maxCards){
+        Scanner sc = new Scanner(System.in);
+        return sc.nextInt();
     }
 }

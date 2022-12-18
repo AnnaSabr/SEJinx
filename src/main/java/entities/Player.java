@@ -445,7 +445,7 @@ public class Player implements Cloneable{
             log(maxCards.get(i) + " - " + i);
         }
 
-        int removing = this.playerInputNumberInRange(0, maxCards.size() - 1);
+        int removing = input.inputMaxCard(maxCards);
         while (true) {
             try {
                 Card placeholder = maxCards.get(removing);
@@ -456,14 +456,14 @@ public class Player implements Cloneable{
             } catch (Exception e) {
                 log("Please choose a card!");
             }
-            removing = this.playerInputNumberInRange(0, maxCards.size() - 1);
+            removing = input.inputMaxCard(maxCards);;
         }
     }
 
 
     /**
      * Lets the player select a luckCard from his hand
-     * Doesnt remove the card from players hand!
+     * Doesn't remove the card from players hand!
      *
      * @return selected Card or null if no card was selected
      */

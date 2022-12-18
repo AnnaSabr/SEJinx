@@ -1,5 +1,9 @@
 package ports.inbound;
 
+import actions.ReUnDo.cards.Card;
+
+import java.util.ArrayList;
+
 /**
  * Port for simple message input
  * */
@@ -72,4 +76,11 @@ public interface MessageInput {
      * @return choosenAction
      */
     String menueInput(String text);
+
+    /**
+     * Function to display the maxCards of a player
+     * @param maxCards of current player
+     * @return number in array of selected maxcard
+     * */
+    int inputMaxCard(ArrayList<Card> maxCards);
 }

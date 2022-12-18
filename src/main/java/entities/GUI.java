@@ -752,8 +752,8 @@ public class GUI {
     public int pickCardFromHandToDrop(){
         hand.drop=-1;
         while(true){
-            if(hand.chosen!=-1){
-                return hand.chosen;
+            if(hand.drop!=-1){
+                return hand.drop;
             }
             try {
                 Thread.sleep(10);
