@@ -47,6 +47,12 @@ public class PlayerHandGUI extends JPanel {
 
     }
 
+    /**
+     * returns Rectangle that will represent the card
+     *
+     * @param indexInArray position of card in JLabel
+     * @return
+     */
     public Rectangle drawHand(int indexInArray){
         int x=10+ indexInArray*80;
         int y=10;
@@ -57,10 +63,12 @@ public class PlayerHandGUI extends JPanel {
                 super.mouseClicked(me);
 
                 if (rectangle.contains(me.getPoint())) {//check if mouse is clicked within shape
-                    System.out.println("Clicked a rectangle");
+                    chosen=indexInArray;
                 }
             }
         });
         return rectangle;
     }
+
+    int chosen=-1;
 }

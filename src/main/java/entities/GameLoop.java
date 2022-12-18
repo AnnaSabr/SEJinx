@@ -86,7 +86,7 @@ public class GameLoop {
         this.showGui= showGui;
 
         if(showGui){
-            gui=new GUI();
+            gui=new GUI(false);
             this.inOut= new InOutGUI(gui);
             this.outCon = this.inOut;
             this.inCon = this.inOut;

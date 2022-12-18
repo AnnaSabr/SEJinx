@@ -7,7 +7,6 @@ import actions.ReUnDo.cards.CardType;
 import actions.ReUnDo.cards.LuckCard;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,13 +21,17 @@ public class GUI {
     int returnIntValue=0;
     String returnValue;
     int chosenLuckcard;
+    boolean nextMessage;
+    PlayerHandGUI hand;
 
-    public GUI(){
+    public GUI(boolean nextMessage){
         gui=new JFrame();
         gui.setTitle("Jinx");
-        gui.setVisible(true);
         gui.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.nextMessage=nextMessage;
     }
+
+
 
     /**
      * shows gui for yes or no choice
@@ -36,9 +39,7 @@ public class GUI {
      * @param question question the user has to answer
      */
     public void yesOrNo(String question){
-        //TODO
         returnValue=null;
-        //label.setText(question);
         JLabel jLabel=new JLabel(question);
         JButton yesButton=new JButton("yes");
         JButton noButton=new JButton("no");
@@ -100,9 +101,8 @@ public class GUI {
         return bool;
     }
 
-    /**
     public static void main(String[] args){
-        GUI g=new GUI();
+        GUI g=new GUI(true);
 
         Table t=new Table(true);
         Player test=new Player("Testing",10,false,false);
@@ -116,77 +116,42 @@ public class GUI {
         test.addCard(new Card(CardColor.BLUE,3));
         test.addCard(new Card(CardColor.BLUE,3));
 
-        test.history.add("TestHistorie1,30,15.10,2,Emma:6/");
-        test.history.add("TestHistorie2,25,20.04,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie4,5,13.04.,0,Emma:6/Emma:6/Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
-        test.history.add("TestHistorie3,10,14.06.,0,Emma:6/");
+        test.history.add("TestHistorie1,30,0,2022-05-08,Emma:6/");
+        test.history.add("TestHistorie2,25,0,2022-04-10,Emma:6/");
+        test.history.add("TestHistorie3,10,0,2022-11-30,Emma:6/");
+        test.history.add("TestHistorie4,5,0,2022-08-12,Emma:6/Emma:6/Emma:6/");
 
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
+
+
+
+
+
 
         t.getCard(1,1);
-        PlayerHandGUI p=new PlayerHandGUI(test.getCards());
+        /*PlayerHandGUI p=new PlayerHandGUI(test.getCards());
         g.gui.add(p,BorderLayout.CENTER);
         g.gui.setVisible(true);
-
+*/
 
         ArrayList<Player> testPlayerlist=new ArrayList<>();
         testPlayerlist.add(test);
         Round testRound=new Round(testPlayerlist,t);
         testRound.setActive(test);
         //g.updateGUI(testRound);
-        g.actionChosen(testRound);
+        String[] testArray=new String[5];
+        testArray[0]="testtesttesttest";
+        testArray[1]="testtesttesttest";
+        testArray[2]="testtesttesttest";
+        testArray[3]="testtesttesttest";
+        testArray[4]="testtesttesttest";
+        g.actionChosen(testRound,null);
 
-        JPanel label1=g.luckcardGUI(test);
+        /*JPanel label1=g.luckcardGUI(test);
         JFrame frame=new JFrame();
         frame.add(label1,BorderLayout.CENTER);
         frame.setVisible(true);
-        g.luckcardGUI(test);
-    }*/
-
+        //g.luckcardGUI(test);*/
+    }
 
     /**
      * displays player's luckcards
@@ -400,7 +365,7 @@ public class GUI {
         ActionListener easyListener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AIType="easy";
+                AIType="Easy";
                 if(inputField.getText().equals("")||inputField.getText().equals("Enter here")){
                     JOptionPane.showOptionDialog(null,"Enter a name for the AI","error",JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE,null,null,null);
                     AIType=null;
@@ -412,7 +377,7 @@ public class GUI {
         ActionListener mediumListener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AIType="medium";
+                AIType="Medium";
                 if(inputField.getText().equals("")||inputField.getText().equals("Enter a name for the AI")){
                     JOptionPane.showOptionDialog(null,"Enter a name for the AI","error",JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE,null,null,null);
                     AIType=null;
@@ -424,7 +389,7 @@ public class GUI {
         ActionListener hardListener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AIType="hard";
+                AIType="Hard";
                 if(inputField.getText().equals("")||inputField.getText().equals("Enter a name for the AI")){
                     JOptionPane.showOptionDialog(null,"Enter a name for the AI","error",JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE,null,null,null);
                     AIType=null;
@@ -527,8 +492,9 @@ public class GUI {
      * creates the GUI with table, histories, luckcards and player's hand
      *
      * @param displaying Round the GUI will display
+     * @param text text that will be displayed in the right bottom corner, null to not use the textarea
      */
-    public void updateGUI(Round displaying){
+    public void updateGUI(Round displaying,String[] text){
         gui.getContentPane().removeAll();
         tableGui=new CardGUI(displaying.getTableStatus(),this);
         gui.add(tableGui,BorderLayout.CENTER);
@@ -536,7 +502,20 @@ public class GUI {
         //gui.add(luckCards,BorderLayout.EAST);
 
         JPanel compRight=new JPanel(new BorderLayout());
-        compRight.add(luckCards,BorderLayout.CENTER);
+        JPanel rightCenter=new JPanel(new BorderLayout());
+        rightCenter.add(luckCards,BorderLayout.NORTH);
+
+        String showingText="";
+        if(text!=null){
+            for(String line:text){
+                showingText=showingText+line+"\n";
+            }
+        }
+        JTextArea messageToUser=new JTextArea(showingText);
+        messageToUser.setEditable(false);
+
+        rightCenter.add(messageToUser,BorderLayout.SOUTH);
+        compRight.add(rightCenter,BorderLayout.CENTER);
 
         JLabel playerName=new JLabel(displaying.getActive().getName()+", it's your turn!");
         playerName.setFont(new Font("Serif", Font.PLAIN, 24));
@@ -571,36 +550,14 @@ public class GUI {
         advise.addActionListener(adviseListener);
         compRight.add(advise,BorderLayout.NORTH);
 
-        JButton order;
-        if(orderByScore){
-            order=new JButton("order by date");
-        }else{
-            order=new JButton("order by score");
-        }
-        ActionListener orderListener=new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(orderByScore){
-                    orderByScore=false;
-                    order.setText("order by score");
-
-                }else{
-                    orderByScore=true;
-                    order.setText("order by date");
-
-                }
-            }
-        };
-        order.addActionListener(orderListener);
-
-        PlayerHandGUI hand=new PlayerHandGUI(displaying.getActive().getCards());
+        hand=new PlayerHandGUI(displaying.getActive().getCards());
         hand.setPreferredSize(new Dimension(100,130));
         gui.add(hand,BorderLayout.SOUTH);
 
         JTable table=this.historyGUI(displaying.getActive().history);
         JPanel tablePanel=new JPanel();
+        table.setAutoCreateRowSorter(true);
         tablePanel.add(new JScrollPane(table));
-        tablePanel.add(order);
 
         JPanel leftComp=new JPanel(new BorderLayout());
         leftComp.add(tablePanel,BorderLayout.NORTH);
@@ -615,6 +572,19 @@ public class GUI {
         reUnDOButton.addActionListener(reUnDoListener);
         leftButtons.add(reUnDOButton);
 
+        if(this.nextMessage){
+            JButton next=new JButton("next");
+            leftButtons.add(next);
+            ActionListener nextListener=new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    showNextMessage=true;
+                }
+            };
+            next.addActionListener(nextListener);
+        }
+
+        //TODO english name
         JButton verlauf=new JButton("Verlauf zeigen");
         ActionListener verlaufListener=new ActionListener() {
             @Override
@@ -624,7 +594,7 @@ public class GUI {
         };
         verlauf.addActionListener(verlaufListener);
         leftButtons.add(verlauf);
-        leftComp.add(new JScrollPane(showHighscores(scores)),BorderLayout.CENTER);
+        leftComp.add(new JScrollPane(showHighscores(displaying.getHighscores())),BorderLayout.CENTER);
 
 
         JButton save=new JButton("save Game");
@@ -664,8 +634,27 @@ public class GUI {
         gui.setVisible(true);
     }
 
-    ArrayList<String> scores=new ArrayList<>();
     CardGUI tableGui;
+    boolean showNextMessage =false;
+
+    /**
+     * waits for player to request the next move
+     *
+     * @return true if player chose next move
+     */
+    public boolean nextMove(){
+        showNextMessage =false;
+        while(true){
+            if(showNextMessage){
+                return showNextMessage;
+            }
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     /**
      * creates a JTable with player's histories
@@ -679,6 +668,13 @@ public class GUI {
         String[][] lines=new String[playerHistory.size()][5];
         for(int a=0; a<playerHistory.size();a++){
             String[] splittedHistory=playerHistory.get(a).split(",");
+            int valScore=Integer.parseInt(splittedHistory[1]);
+            if(valScore<100){
+                splittedHistory[1]="0"+splittedHistory[1];
+                if(valScore<10){
+                    splittedHistory[1]="0"+splittedHistory[1];
+                }
+            }
             for (int b=0;b<splittedHistory.length;b++) {
                 lines[a][b]=splittedHistory[b];
             }
@@ -702,9 +698,9 @@ public class GUI {
      * @param currentRound round that is currently shown
      * @return player's chosen action
      */
-    public String actionChosen(Round currentRound){
+    public String actionChosen(Round currentRound, String[] text){
         chosenAction=null;
-        this.updateGUI(currentRound);
+        this.updateGUI(currentRound,text);
         while(true){
             //chosen luckcard is saved in int chosenLuckcard
             //chosen card saved in tableGui.chosenCardCoord
@@ -722,12 +718,25 @@ public class GUI {
     }
 
     /**
+     * returns coordinates of card on table
+     *
+     * @return
+     */
+    public String getChosenCardCoord(){
+        return tableGui.chosenCardCoord;
+    }
+
+    public int getChosenLuckcard(){
+        return chosenLuckcard;
+    }
+
+    /**
      * shows advice for player in optionpane
      *
-     * @param advise Advice for the player
+     * @param advice Advice for the player
      */
-    public void showAdvise(String advise){
-        JOptionPane.showOptionDialog(null, advise,"Help",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
+    public void showAdvice(String advice){
+        JOptionPane.showOptionDialog(null, advice,"Help",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
     }
 
 
@@ -738,7 +747,6 @@ public class GUI {
      * @return table with scores
      */
     public JTable showHighscores(ArrayList<String> scores){
-        //TODO call method after pressing button, after highscore is added to round
         String[] columnNames={"Name","Score"};
         String[][] lines=new String[scores.size()][2];
         for(int a=0; a<scores.size();a++){
@@ -753,7 +761,28 @@ public class GUI {
                 return false;
             };
         };
+        table.setAutoCreateRowSorter(true);
 
         return table;
+    }
+
+    /**
+     * waits for player to pick a card from his hand
+     *
+     * @return index of card from player's hand
+     */
+    public int pickCardFromHand(){
+        hand.chosen=-1;
+        while(true){
+            if(hand.chosen!=-1){
+                return hand.chosen;
+            }
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
     }
 }

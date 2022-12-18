@@ -16,6 +16,7 @@ public class Main {
 
 
     public static void main(String[] args) {
+        GUI g=new GUI(false);
 
         // does user want to load a default config
         boolean config = false;
