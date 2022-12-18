@@ -30,13 +30,7 @@ public class GUI {
         this.nextMessage=nextMessage;
     }
 
-    /**
-     * displays GUI on screen
-     */
-    //TODO delete i guess...
-    public void runGUI(){
-        gui.setVisible(true);
-    }
+
 
     /**
      * shows gui for yes or no choice
@@ -44,9 +38,7 @@ public class GUI {
      * @param question question the user has to answer
      */
     public void yesOrNo(String question){
-        //TODO
         returnValue=null;
-        //label.setText(question);
         JLabel jLabel=new JLabel(question);
         JButton yesButton=new JButton("yes");
         JButton noButton=new JButton("no");
@@ -591,6 +583,7 @@ public class GUI {
             next.addActionListener(nextListener);
         }
 
+        //TODO english name
         JButton verlauf=new JButton("Verlauf zeigen");
         ActionListener verlaufListener=new ActionListener() {
             @Override
@@ -723,14 +716,6 @@ public class GUI {
         }
     }
 
-    /**
-     * displays text in GUI
-     *
-     * @param text
-     */
-    public void showTextInGame(String[] text){
-        //TODO displays text
-    }
 
     /**
      * shows advice for player in optionpane
@@ -749,7 +734,6 @@ public class GUI {
      * @return table with scores
      */
     public JTable showHighscores(ArrayList<String> scores){
-        //TODO call method after pressing button, after highscore is added to round
         String[] columnNames={"Name","Score"};
         String[][] lines=new String[scores.size()][2];
         for(int a=0; a<scores.size();a++){
