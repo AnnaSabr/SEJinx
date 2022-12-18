@@ -73,4 +73,11 @@ public class OutputConsole implements MessageOutput {
         System.out.println(text);
     }
 
+    /**
+     * Function to display config feedback on console
+     * */
+    @Override
+    public void configJinxMessage(String text){
+        System.out.println(text);
+    }
 }

@@ -89,11 +89,13 @@ public class GUI {
             if(returnValue!=null){
                 if(returnValue.equals("y")){
                     System.out.println(2);
+                    bool = true;
                     break;
                 }
                 else{
                     System.out.println(1);
                     System.out.println(this.returnValue);
+                    bool = false;
                     break;
                 }
             }

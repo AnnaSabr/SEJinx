@@ -48,6 +48,12 @@ public interface MessageOutput {
     */
    void tablePicture(Table table, Round current);
 
+   /**
+    * Function to display config feedback
+    * @param text feedback to be displayed
+    * */
+   void configJinxMessage(String text);
+
 
 
 }

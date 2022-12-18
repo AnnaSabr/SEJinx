@@ -108,12 +108,11 @@ public class GameLoop {
         currentPlayer = players[0];
 
         //start the game loop
-        this.showHighscore();
+        //this.showHighscore();
 
-        this.saveHighscores();
+        //this.saveHighscores();
 
         impLoop();
-        //loop();
     }
 
     /**
@@ -509,7 +508,7 @@ public class GameLoop {
      */
     private void log(String msg) {
         if (manualNextMsg) {
-            outCon.jinxMessage(msg + " [ENTER] to continue!");
+            outCon.configJinxMessage(msg + " [ENTER] to continue!");
             inCon.inputAnything();
         } else {
             try {
@@ -517,7 +516,7 @@ public class GameLoop {
             } catch (Exception e) {
                 outCon.errorSelfMessage("Sleep exception!");
             }
-            outCon.jinxMessage(msg);
+            outCon.configJinxMessage(msg);
         }
     }
 

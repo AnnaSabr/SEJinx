@@ -16,7 +16,6 @@ public class Main {
 
 
     public static void main(String[] args) {
-        GUI g=new GUI(false);
 
         // does user want to load a default config
         boolean config = false;
@@ -28,10 +27,10 @@ public class Main {
             String choice = inCon.letterInput();
             if ("y".equals(choice)) {
                 gui = true;
-                GUI g = new GUI();
+                GUI g = new GUI(false);
                 inOut = new InOutGUI(g);
                 outCon = inOut;
-                inCon = new InputConsole();
+                inCon = inOut;
 
                 break;
             } else if ("n".equals(choice)) {
@@ -46,10 +45,10 @@ public class Main {
                 config = true;
                 break;
             } else if ("n".equals(con)) {
-                outCon.jinxMessage("Shuffling the cards!");
+                outCon.configJinxMessage("Shuffling the cards!");
                 break;
             } else {
-                outCon.jinxMessage("Not an option! Try again!");
+                outCon.configJinxMessage("Not an option! Try again!");
             }
         }
 
@@ -59,7 +58,7 @@ public class Main {
                 manualSleepTime = true;
                 break;
             } else if ("n".equals(con)) {
-                outCon.jinxMessage("How long should the time between messages be? [ms]");
+                outCon.configJinxMessage("How long should the time between messages be? [ms]");
                 try {
                     nextMsgTime = inCon.inputINTTime();
                     break;
@@ -67,7 +66,7 @@ public class Main {
                     outCon.errorSelfMessage("Please enter a valid number!");
                 }
             } else {
-                outCon.jinxMessage("Not an option! Try again!");
+                outCon.configJinxMessage("Not an option! Try again!");
             }
         }
         boolean dataSource;
@@ -83,7 +82,7 @@ public class Main {
                 dataSource = false;
                 break;
             } else {
-                outCon.jinxMessage("Not an option! Try again!");
+                outCon.configJinxMessage("Not an option! Try again!");
             }
         }
 
@@ -98,7 +97,7 @@ public class Main {
                 MoveHistory.empty();
                 gameA.run();
             } else if (nextGame.equals("n")) {
-                outCon.jinxMessage("End initialized");
+                outCon.configJinxMessage("End initialized");
                 next = false;
             } else {
                 outCon.errorSelfMessage("Wrong input.");

@@ -18,7 +18,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public void simpleMessage(String text) {
-
+        gui.showAdvice(text);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public void jinxMessage(String text) {
-        System.out.println("jinxMessage");
+        gui.updateGUI(this.model, new String[]{text});
     }
 
     /**
@@ -53,7 +53,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
     public void tablePicture(Table table, Round current) {
         current.setTableStatus(table);
         this.model = current;
-        gui.updateGUI(this.model);
+        gui.updateGUI(this.model, new String[]{"Updated"});
     }
 
     @Override
@@ -63,12 +63,12 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public int inputINTTime() {
-        return 0;
+        return gui.getInputNumber("How long should the time between messages be? [ms]");
     }
 
     @Override
     public String letterInput() {
-        return null;
+        return gui.actionChosen(model, new String[]{"Inputstuff"});
     }
 
     @Override
@@ -120,5 +120,11 @@ public class InOutGUI implements MessageOutput,MessageInput{
         return "n";
     }
 
-
+    /**
+     * Function to display config feedback on console
+     * */
+    @Override
+    public void configJinxMessage(String text){
+        gui.showAdvice(text);
+    }
 }
