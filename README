@@ -233,3 +233,12 @@ Spieler haben ein Profil mit Name und Passwort. Das Passwort wird sowohl in Date
 Textdatei nur verschlüsselt gespeichert. Die KIs haben die Profile AILevel1, AILevel2 und AILevel3.
 Diese Profile kann der Spieler nicht auswählen. Zu Beginn eines Spiels muss ein Spieler ein Profil
 auswählen oder erstellen.
+
+#### GUI
+Die GUI kann über die Konsole ausgewählt werden. Um die Einstellungen für das Spiel zu wählen, wie die Anzahl der KIs, gibt 
+es zu Beginn des Spiels mehrere Fragen, die durch Buttons und Textfelder beantwortet werden.
+Die Spielkarten sind Rechtecke, die mithilfe von Graphics2d gezeichnet werden. Um eine Karte auszuwählen, muss das Rechteck mit 
+der Maus angeklickt werden. Die Luckcards werden durch Buttons mit entsprechenden Bildern dargestellt. Der Spieler kann die GUI 
+außerdem über Knöpfe bedienen, mit denen zum Beispiel der Würfel betätigt werden kann.
+Die Spielehistorien des Spielers sowie die Highscore Liste werden während des Spiels über JTable angezeigt.
+Über ein JLabel wird angezeigt welcher Spieler an der Reihe ist.
