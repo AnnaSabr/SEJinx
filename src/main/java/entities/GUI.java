@@ -133,9 +133,8 @@ public class GUI {
             ActionListener actionListener=new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    chosenLuckcard=currentPlayer.getLuckCards().indexOf(card);
+                    chosenLuckcard=currentPlayer.getLuckCards().indexOf(card) + 1;
                     chosenAction="L";
-                    System.out.println("Luckcard button");
                 }
             };
             cardButton.addActionListener(actionListener);

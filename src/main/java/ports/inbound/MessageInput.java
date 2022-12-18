@@ -92,4 +92,10 @@ public interface MessageInput {
      * */
     int inputINTDrawLuckCard(Player p);
 
+    /**
+     * Function to let the player select a luck card to play
+     * @return position of selected card in array
+     * */
+    int luckCardInput();
+
 }

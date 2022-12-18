@@ -385,7 +385,7 @@ public class Player implements Cloneable{
 
     /**
      * Lets the player select a card from his hand
-     * Doesnt remove the card from players hand!
+     * Doesn't remove the card from players hand!
      *
      * @return selected Card or null if no card was selected
      */
@@ -483,13 +483,13 @@ public class Player implements Cloneable{
 
         while (true) {
 
-            int input = this.playerInputNumberInRange(1, this.luckCards.size());
+            int inputs = input.luckCardInput();
 
-            if (input == 0) {
+            if (inputs == 0) {
                 log("You have not chosen a card to play!");
                 return null;
             } else {
-                return luckCards.get(input - 1);
+                return luckCards.get(inputs - 1);
             }
         }
     }

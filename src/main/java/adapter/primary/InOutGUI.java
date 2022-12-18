@@ -109,6 +109,11 @@ public class InOutGUI implements MessageOutput,MessageInput{
     }
 
     @Override
+    public int luckCardInput(){
+        return gui.getChosenLuckcard();
+    }
+
+    @Override
     public int inputINTDrawLuckCard(Player p) {
         model.setActive(p);
         gui.updateGUI(model,new String[]{"Select a card to drop for a luck card!"});

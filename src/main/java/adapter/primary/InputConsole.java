@@ -172,4 +172,10 @@ public class InputConsole implements MessageInput {
     public int inputINTDrawLuckCard(Player p) {
         return inputINT();
     }
+
+    @Override
+    public int luckCardInput(){
+        return inputINT();
+    }
+
 }
