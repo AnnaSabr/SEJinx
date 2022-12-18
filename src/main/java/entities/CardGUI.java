@@ -23,6 +23,7 @@ public class CardGUI extends JPanel {
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
+        boolean noCards=true;
         this.setBackground(Color.CYAN);
         Graphics2D g2d = (Graphics2D) graphics;
         for(int a=0;a<this.cardTableCards.length;a++){
@@ -48,9 +49,30 @@ public class CardGUI extends JPanel {
                     g2d.fill(drawCardToTable(cardTableCards[a][b],b,a));
                     g2d.setColor(Color.BLACK);
                     g2d.drawString(Integer.toString(cardTableCards[a][b].getValue()),40+a*80,60+b*120);
+                    noCards=false;
                 }
             }
 
+        }
+        //if no cards are left on the table
+        if(noCards){
+            g2d.setColor(Color.BLACK);
+            Rectangle r = new Rectangle(10,10,130,50);
+            g2d.fill(r);
+            g2d.setColor(Color.WHITE);
+            g2d.drawString("No cards available",20,20);
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent me) {
+                    super.mouseClicked(me);
+
+                    if (r.contains(me.getPoint())) {//check if mouse is clicked within shape
+                        gui.chosenAction="C";
+                        chosenCardCoord="1,1";
+                        System.out.println(gui.chosenAction);
+                    }
+                }
+            });
         }
 
     }
