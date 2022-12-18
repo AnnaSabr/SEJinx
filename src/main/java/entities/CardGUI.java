@@ -55,6 +55,15 @@ public class CardGUI extends JPanel {
 
     }
 
+    /**
+     *
+     * creates Rectangle that can be drawn on JPanel
+     *
+     * @param card Card that will be drawn
+     * @param yPos y coordinate
+     * @param xPos x coordinate
+     * @return
+     */
     public Rectangle drawCardToTable(Card card,int yPos,int xPos){
         //calculate position of new card
         int x=10+xPos*80;

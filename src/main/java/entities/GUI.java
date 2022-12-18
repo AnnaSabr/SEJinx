@@ -7,7 +7,6 @@ import actions.ReUnDo.cards.CardType;
 import actions.ReUnDo.cards.LuckCard;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,11 +21,13 @@ public class GUI {
     int returnIntValue=0;
     String returnValue;
     int chosenLuckcard;
+    boolean nextMessage;
 
-    public GUI(){
+    public GUI(boolean nextMessage){
         gui=new JFrame();
         gui.setTitle("Jinx");
         gui.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.nextMessage=nextMessage;
     }
 
     /**
@@ -108,7 +109,7 @@ public class GUI {
     }
 
     public static void main(String[] args){
-        GUI g=new GUI();
+        GUI g=new GUI(true);
 
         Table t=new Table(true);
         Player test=new Player("Testing",10,false,false);
@@ -129,19 +130,6 @@ public class GUI {
 
 
 
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-        g.scores.add("e 1");
-
-
 
 
 
@@ -157,7 +145,13 @@ public class GUI {
         Round testRound=new Round(testPlayerlist,t);
         testRound.setActive(test);
         //g.updateGUI(testRound);
-        g.actionChosen(testRound);
+        String[] testArray=new String[5];
+        testArray[0]="testtesttesttest";
+        testArray[1]="testtesttesttest";
+        testArray[2]="testtesttesttest";
+        testArray[3]="testtesttesttest";
+        testArray[4]="testtesttesttest";
+        g.actionChosen(testRound,null);
 
         /*JPanel label1=g.luckcardGUI(test);
         JFrame frame=new JFrame();
@@ -505,8 +499,9 @@ public class GUI {
      * creates the GUI with table, histories, luckcards and player's hand
      *
      * @param displaying Round the GUI will display
+     * @param text text that will be displayed in the right bottom corner, null to not use the textarea
      */
-    public void updateGUI(Round displaying){
+    public void updateGUI(Round displaying,String[] text){
         gui.getContentPane().removeAll();
         tableGui=new CardGUI(displaying.getTableStatus(),this);
         gui.add(tableGui,BorderLayout.CENTER);
@@ -514,7 +509,20 @@ public class GUI {
         //gui.add(luckCards,BorderLayout.EAST);
 
         JPanel compRight=new JPanel(new BorderLayout());
-        compRight.add(luckCards,BorderLayout.CENTER);
+        JPanel rightCenter=new JPanel(new BorderLayout());
+        rightCenter.add(luckCards,BorderLayout.NORTH);
+
+        String showingText="";
+        if(text!=null){
+            for(String line:text){
+                showingText=showingText+line+"\n";
+            }
+        }
+        JTextArea messageToUser=new JTextArea(showingText);
+        messageToUser.setEditable(false);
+
+        rightCenter.add(messageToUser,BorderLayout.SOUTH);
+        compRight.add(rightCenter,BorderLayout.CENTER);
 
         JLabel playerName=new JLabel(displaying.getActive().getName()+", it's your turn!");
         playerName.setFont(new Font("Serif", Font.PLAIN, 24));
@@ -571,6 +579,18 @@ public class GUI {
         reUnDOButton.addActionListener(reUnDoListener);
         leftButtons.add(reUnDOButton);
 
+        if(this.nextMessage){
+            JButton next=new JButton("next");
+            leftButtons.add(next);
+            ActionListener nextListener=new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    showNextMessage=true;
+                }
+            };
+            next.addActionListener(nextListener);
+        }
+
         JButton verlauf=new JButton("Verlauf zeigen");
         ActionListener verlaufListener=new ActionListener() {
             @Override
@@ -580,7 +600,7 @@ public class GUI {
         };
         verlauf.addActionListener(verlaufListener);
         leftButtons.add(verlauf);
-        leftComp.add(new JScrollPane(showHighscores(scores)),BorderLayout.CENTER);
+        leftComp.add(new JScrollPane(showHighscores(displaying.getHighscores())),BorderLayout.CENTER);
 
 
         JButton save=new JButton("save Game");
@@ -620,8 +640,27 @@ public class GUI {
         gui.setVisible(true);
     }
 
-    ArrayList<String> scores=new ArrayList<>();
     CardGUI tableGui;
+    boolean showNextMessage =false;
+
+    /**
+     * waits for player to request the next move
+     *
+     * @return true if player chose next move
+     */
+    public boolean nextMove(){
+        showNextMessage =false;
+        while(true){
+            if(showNextMessage){
+                return showNextMessage;
+            }
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     /**
      * creates a JTable with player's histories
@@ -665,9 +704,9 @@ public class GUI {
      * @param currentRound round that is currently shown
      * @return player's chosen action
      */
-    public String actionChosen(Round currentRound){
+    public String actionChosen(Round currentRound, String[] text){
         chosenAction=null;
-        this.updateGUI(currentRound);
+        this.updateGUI(currentRound,text);
         while(true){
             //chosen luckcard is saved in int chosenLuckcard
             //chosen card saved in tableGui.chosenCardCoord
@@ -682,6 +721,15 @@ public class GUI {
             }
 
         }
+    }
+
+    /**
+     * displays text in GUI
+     *
+     * @param text
+     */
+    public void showTextInGame(String[] text){
+        //TODO displays text
     }
 
     /**
