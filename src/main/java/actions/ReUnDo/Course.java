@@ -83,7 +83,7 @@ public class Course {
                     P - leave
                             \n""");
 
-            String input =inCon.letterInput();
+            String input =inCon.letterInput("Choose your manipulation");
             if (input.equals("S")) {
                 log("regular status:\n");
                 showRound(tail.getBefore());

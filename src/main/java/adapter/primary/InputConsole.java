@@ -53,7 +53,7 @@ public class InputConsole implements MessageInput {
      * @return single character entered from player
      * */
     @Override
-    public String letterInput() {
+    public String letterInput(String msg) {
         Scanner sc= new Scanner(System.in);
         String inputLetter=sc.nextLine();
         return inputLetter;

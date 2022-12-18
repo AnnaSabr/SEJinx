@@ -522,7 +522,7 @@ public class Player implements Cloneable{
                     A - Give advise
                     P - Show player's history
                     """);
-            String action = input.letterInput();
+            String action = input.letterInput("Choose your action!");
             //check if value is acceptable
             if (Arrays.asList(actions).contains(action)) {
                 return action;

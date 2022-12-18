@@ -20,7 +20,7 @@ public interface MessageInput {
      *
      * @return Player input
      */
-    String letterInput();
+    String letterInput(String msg);
 
     /**
      * For int input during the player initialization

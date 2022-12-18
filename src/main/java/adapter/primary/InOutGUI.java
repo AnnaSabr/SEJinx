@@ -67,8 +67,8 @@ public class InOutGUI implements MessageOutput,MessageInput{
     }
 
     @Override
-    public String letterInput() {
-        return gui.actionChosen(model, new String[]{"Inputstuff"});
+    public String letterInput(String msg) {
+        return gui.actionChosen(model, new String[]{msg});
     }
 
     @Override
