@@ -642,8 +642,8 @@ public class GameLoop {
         while (true) {
             String ki=inCon.inputLevel();
             String[] kiPart=ki.split(",");
-            name=kiPart[0];
-            level=kiPart[1];
+            name=kiPart[1];
+            level=kiPart[0];
             if (level.equals("easy")){
                 k = new EasyKI(name,sleepTime,manualNextMsg,db);
                 break;

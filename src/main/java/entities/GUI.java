@@ -367,7 +367,7 @@ public class GUI {
         ActionListener easyListener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AIType="Easy";
+                AIType="easy";
                 if(inputField.getText().equals("")||inputField.getText().equals("Enter here")){
                     JOptionPane.showOptionDialog(null,"Enter a name for the AI","error",JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE,null,null,null);
                     AIType=null;
@@ -379,7 +379,7 @@ public class GUI {
         ActionListener mediumListener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AIType="Medium";
+                AIType="medium";
                 if(inputField.getText().equals("")||inputField.getText().equals("Enter a name for the AI")){
                     JOptionPane.showOptionDialog(null,"Enter a name for the AI","error",JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE,null,null,null);
                     AIType=null;
@@ -391,7 +391,7 @@ public class GUI {
         ActionListener hardListener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AIType="Hard";
+                AIType="hard";
                 if(inputField.getText().equals("")||inputField.getText().equals("Enter a name for the AI")){
                     JOptionPane.showOptionDialog(null,"Enter a name for the AI","error",JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE,null,null,null);
                     AIType=null;

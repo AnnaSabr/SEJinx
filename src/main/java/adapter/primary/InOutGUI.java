@@ -87,7 +87,6 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public String inputLevel() {
-        gui.buildAI();
         String[]ki=gui.AIsettings();
         String ready=ki[0]+","+ki[1];
         return ready;
