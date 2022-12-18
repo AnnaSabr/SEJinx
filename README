@@ -242,3 +242,24 @@ der Maus angeklickt werden. Die Luckcards werden durch Buttons mit entsprechende
 außerdem über Knöpfe bedienen, mit denen zum Beispiel der Würfel betätigt werden kann.
 Die Spielehistorien des Spielers sowie die Highscore Liste werden während des Spiels über JTable angezeigt.
 Über ein JLabel wird angezeigt welcher Spieler an der Reihe ist.
+
+#### Benutzeranleitung
+Bevor das Spiel beginnt, muss der Spieler über die Konsole Einstellungen für das Spiel festlegen. Dafür werden dem Spieler mehrere 
+Fragen gestellt, die er mit “y”(ja) oder “n”(nein) beantworten muss. Wenn das Spiel beginnt, wird über die Konsole die Anzahl der Spieler 
+und anschließend die Anzahl der KIs festgelegt. Dann muss für jeden Spieler, einschließlich der KIs ein Name ausgewählt werden. Die 
+Spieler müssen ein Profil auswählen oder erstellen. Wenn alle Spieler einen Namen haben, wird eine Liste mit allen bisherigen Highscores 
+angezeigt. Danach beginnt das Spiel, indem ein 4x4 Feld mit Spielkarten auf der Konsole ausgegeben wird. Eine Spielkarte wird in dem 
+Format Wert/Farbe angegeben (z.B. 4/RED).
+Menschliche Spieler müssen nun eine Aktion aus dem Menü auswählen. Sie können würfeln (“R”), eine Karte auswählen (“C”), 
+eine Glückskarte auswählen(“L”), einen Zug zurücknehmen(“M”), die Highscoreliste anzeigen lassen(“H”), den Verlauf anzeigen(“N”), 
+das Spiel speichern(“S”), Züge anzeigen(“Z”), ein altes Spiel laden(“X”), einen Hinweis anzeigen lassen(“A”) 
+oder alte Spielerhistorien anzeigen lassen(“P”).
+KIs würfeln zuerst. Die leichte und mittlere KI ziehen direkt eine Karte, die schwierige KI kann auch Glückskarten verwenden.
+Die KIs erklären ihre Züge über die Konsole.
+Nachdem der Spieler gewürfelt und optional Glückskarten verwendet hat, muss er eine Karte auswählen. Die Karte muss der gewürfelten 
+Zahl entsprechen. Wenn keine passende Karte verfügbar ist, wird die Runde beendet. Der Spieler, der die Runde beendet hat, muss seine 
+höchste Karte ablegen. Wenn er mehrere Karten ablegen könnte, muss er über die Konsole eine dieser Karten auswählen. Dann werden die Karten 
+auf dem Tisch mit den Karten der Spieler verglichen. Karten, deren Farben noch auf dem Tisch liegen, werden ebenfalls abgelegt. Dann darf 
+jeder Spieler eine beliebige seiner Karten gegen eine Glückskarte tauschen. Dann beginnt die nächste Runde.
+Nach drei Runden wird das Spiel beendet. Die neuen Spielerhistorien werden angezeigt und gespeichert. Die neuen Scores werden ebenfalls gespeichert.
+Dann wird der Spieler gefragt, ob er ein neues Spiel starten möchte. Dies muss er wie zu Beginn des Spiels mit y(ja) oder n(nein) beantworten.
