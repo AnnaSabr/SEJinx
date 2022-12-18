@@ -23,7 +23,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public void logKiPlayer(String name, String text) {
-
+        System.out.println("NOT IMPLEMENTED");
     }
 
     @Override
@@ -106,9 +106,9 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public String inputCoord(String question) {
-        gui.getProfileName(question);
-        String coord=gui.returnProfile(question);
-        return coord;
+        //gui.getProfileName(question);
+        //String coord=gui.returnProfile(question);
+        return gui.tableGui.chosenCardCoord;
     }
 
     @Override
@@ -131,8 +131,16 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public String menueInput(String text) {
-        gui.actionChosen(model, new String[]{text});
-        String ac=gui.getChosenAction();
-        return ac;
+        return gui.actionChosen(model, new String[]{text});
     }
+
+    /**
+     * Function to display simple text
+     * !Not used in GUI!
+     * */
+    @Override
+    public void simpleText(String text) {
+        //nothing to do as GUI
+    }
+
 }

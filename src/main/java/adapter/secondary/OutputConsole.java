@@ -80,4 +80,13 @@ public class OutputConsole implements MessageOutput {
     public void configJinxMessage(String text){
         System.out.println(text);
     }
+
+    /**
+     * Function to display simple text
+     * !Not used in GUI!
+     * */
+    @Override
+    public void simpleText(String text) {
+        System.out.println(text);
+    }
 }

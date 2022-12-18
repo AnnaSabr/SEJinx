@@ -592,7 +592,7 @@ public class GUI {
         return chosenAction;
     }
 
-    CardGUI tableGui;
+    public CardGUI tableGui;
     boolean showNextMessage =false;
 
     /**

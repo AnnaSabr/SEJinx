@@ -54,6 +54,11 @@ public interface MessageOutput {
     * */
    void configJinxMessage(String text);
 
-
+   /**
+    * Function to display simple text
+    * Should be used by text based outputs
+    * @param text text to be displayed
+    * */
+   void simpleText(String text);
 
 }

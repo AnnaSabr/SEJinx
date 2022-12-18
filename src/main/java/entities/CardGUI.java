@@ -13,7 +13,7 @@ public class CardGUI extends JPanel {
 
     Card[][] cardTableCards;
     GUI gui;
-    String chosenCardCoord;
+    public String chosenCardCoord;
 
     public CardGUI(Table table, GUI gui){
         cardTableCards=table.getField();

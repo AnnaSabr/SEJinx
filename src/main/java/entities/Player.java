@@ -523,6 +523,8 @@ public class Player implements Cloneable{
                     P - Show player's history
                     """);
             String action = input.menueInput("Choose your action!");
+
+            System.out.println("WIR SIND BIS HIER ");
             //check if value is acceptable
             if (Arrays.asList(actions).contains(action)) {
                 return action;
@@ -852,7 +854,6 @@ public class Player implements Cloneable{
         coordInt[0] = Integer.parseInt(coordsSTR[0]);
         coordInt[1] = Integer.parseInt(coordsSTR[1]);
         return coordInt;
-
     }
 
 
@@ -923,7 +924,7 @@ public class Player implements Cloneable{
      */
     void log(String msg) {
         if (manualNextMsg) {
-            output.jinxMessage(msg + " [ENTER] to continue!");
+            output.simpleText(msg + " [ENTER] to continue!");
             input.inputAnything();
         } else {
             try {
@@ -931,7 +932,7 @@ public class Player implements Cloneable{
             } catch (Exception e) {
                 output.errorSelfMessage("Sleep exception!");
             }
-            output.jinxMessage(msg);
+            output.simpleText(msg);
         }
     }
 
