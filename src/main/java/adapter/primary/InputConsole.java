@@ -5,6 +5,7 @@ import adapter.secondary.OutputConsole;
 import entities.AIPLayer3;
 import entities.EasyKI;
 import entities.MediumAI;
+import entities.Player;
 import ports.inbound.MessageInput;
 
 import java.util.ArrayList;
@@ -165,5 +166,10 @@ public class InputConsole implements MessageInput {
     public int inputMaxCard(ArrayList<Card> maxCards){
         Scanner sc = new Scanner(System.in);
         return sc.nextInt();
+    }
+
+    @Override
+    public int inputINTDrawLuckCard(Player p) {
+        return inputINT();
     }
 }

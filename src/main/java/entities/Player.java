@@ -399,13 +399,13 @@ public class Player implements Cloneable{
         }
 
         while (true) {
-            int input = this.playerInputNumberInRange(1, this.cards.size());
+            int inputs = input.inputINTDrawLuckCard(this);
 
-            if (input == 0) {
+            if (inputs == 0) {
                 log("You have not chosen a card");
                 return null;
             } else {
-                return cards.get(input - 1);
+                return cards.get(inputs - 1);
             }
         }
     }

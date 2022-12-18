@@ -2,6 +2,7 @@ package adapter.primary;
 import actions.ReUnDo.Round;
 import actions.ReUnDo.cards.Card;
 import entities.GUI;
+import entities.Player;
 import entities.Table;
 import ports.inbound.MessageInput;
 import ports.outbound.MessageOutput;
@@ -104,6 +105,13 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public int inputINT() {
+        return gui.pickCardFromHandToDrop();
+    }
+
+    @Override
+    public int inputINTDrawLuckCard(Player p) {
+        model.setActive(p);
+        gui.updateGUI(model,new String[]{"Select a card to drop for a luck card!"});
         return gui.pickCardFromHandToDrop();
     }
 

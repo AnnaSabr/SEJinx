@@ -1,6 +1,7 @@
 package ports.inbound;
 
 import actions.ReUnDo.cards.Card;
+import entities.Player;
 
 import java.util.ArrayList;
 
@@ -78,9 +79,17 @@ public interface MessageInput {
     String menueInput(String text);
 
     /**
-     * Function to display the maxCards of a player
+     * Function to get input for the maxCards of a player
      * @param maxCards of current player
      * @return number in array of selected maxcard
      * */
     int inputMaxCard(ArrayList<Card> maxCards);
+
+    /**
+     * Function to let the player select a card to drop for a luck card
+     * @param p the active player
+     * @return selected int
+     * */
+    int inputINTDrawLuckCard(Player p);
+
 }
