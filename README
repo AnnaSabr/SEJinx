@@ -243,7 +243,11 @@ außerdem über Knöpfe bedienen, mit denen zum Beispiel der Würfel betätigt w
 Die Spielehistorien des Spielers sowie die Highscore Liste werden während des Spiels über JTable angezeigt.
 Über ein JLabel wird angezeigt welcher Spieler an der Reihe ist.
 
-#### Benutzeranleitung
+---
+# Änderungen zu Abgabe 4
+
+### Benutzeranleitung
+
 Bevor das Spiel beginnt, muss der Spieler über die Konsole Einstellungen für das Spiel festlegen. Dafür werden dem Spieler mehrere 
 Fragen gestellt, die er mit “y”(ja) oder “n”(nein) beantworten muss. Wenn das Spiel beginnt, wird über die Konsole die Anzahl der Spieler 
 und anschließend die Anzahl der KIs festgelegt. Dann muss für jeden Spieler, einschließlich der KIs ein Name ausgewählt werden. Die 
@@ -263,3 +267,55 @@ auf dem Tisch mit den Karten der Spieler verglichen. Karten, deren Farben noch a
 jeder Spieler eine beliebige seiner Karten gegen eine Glückskarte tauschen. Dann beginnt die nächste Runde.
 Nach drei Runden wird das Spiel beendet. Die neuen Spielerhistorien werden angezeigt und gespeichert. Die neuen Scores werden ebenfalls gespeichert.
 Dann wird der Spieler gefragt, ob er ein neues Spiel starten möchte. Dies muss er wie zu Beginn des Spiels mit y(ja) oder n(nein) beantworten.
+
+Eine detailierte Beschreibung aller Funktionen finden sie in der beigelegten PDF.
+### Ports&Adapter
+
+Um den Source-Code von keiner spezifischen Architektur an die Ports&Adapter Architektur anzupassen, waren einige Refactoringschritte notwendig. Zuerst haben wir uns die Ordnerstruktur angeschaut, damit diese die Beziehungen zwischen Ports und Adaptern auch wiederspiegelt. Folgende Ordnerstruktur war das Ergebnis:
+```
+...
+|
+java
+    |
+    actions
+    |
+    adapter
+        |
+        primary (Alle Adapter für Input)
+        |
+        secondary (Alle Adapter für Output)
+    |
+    entities
+    |
+    persistence
+    |
+    ports
+        |
+        inbound (Alle Ports die Input entgegen nehmen)
+        |
+        outbound (Alle Ports die Output generieren)
+    ...
+
+```
+Ports sind als Interfaces implementiert, diese müssen von den Adaptern implementiert werden, damit die Funktionalität des Spiels gesichert ist. Durch die oben gezeigte Ordnerstruktur ist sofort klar, welcher Adapter zu welchem Port gehört, dies macht es leichter weitere Adapter an die richtigen Ports anzuschließen. 
+
+#### Primary Adapter
+
+Die Primary Adapter kümmern sich um den Input des Spielers, damit dieser das Spiel steuern kann. 
+Wir benötigen einen Adapter der die Eingaben von der GUI abfragt und diese an unsere Domäne weitergibt (Presenter im MVP), sowie einen der sich um den Input von der Console kümmert. 
+Für die Eingaben von der Console wird der InputConsole-Adapter in *adapter/primary*. Dieser nutzt den von Java zur Verfügung gestellten ```Scanner``` um auf Eingaben in der Console zu warten und diese dann vernünftig formatiert an die Domäne weiterzuleiten. Einige der Methoden sind ```menueInput()``` oder ```inputPassword()```, ```menueInput()``` wartet auf die Eingabe eines Buchstabens, der den nächsten Zug des Spielers repräsentiert. Wird ein passender Buchstabe eingegeben, wird dieser von ```menueInput()``` an die Methode ```chooseAction()``` im Spieler weiter gegeben, welche die Eingabe überpüft und dann die gewählte Aktion an den GameLoop weiter gibt.
+Auf diese Weise ist der Spieler sowohl in der GUI als auch in der Console in der Lage seinen nächsten Zug zu wählen. Für genaueren Einblick in die Funktionalität kann man auch gut in die JavaDoc schauen.
+
+#### Secondary Adapter
+
+Die Secondary Adapter kümmern sich um den Output des Spiels, damit der Spieler immer erkennen kann was gerade geschieht. Wir benötigen etwas mehr Secondary Adapter als Primary, da wir neben der Ausgabe auf der Console oder auf der GUI auch Ausgaben in eine Datenbank oder eine Datei tätigen. *CSVFileAdapter* ist zum Beispiel für das Erstellen von Dateien und dem Speichern von Daten zuständig, er schließt sich an dem *port/outbound/Files*-Port an. Des weiteren wird ein Adapter benötigt, der das Speichern von Daten in einer Datenbank ermöglicht. Dies übernimmt der DBConnector aus *persistence/* welcher an den *port/outbound/Database-Port anschließt.
+Für Ausgabe auf der Console ist der OutputConsole-Adapter zuständig, welcher ebenfalls einen eigenen Port bekommt, da sich die Ausgaben hier deutlichen von denen einer Datenbank oder einer Datei unterscheiden.
+Für genaueren Einblick in die Funktionalität kann man auch gut in die JavaDoc schauen.
+
+### Passive-MVP
+
+Für MVP ist ein Model, ein Presenter und eine View nötig. Die View kommuniziert mit dem Presenter um Eingaben des Users an das Model weiterzuleiten, während der Presenter auf Änderungen im Model reagiert und diese an die View weiterzugeben. Leider ist unser Projekt entwickelt worden, ohne eine UI zu berücksichtigen, was das Refactoring auf ein GUI-Projekt deutlich erschwerte. Java.Swing ist Eventbasiert implementiert und reagiert somit mittels Events auf Eingaben des Users. Berücksichtigt man dies in der Entwicklung des Projekts, ist dies eine super Vorgehensweise um dem User die bestmögliche Kontrolle über den Ablauf des Programms zu ermöglichen. Leider übernimmt in unserem Projekt der GameLoop die Kontrolle über den Ablauf des Spiels, somit muss die GUI in der Lage sein auf Eingaben des Nutzers zu warten, sobald der GameLoop diese "freischaltet". </br>
+Die Rolle der View übernimmt die *entities/GUI*-Klasse, sie stellt die Benutzeroberfläche dar und ermöglicht es dem User mit dem Spiel zu interagieren. Der primary-Adapter InOutGUI übernimmt die Rolle des Presenters und leitet Anfragen von GameLoop zur View und umgekehrt weiter. InOutGUI implementiert sowohl den MessageInput, als auch den MessageOutput-Port, da beide Aus- und Eingaben von und an die GUI erhalten/leiten. Das Model ist unsere Domäne an sich, sie enthält alle wichtigen Informationen über den aktuellen Spielablauf und wird regelmäßig durch Ein- und Ausgaben aktualisiert.
+
+### Sprachenkonsistenz
+Jeder hat sich über die Zeit einen eigenen Programmierstil angewöhnt und wendet diesen ohne nachzudenken automatisch auf neue Projekte an. Dies führte bei uns teilweise zu unterschiedlichen Sprachen im Code, so hatten wir in der Vergangenheit sowohl englische als auch deutsche Klassen, Methoden und Attribute. Dies haben wir mit dieser Abgabe überarbeitet und alles ins Englische übersetzt.
