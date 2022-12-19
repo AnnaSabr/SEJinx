@@ -114,9 +114,9 @@ public class InputConsole implements MessageInput {
                     "easy / medium / hard");
             level=inputAnything();
             switch (level) {
-                case "easy" -> ki = name + "," + "easy";
-                case "medium" -> ki = name + "," + "medium";
-                case "hard" -> ki = name + "," + "hard";
+                case "easy" -> ki ="easy,"+ name;
+                case "medium" -> ki ="medium,"+name;
+                case "hard" -> ki = "hard,"+name;
                 default -> outCon.simpleMessage("Not an option. Try again.");
             }
         } else {
