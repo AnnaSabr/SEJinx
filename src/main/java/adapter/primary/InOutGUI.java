@@ -22,7 +22,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public void historyOutput(String[] text) {
-        gui.updateGUI(model,text);
+        gui.historyWindow(text);
         try{
 
             Thread.sleep(20000);}

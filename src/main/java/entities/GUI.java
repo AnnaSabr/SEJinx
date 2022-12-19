@@ -435,6 +435,19 @@ public class GUI {
         gui.setVisible(true);
     }
 
+    public void historyWindow(String[] text){
+        gui.getContentPane().removeAll();
+        String complete="";
+        for (int a =0; a<text.length; a++){
+            complete=complete+text[a]+"\n";
+        }
+        JTextArea history=new JTextArea(complete);
+        history.setEditable(false);
+        JScrollPane jscroll = new JScrollPane(history);
+        gui.add(jscroll);
+        gui.setVisible(true);
+    }
+
     boolean orderByScore=true;
 
     /**
@@ -761,4 +774,6 @@ public class GUI {
 
         }
     }
+
+
 }
