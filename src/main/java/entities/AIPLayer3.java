@@ -1,4 +1,7 @@
 package entities;
+import actions.Zuege.Action;
+import actions.Zuege.MoveHistory;
+import actions.Zuege.Moves;
 import adapter.secondary.OutputConsole;
 import adapter.secondary.TextfileAdapter;
 import actions.ReUnDo.cards.Card;
@@ -499,6 +502,9 @@ public class AIPLayer3 extends Player{
 
         while(true){
             try{
+                Card placeholder = maxCards.get(removing);
+                Action action4 = new Action(Moves.DROPPEDCARD, placeholder, this);
+                MoveHistory.addNewAction(action4);
                 this.cards.remove(maxCards.get(removing));
                 log("Card "+removing+" was chosen.");
                 return true;

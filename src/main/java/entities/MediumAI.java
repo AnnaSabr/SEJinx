@@ -1,4 +1,8 @@
 package entities;
+import actions.ReUnDo.cards.CardColor;
+import actions.Zuege.Action;
+import actions.Zuege.MoveHistory;
+import actions.Zuege.Moves;
 import adapter.secondary.OutputConsole;
 import adapter.secondary.TextfileAdapter;
 import actions.ReUnDo.cards.Card;
@@ -95,6 +99,9 @@ public class MediumAI extends Player{
         //check if the AI has to end its turn because it has no options to pick a card
         if(checkEndRound(table)){
             log(this.name + "[AI], there is no card you could choose!");
+            Card placeholder = new Card(CardColor.RED, 420);
+            Action action6 = new Action(Moves.SKIPPED, placeholder, this);
+            MoveHistory.addNewAction(action6);
             //set AI inactive to end its turn;
             this.active = false;
             return false;
@@ -105,6 +112,8 @@ public class MediumAI extends Player{
 
         //add card to AIs hand and remove it from field
         addCard(table.getCard(chosenOne));
+        Action action1 = new Action(Moves.GOTCARDFROMTABLE, chosenOne, this);
+        MoveHistory.addNewAction(action1);
         //set the AI as inactive, since this action ended its turn
         this.active = false;
         //signal that the AI has chosen a card successfully
@@ -173,7 +182,8 @@ public class MediumAI extends Player{
                 dropCard = mxC;
             }
         }
-
+        Action action4 = new Action(Moves.DROPPEDCARD, dropCard, this);
+        MoveHistory.addNewAction(action4);
         //remove the card from the AIs hand
         for(int d = 0; d < this.cards.size(); d++){
             if(this.cards.get(d).getColor() == dropCard.getColor() && this.cards.get(d).getValue() == dropCard.getValue()){
