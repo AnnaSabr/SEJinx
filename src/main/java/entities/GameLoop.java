@@ -187,7 +187,6 @@ public class GameLoop {
                 // Update history to set round object to correct instance of current game
                 historyUpdate(currentPlayer);
 
-
                 // Let the player perform certain actions until he is done
                 while (currentPlayer.isActive()) {
                     //display the field
@@ -684,6 +683,9 @@ public class GameLoop {
         this.kiCount++;
         k.registerInput(inCon);
         k.registerOutput(outCon);
+
+        //TODO REMOVE
+        k.addLuckCard(new LuckCard(CardType.FOURTOSIX));
         return k;
     }
 

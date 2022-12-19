@@ -41,6 +41,34 @@ public class AIPLayer3 extends Player{
     }
 
     /**
+     * Function to let the AI choose a number between min, max to swap dice count with
+     * @param min min value to choose from
+     * @param max max value to choose from
+     * @param card chosen luckCard
+     * @return true if chosen, false if not
+     * */
+    public boolean mintomax(LuckCard card, int min, int max){
+
+        //check if the card has already been used
+        if (usedCards.contains(card)) {
+            outCon.configJinxMessage("You have already played that card!");
+            return false;
+        }
+
+        if(min<this.diceCount&&max>this.diceCount){
+            return true;
+        }
+
+        this.diceCount = min;
+
+        //remove the card from the players hand --> single use
+        removeLuckCard(card);
+
+        log(this.name + ", your new eye count is: " + this.diceCount);
+        return true;
+    }
+
+    /**
      * Function to load this AIs history from the database
      * */
     public void loadHistoryFromDB(){
