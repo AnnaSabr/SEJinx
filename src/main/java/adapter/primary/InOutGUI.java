@@ -85,7 +85,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
     @Override
     public int inputINTPlayerInitialization(String question) {
         gui.inputNumber(question);
-        int players =gui.getInputNumber(question,2,4);
+        int players =gui.getInputNumber(question,0,5);
         return players;
     }
 
