@@ -546,8 +546,7 @@ public class GUI {
             next.addActionListener(nextListener);
         }
 
-        //TODO english name
-        JButton verlauf=new JButton("Verlauf zeigen");
+        JButton verlauf=new JButton("show chronology");
         ActionListener verlaufListener=new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
