@@ -684,8 +684,6 @@ public class GameLoop {
         k.registerInput(inCon);
         k.registerOutput(outCon);
 
-        //TODO REMOVE
-        k.addLuckCard(new LuckCard(CardType.FOURTOSIX));
         return k;
     }
 
