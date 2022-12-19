@@ -69,5 +69,10 @@ public interface MessageOutput {
     * @param text help message to be displayed
     * */
    void helpMessage(String text);
-   
+
+   /**
+    * Function to display a message with a manual delay
+    * @param text should be like [ENTER] - Next move
+    * */
+   void manualMessage(String text);
 }

@@ -72,7 +72,11 @@ public class MediumAI extends Player{
     @Override
     public String chooseAction(Table table){
 
-        log("Your turn " + this.name + "! Eye count - " + this.diceCount+"\n"+this.toString());
+        if(manualNextMsg){
+            outCon.manualMessage("[ENTER] - Next move");
+        }
+        log("Your turn " + this.name + "! Eye count - " + this.diceCount);
+        log(this.toString());
 
         //roll if not rolled yet
         if(this.rolls == 0){

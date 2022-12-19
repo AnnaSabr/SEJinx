@@ -4,6 +4,8 @@ import actions.ReUnDo.Round;
 import entities.Table;
 import ports.outbound.MessageOutput;
 
+import java.util.Scanner;
+
 /**
  * Primary Adapter handling output on console
  * */
@@ -97,4 +99,14 @@ public class OutputConsole implements MessageOutput {
     public void helpMessage(String text){
         System.out.println("[ADVISOR] " + text);
     }
+
+     /**
+     * Function to display a message with a manual delay
+     * @param text should be like [ENTER] - Next move
+     * */
+     public void manualMessage(String text){
+         System.out.println(text);
+         Scanner sc = new Scanner(System.in);
+         sc.nextLine();
+     }
 }

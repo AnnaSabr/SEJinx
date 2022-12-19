@@ -73,6 +73,10 @@ public class EasyKI extends Player{
      * */
     @Override
     public String chooseAction(Table table){
+
+        if(manualNextMsg){
+            outCon.manualMessage("[ENTER] - Next move");
+        }
         log("Your turn " + this.name + "! Eye count - " + this.diceCount);
         log(this.toString());
 

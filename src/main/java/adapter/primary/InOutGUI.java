@@ -8,6 +8,7 @@ import ports.inbound.MessageInput;
 import ports.outbound.MessageOutput;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class InOutGUI implements MessageOutput,MessageInput{
     private GUI gui;
@@ -205,6 +206,14 @@ public class InOutGUI implements MessageOutput,MessageInput{
     @Override
     public void simpleText(String text) {
         System.out.println(text);
+    }
+
+    /**
+     * Function to display a message with a manual delay
+     * @param text should be like [ENTER] - Next move
+     * */
+    public void manualMessage(String text){
+        gui.showAdvice("Next Move","MANUAL");
     }
 
 }

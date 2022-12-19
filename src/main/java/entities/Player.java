@@ -504,8 +504,15 @@ public class Player implements Cloneable{
         String[] actions = {"R", "L", "C", "M", "N", "T", "H","S","Z","X","A","P"};
 
         while (true) {
-            log("Your turn " + this.name + "! Eye count - " + this.diceCount);
-            log(this.toString());
+
+            if(manualNextMsg){
+                output.manualMessage("[ENTER] - Next move");
+                log("Your turn " + this.name + "! Eye count - " + this.diceCount);
+                log(this.toString());
+            }else {
+                log("Your turn " + this.name + "! Eye count - " + this.diceCount);
+                log(this.toString());
+            }
 
             //let player choose the action
             log("""
@@ -851,7 +858,7 @@ public class Player implements Cloneable{
             log("Enter coordinates in format y,x!");
             return this.getPlayerInputCoord();
         }
-        String coord = coordsSTR[0] + "," + coordsSTR[1];
+        String coord = coordsSTR[1] + "," + coordsSTR[0];
         this.playerlog(coord);
         int[] coordInt = new int[2];
         coordInt[0] = Integer.parseInt(coordsSTR[0]);
@@ -930,10 +937,6 @@ public class Player implements Cloneable{
      * Function to easily log a msg on the console
      */
     void log(String msg) {
-        if (manualNextMsg) {
-            output.simpleText(msg + " [ENTER] to continue!");
-            input.inputAnything();
-        } else {
             try {
                 Thread.sleep(sleepTime);
             } catch (Exception e) {
@@ -941,7 +944,7 @@ public class Player implements Cloneable{
             }
             output.simpleText(msg);
         }
-    }
+
 
     /**
      * Function to see if player is still active
@@ -972,9 +975,10 @@ public class Player implements Cloneable{
         this.diceCount = 0;
     }
 
-    /* shows player input on console
+    /**
+     * shows player input on console
      *
-     * @param msg
+     * @param msg message to be displayed
      */
     private void playerlog(String msg) {
         output.logKiPlayer(this.getName(),"choose "+msg);

@@ -69,6 +69,13 @@ public class AIPLayer3 extends Player{
      * */
     @Override
     public String chooseAction(Table table) {
+
+        if(manualNextMsg){
+            outCon.manualMessage("[ENTER] - Next move");
+        }
+        log("Your turn " + this.name + "! Eye count - " + this.diceCount);
+        log(this.toString());
+
         if(this.throwAgain){
             this.throwAgain=false;
             return "R";
