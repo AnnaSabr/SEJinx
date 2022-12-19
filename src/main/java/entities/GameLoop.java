@@ -76,7 +76,6 @@ public class GameLoop {
         this.table = new Table(rff);
         this.highscores = new ArrayList<>();
         this.getHighscore();
-        this.course = new Course();
         this.cP = 0;
         this.kiCount = 0;
         this.manualNextMsg = manualNextMsg;
@@ -93,9 +92,11 @@ public class GameLoop {
             this.inOut= new InOutGUI(gui);
             this.outCon = this.inOut;
             this.inCon = this.inOut;
+            this.course = new Course(inOut);
         } else{
             this.outCon= new OutputConsole();
             this.inCon= new InputConsole();
+            this.course = new Course(null);
         }
 
     }

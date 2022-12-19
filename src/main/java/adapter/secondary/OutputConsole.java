@@ -12,6 +12,17 @@ import java.util.Scanner;
 public class OutputConsole implements MessageOutput {
 
     /**
+     *
+     * @param text complete history as one string
+     */
+    @Override
+    public void historyOutput(String [] text) {
+        for (int a=0; a< text.length; a++){
+            System.out.println(text[a]);
+        }
+    }
+
+    /**
      * Displays a simple message on console
      * @param text text to be displayed
      * */

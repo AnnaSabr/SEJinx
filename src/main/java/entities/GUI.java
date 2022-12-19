@@ -742,7 +742,6 @@ public class GUI {
 
         }
     }
-
     /**
      * Player can pick a card from his hand to drop
      *

@@ -20,6 +20,16 @@ public class InOutGUI implements MessageOutput,MessageInput{
         this.model = new Round();
     }
 
+    @Override
+    public void historyOutput(String[] text) {
+        gui.updateGUI(model,text);
+        try{
+
+            Thread.sleep(20000);}
+        catch (Exception e){
+            gui.showAdvice("Nothing to show","Error");
+        }
+    }
 
     @Override
     public void simpleMessage(String text) {
