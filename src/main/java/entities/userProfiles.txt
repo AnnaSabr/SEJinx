@@ -3,4 +3,6 @@ Anna,150
 hfgh,323
 dsfcsw,271
 d<f,275
+dora,49
+xv,217
 bob,202

@@ -75,4 +75,10 @@ public interface MessageOutput {
     * @param text should be like [ENTER] - Next move
     * */
    void manualMessage(String text);
+
+   /**
+    *
+    * @param text complete history in array
+    */
+   void historyOutput(String[] text);
 }

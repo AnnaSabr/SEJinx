@@ -69,7 +69,7 @@ public class Storage {
      * @return Copy of CourseHistory
      */
     public Course HistoryToLoad() {
-        Course courseCopy = new Course();
+        Course courseCopy = new Course(null);
         int size = roundHistory.size();
         for (int a = 0; a < size; a++) {
             courseCopy.addRound(roundHistory.get(a));

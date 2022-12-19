@@ -1,7 +1,11 @@
 package actions.ReUnDo;
+import adapter.primary.InOutGUI;
 import adapter.primary.InputConsole;
 import adapter.secondary.OutputConsole;
 import entities.Player;
+import ports.inbound.MessageInput;
+import ports.outbound.MessageOutput;
+
 import java.util.ArrayList;
 
 
@@ -13,19 +17,28 @@ public class Course {
     private Round head;
     private Round tail;
     private Round position;
-    private OutputConsole outCon;
-    private InputConsole inCon;
+    private MessageOutput outCon;
+    private MessageInput inCon;
+    private InOutGUI inOutGUI;
 
 
-    public Course() {
+    public Course(InOutGUI inOutGUI) {
         this.head = new Round(null, null);
         this.tail = new Round(null, null);
-
         this.head.setBehind(tail);
         this.tail.setBefore(head);
         this.position = tail;
-        this.outCon=new OutputConsole();
-        this.inCon= new InputConsole();
+
+        this.inOutGUI=inOutGUI;
+        if (inOutGUI!=null){
+            this.outCon=inOutGUI;
+            this.inCon=inOutGUI;
+
+        }else{
+            this.outCon=new OutputConsole();
+            this.inCon= new InputConsole();
+        }
+
     }
 
 
@@ -166,23 +179,37 @@ public class Course {
      */
     public void showHistory() {
         int round = 1;
+        ArrayList<String> lines= new ArrayList<>();
+        String history="";
         Round begin = head.getBehind();
         while (!begin.equals(tail)) {
-            String info=round + ". Move: \n" + round;
-            outCon.loggerMessage(info);
+            history=round + ". Move: \n" + round;
+            lines.add(history);
             for (Player player : begin.getAllPlayers()) {
-                info="Player: " + player.getName() + "\n" +
-                        "Handcards: " + player.getCards() + "\n" +
-                        "Luckycards: " + player.getLuckCards() + "\n";
-                outCon.loggerMessage(info);
+                history="Player: " + player.getName();
+                lines.add(history);
+                history="Handcards: " + player.getCards();
+                lines.add(history);
+                history="Luckycards: " + player.getLuckCards() + "\n";
+                lines.add(history);
             }
-            info="Table CardStack: " + begin.getTableStatus().getCardStack() + "\n" +
-                    "Table Luckstack: " + begin.getTableStatus().getLuckStack() + "\n" +
-                    "Gamefield:\n " + begin.getTableStatus().toString();
-            outCon.loggerMessage(info);
+            history="Table CardStack: " + begin.getTableStatus().getCardStack() + "\n";
+            lines.add(history);
+            history="Table Luckstack: " + begin.getTableStatus().getLuckStack() + "\n";
+            lines.add(history);
+            history="Gamefield:\n " + begin.getTableStatus().toString();
+            lines.add(history);
             round++;
             begin = begin.getBehind();
         }
+        int line=lines.size();
+        String[] h= new String[line];
+        int count=0;
+        for (String e: lines){
+            h[count]=e;
+            count++;
+        }
+        outCon.historyOutput(h);
     }
 
     /**
