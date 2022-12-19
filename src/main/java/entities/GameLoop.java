@@ -59,6 +59,7 @@ public class GameLoop {
     boolean showGui;
     GUI gui;
     private InOutGUI inOut;
+    private boolean manipulated;
 
     /**
      * Constructor of the game loop, used to configure the game
@@ -84,6 +85,7 @@ public class GameLoop {
         this.storageObject = new Storage();
         this.db=dataFromDB;
         this.showGui= showGui;
+        this.manipulated=false;
 
         if(showGui){
             gui=new GUI(false);
@@ -240,11 +242,23 @@ public class GameLoop {
                             Round changed = course.jump();
                             if (!changed.equals(course.getTail())) {
                                 manipulate(changed);
-                                Card placeholder = new Card(CardColor.RED, 420);
+                                this.manipulated=true;
+
                             }
                         }
                         case "A" -> currentPlayer.getHelp(this.table);
-                        case "Z" -> showActions();
+                        case "Z" -> {
+                            if (!this.manipulated){
+                                showActions();
+                            }
+                            else{
+                                outCon.simpleMessage("You manipulated the Game, there is no way to show you any old Actions. Your course will be renewed");
+                                this.course.getTail().setBefore(this.course.getHead());
+                                this.course.getHead().setBehind(this.course.getTail());
+                                manipulated=false;
+                            }
+                        }
+
                         case "S" -> {
                                 try {
                                     storageObject.setActionHistory(MoveHistory.toSave());

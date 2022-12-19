@@ -136,6 +136,14 @@ public class Course {
     }
 
     /**
+     *
+     * @return head of double chained List
+     */
+    public Round getHead() {
+        return head;
+    }
+
+    /**
      * Output for one specific Round
      *
      * @param choice Round wich should be put in Output
