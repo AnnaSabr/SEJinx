@@ -48,7 +48,6 @@ public class Action {
     }
 
     /**
-     *
      * @return played luckcard
      */
     public LuckCard getLuckCard() {

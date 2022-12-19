@@ -1,4 +1,5 @@
 package actions.ReUnDo;
+
 import adapter.primary.InOutGUI;
 import adapter.primary.InputConsole;
 import adapter.secondary.OutputConsole;
@@ -29,14 +30,14 @@ public class Course {
         this.tail.setBefore(head);
         this.position = tail;
 
-        this.inOutGUI=inOutGUI;
-        if (inOutGUI!=null){
-            this.outCon=inOutGUI;
-            this.inCon=inOutGUI;
+        this.inOutGUI = inOutGUI;
+        if (inOutGUI != null) {
+            this.outCon = inOutGUI;
+            this.inCon = inOutGUI;
 
-        }else{
-            this.outCon=new OutputConsole();
-            this.inCon= new InputConsole();
+        } else {
+            this.outCon = new OutputConsole();
+            this.inCon = new InputConsole();
         }
 
     }
@@ -96,7 +97,7 @@ public class Course {
                     P - leave
                             \n""");
 
-            String input =inCon.letterInput("Choose your manipulation");
+            String input = inCon.letterInput("Choose your manipulation");
             if (input.equals("S")) {
                 log("regular status:\n");
                 showRound(tail.getBefore());
@@ -149,7 +150,6 @@ public class Course {
     }
 
     /**
-     *
      * @return head of double chained List
      */
     public Round getHead() {
@@ -163,12 +163,12 @@ public class Course {
      */
     public void showRound(Round choice) {
         for (Player player : choice.getAllPlayers()) {
-            String info="Player: " + player.getName() + "\n" +
+            String info = "Player: " + player.getName() + "\n" +
                     "Handcards: " + player.getCards() + "\n" +
                     "Luckycards: " + player.getLuckCards() + "\n";
             outCon.loggerMessage(info);
         }
-        String info= "Table CardStack: " + choice.getTableStatus().getCardStack() + "\n" +
+        String info = "Table CardStack: " + choice.getTableStatus().getCardStack() + "\n" +
                 "Table LuckyStack: " + choice.getTableStatus().getLuckStack() + "\n" +
                 "Gamefield:\n " + choice.getTableStatus().toString();
         outCon.loggerMessage(info);
@@ -179,34 +179,34 @@ public class Course {
      */
     public void showHistory() {
         int round = 1;
-        ArrayList<String> lines= new ArrayList<>();
-        String history="";
+        ArrayList<String> lines = new ArrayList<>();
+        String history = "";
         Round begin = head.getBehind();
         while (!begin.equals(tail)) {
-            history=round + ". Move: \n" + round;
+            history = round + ". Move: \n" + round;
             lines.add(history);
             for (Player player : begin.getAllPlayers()) {
-                history="Player: " + player.getName();
+                history = "Player: " + player.getName();
                 lines.add(history);
-                history="Handcards: " + player.getCards();
+                history = "Handcards: " + player.getCards();
                 lines.add(history);
-                history="Luckycards: " + player.getLuckCards() + "\n";
+                history = "Luckycards: " + player.getLuckCards() + "\n";
                 lines.add(history);
             }
-            history="Table CardStack: " + begin.getTableStatus().getCardStack() + "\n";
+            history = "Table CardStack: " + begin.getTableStatus().getCardStack() + "\n";
             lines.add(history);
-            history="Table Luckstack: " + begin.getTableStatus().getLuckStack() + "\n";
+            history = "Table Luckstack: " + begin.getTableStatus().getLuckStack() + "\n";
             lines.add(history);
-            history="Gamefield:\n " + begin.getTableStatus().toString();
+            history = "Gamefield:\n " + begin.getTableStatus().toString();
             lines.add(history);
             round++;
             begin = begin.getBehind();
         }
-        int line=lines.size();
-        String[] h= new String[line];
-        int count=0;
-        for (String e: lines){
-            h[count]=e;
+        int line = lines.size();
+        String[] h = new String[line];
+        int count = 0;
+        for (String e : lines) {
+            h[count] = e;
             count++;
         }
         outCon.historyOutput(h);

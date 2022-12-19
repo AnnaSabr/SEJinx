@@ -19,8 +19,8 @@ import java.util.*;
 
 /**
  * Class representing a player
- * */
-public class Player implements Cloneable{
+ */
+public class Player implements Cloneable {
 
     private MessageInput input;
     protected String name;
@@ -32,7 +32,8 @@ public class Player implements Cloneable{
 
     protected int sleepTime = 200;
     protected boolean manualNextMsg = true;
-    ArrayList<String> history=new ArrayList<>();
+    ArrayList<String> history = new ArrayList<>();
+
     public int getDiceCount() {
         return diceCount;
     }
@@ -63,24 +64,24 @@ public class Player implements Cloneable{
     private MessageOutput output;
 
     /**
-    * Constructor of a player
+     * Constructor of a player
      *
-     * @param name name of player
-     * @param sleepTime time between messages
+     * @param name          name of player
+     * @param sleepTime     time between messages
      * @param manualNextMsg true if player wants to control flow of game
-     * @param database true if data should be loaded from database
-    * */
-    public Player(String name, int sleepTime, boolean manualNextMsg, boolean database){
+     * @param database      true if data should be loaded from database
+     */
+    public Player(String name, int sleepTime, boolean manualNextMsg, boolean database) {
         this.name = name;
         this.sleepTime = sleepTime;
         this.manualNextMsg = manualNextMsg;
         this.cards = new ArrayList<Card>();
         this.luckCards = new ArrayList<LuckCard>();
-        if(database){
-            if(!(this instanceof EasyKI) && !(this instanceof MediumAI) && !(this instanceof AIPLayer3)){
+        if (database) {
+            if (!(this instanceof EasyKI) && !(this instanceof MediumAI) && !(this instanceof AIPLayer3)) {
                 //this.loadHistoryFromDB();
             }
-        }else{
+        } else {
             this.loadHistoryFromFile();
         }
 
@@ -92,24 +93,27 @@ public class Player implements Cloneable{
 
     /**
      * Registers an output adapter to the output port
+     *
      * @param output the adapter to be used for output
-     * */
-    public void registerOutput(MessageOutput output){
+     */
+    public void registerOutput(MessageOutput output) {
         this.output = output;
     }
 
     /**
      * Registers an input adapter to the input port
+     *
      * @param input the adapter to be used for input
-     * */
-    public void registerInput(MessageInput input){
+     */
+    public void registerInput(MessageInput input) {
         this.input = input;
     }
 
     /**
      * sets the name of a player
+     *
      * @param name of the player
-     * */
+     */
     public void setName(String name) {
         this.name = name;
     }
@@ -251,8 +255,8 @@ public class Player implements Cloneable{
 
     /**
      * Function to get the current score of the player
-     * */
-    public void setScore(int score){
+     */
+    public void setScore(int score) {
         this.score = score;
     }
 
@@ -275,7 +279,7 @@ public class Player implements Cloneable{
 
         //check if the player has an option to choose from
         if (checkEndRound(table)) {
-            output.logKiPlayer(this.getName(),", there is no card you could choose!");
+            output.logKiPlayer(this.getName(), ", there is no card you could choose!");
             Card placeholder = new Card(CardColor.RED, 420);
             Action action6 = new Action(Moves.SKIPPED, placeholder, this);
             MoveHistory.addNewAction(action6);
@@ -352,7 +356,7 @@ public class Player implements Cloneable{
     public boolean drawLuckCard(Table table, Player[] players) {
         //check if player has cards on his hand to exchange for a luck card
         if (this.cards.size() == 0) {
-            output.logKiPlayer(this.getName(),", you dont have any cards to exchange for a luck card!");
+            output.logKiPlayer(this.getName(), ", you dont have any cards to exchange for a luck card!");
             return false;
         }
 
@@ -411,7 +415,6 @@ public class Player implements Cloneable{
     }
 
     /**
-     *
      * @return die hoechste Karte auf der Hand
      */
     public boolean selectHighCard() {
@@ -456,7 +459,8 @@ public class Player implements Cloneable{
             } catch (Exception e) {
                 log("Please choose a card!");
             }
-            removing = input.inputMaxCard(maxCards);;
+            removing = input.inputMaxCard(maxCards);
+            ;
         }
     }
 
@@ -501,15 +505,15 @@ public class Player implements Cloneable{
      */
     public String chooseAction(Table table) {
 
-        String[] actions = {"R", "L", "C", "M", "N", "T", "H","S","Z","X","A","P"};
+        String[] actions = {"R", "L", "C", "M", "N", "T", "H", "S", "Z", "X", "A", "P"};
 
         while (true) {
 
-            if(manualNextMsg){
+            if (manualNextMsg) {
                 output.manualMessage("[ENTER] - Next move");
                 log("Your turn " + this.name + "! Eye count - " + this.diceCount);
                 log(this.toString());
-            }else {
+            } else {
                 log("Your turn " + this.name + "! Eye count - " + this.diceCount);
                 log(this.toString());
             }
@@ -601,10 +605,11 @@ public class Player implements Cloneable{
 
     /**
      * Function to handle the input of a number in a certain range
+     *
      * @param min value of input
      * @param max value of input
      * @return number input of player
-     * */
+     */
     public int playerInputNumberInRange(int min, int max) {
         int line = input.inputINT(min, max);
         System.out.println("playerInputNumberInRange: " + line);
@@ -897,7 +902,7 @@ public class Player implements Cloneable{
                     String[] coordSingle = c.split(",");
                     int x = Integer.parseInt(coordSingle[0]);
                     int y = Integer.parseInt(coordSingle[1]);
-                    if(!((x <= 4 && x > 0) && (y <= 4 && y > 0))){
+                    if (!((x <= 4 && x > 0) && (y <= 4 && y > 0))) {
                         log("Enter valid coordinates or type 0");
                         return this.getPlayerInputMultipleCoordinates(table);
                     }
@@ -937,13 +942,13 @@ public class Player implements Cloneable{
      * Function to easily log a msg on the console
      */
     void log(String msg) {
-            try {
-                Thread.sleep(sleepTime);
-            } catch (Exception e) {
-                output.errorSelfMessage("Sleep exception!");
-            }
-            output.simpleText(msg);
+        try {
+            Thread.sleep(sleepTime);
+        } catch (Exception e) {
+            output.errorSelfMessage("Sleep exception!");
         }
+        output.simpleText(msg);
+    }
 
 
     /**
@@ -981,7 +986,7 @@ public class Player implements Cloneable{
      * @param msg message to be displayed
      */
     private void playerlog(String msg) {
-        output.logKiPlayer(this.getName(),"choose "+msg);
+        output.logKiPlayer(this.getName(), "choose " + msg);
     }
 
     @Override
@@ -1386,25 +1391,26 @@ public class Player implements Cloneable{
     public void setActive(boolean active) {
         this.active = active;
     }
+
     /**
      * shows player's history
      */
-    public void showHistory(){
-        if(this.history.size()==0){
+    public void showHistory() {
+        if (this.history.size() == 0) {
             this.log("You do not have a history yet.");
             return;
         }
-        int i=0;
-        for(String line:this.history){
+        int i = 0;
+        for (String line : this.history) {
             i++;
-            String[] a=line.split(",");
-            String[] opponents=a[4].split("/");
-            this.log(i+". Played by:"+name+" Score: "+a[1]+"\nused Luckcards: "+a[2]+"\nplayed on: "+a[3]+"\nPlayed against:");
-            int c=0;
-            for(String lines:opponents){
+            String[] a = line.split(",");
+            String[] opponents = a[4].split("/");
+            this.log(i + ". Played by:" + name + " Score: " + a[1] + "\nused Luckcards: " + a[2] + "\nplayed on: " + a[3] + "\nPlayed against:");
+            int c = 0;
+            for (String lines : opponents) {
                 c++;
-                String[] b=lines.split(":");
-                System.out.println(c+": "+b[0]+" scored "+b[1]);
+                String[] b = lines.split(":");
+                System.out.println(c + ": " + b[0] + " scored " + b[1]);
             }
         }
         return;
@@ -1413,14 +1419,14 @@ public class Player implements Cloneable{
     /**
      * adds previous histories of this player to arraylist history
      */
-    public void loadHistoryFromFile(){
+    public void loadHistoryFromFile() {
 
-        TextfileAdapter textfileAdapter=new TextfileAdapter();
-        ArrayList<String> historiesFromFile=textfileAdapter.getFileInput("src/main/java/entities/playerHistories.txt");
+        TextfileAdapter textfileAdapter = new TextfileAdapter();
+        ArrayList<String> historiesFromFile = textfileAdapter.getFileInput("src/main/java/entities/playerHistories.txt");
 
-        for(String entry:historiesFromFile){
-            String[] a=entry.split(",");
-            if(a[0].equals(this.name)){
+        for (String entry : historiesFromFile) {
+            String[] a = entry.split(",");
+            if (a[0].equals(this.name)) {
                 this.history.add(entry);
             }
         }
@@ -1430,13 +1436,13 @@ public class Player implements Cloneable{
     /**
      * loads player's histories from database
      */
-    public void loadHistoryFromDB(){
-        DBConnector connector=DBConnector.getInstance();
+    public void loadHistoryFromDB() {
+        DBConnector connector = DBConnector.getInstance();
         PlayerHistory[] playerHistories = connector.getPlayerHistory(this.name);
-        if(playerHistories!=null) {
+        if (playerHistories != null) {
 
             for (PlayerHistory ph : playerHistories) {
-                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate()+",";
+                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate() + ",";
                 for (Player p : ph.getEnemys()) {
                     historyString = historyString + p.name + ":" + p.getScore() + "/";
                 }

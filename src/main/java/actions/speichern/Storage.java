@@ -31,6 +31,7 @@ public class Storage {
 
     /**
      * update RoundHistory
+     *
      * @param roundHistory ArrayListe with the new correct order of Rounds
      */
     public void setRoundHistory(ArrayList<Round> roundHistory) {
@@ -38,7 +39,6 @@ public class Storage {
     }
 
     /**
-     *
      * @return ArrayList with ActionHistory
      */
     public ArrayList<Action> getActionHistory() {
@@ -46,12 +46,12 @@ public class Storage {
     }
 
     /**
-     *
      * @return ArrayList with RoundHistory
      */
     public ArrayList<Round> getRoundHistory() {
         return roundHistory;
     }
+
     /**
      * to get the last Round element of the Game
      *

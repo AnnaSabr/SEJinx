@@ -1,4 +1,5 @@
 package entities;
+
 import actions.ReUnDo.cards.CardColor;
 import actions.Zuege.Action;
 import actions.Zuege.MoveHistory;
@@ -16,35 +17,36 @@ import java.util.Comparator;
 /**
  * Mid-level AI
  * Is able to choose the best possible card, doesn't play luck cards
- * */
-public class MediumAI extends Player{
+ */
+public class MediumAI extends Player {
 
     private MessageOutput outCon;
+
     /**
      * Constructor for a new player
      *
      * @param name name of player
      */
-    public MediumAI(String name,int sleepTime, boolean manualNextMsg, boolean database ) {
-        super(name,sleepTime,manualNextMsg,database);
-        if(database){
-            String DBName="AILevel2";
-            String password="aipassword2";
-            if(!DBConnector.getInstance().checkPlayer("AILevel2")){
-                DBConnector.getInstance().createPlayer(DBName,password);
+    public MediumAI(String name, int sleepTime, boolean manualNextMsg, boolean database) {
+        super(name, sleepTime, manualNextMsg, database);
+        if (database) {
+            String DBName = "AILevel2";
+            String password = "aipassword2";
+            if (!DBConnector.getInstance().checkPlayer("AILevel2")) {
+                DBConnector.getInstance().createPlayer(DBName, password);
             }
             this.loadHistoryFromDB();
         }
-        this.outCon=new OutputConsole();
+        this.outCon = new OutputConsole();
     }
 
 
-    public void loadHistoryFromDB(){
-        DBConnector connector=DBConnector.getInstance();
+    public void loadHistoryFromDB() {
+        DBConnector connector = DBConnector.getInstance();
         PlayerHistory[] playerHistories = connector.getPlayerHistory("AILevel2");
-        if(playerHistories!=null) {
+        if (playerHistories != null) {
             for (PlayerHistory ph : playerHistories) {
-                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate()+",";
+                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate() + ",";
                 for (Player p : ph.getEnemys()) {
                     historyString = historyString + ph.getPlayer().name + ":" + ph.getPlayer().getScore() + "/";
                 }
@@ -55,48 +57,49 @@ public class MediumAI extends Player{
 
     /**
      * Function to register a new output adapter
+     *
      * @param output adapter to be used
-     * */
+     */
     @Override
-    public void registerOutput(MessageOutput output){
+    public void registerOutput(MessageOutput output) {
         this.outCon = output;
     }
 
     /**
      * Override of the chooseAction function of a normal player
-     *
+     * <p>
      * AI decides what to do based on rollCount, diceCount and the combination of cards on the field
      * AI always tries to roll higher than 3 and then choose the color with the least appearances on the field
      * AI rolls as long as no suitable card is found or no more rolls are left
-     * */
+     */
     @Override
-    public String chooseAction(Table table){
+    public String chooseAction(Table table) {
 
-        if(manualNextMsg){
+        if (manualNextMsg) {
             outCon.manualMessage("[ENTER] - Next move");
         }
         log("Your turn " + this.name + "! Eye count - " + this.diceCount);
         log(this.toString());
 
         //roll if not rolled yet
-        if(this.rolls == 0){
-            outCon.logKiPlayer(this.getName(),"[AI], i didnt roll the dice yet!");
+        if (this.rolls == 0) {
+            outCon.logKiPlayer(this.getName(), "[AI], i didnt roll the dice yet!");
             return "R";
         }
 
         //roll again if diceCount is too low
-        if(this.diceCount < 3 && this.rolls < 2){
-            outCon.logKiPlayer(this.getName(),"[AI], my diceCount is way to low!");
+        if (this.diceCount < 3 && this.rolls < 2) {
+            outCon.logKiPlayer(this.getName(), "[AI], my diceCount is way to low!");
             return "R";
         }
 
         //check if there is a card that can be picked, if not and rolls are available --> roll
-        if(getBestCard(table) == null && this.rolls < 2){
-            outCon.logKiPlayer(this.getName(),"[AI], there is no card i want...I´ll roll again!");
+        if (getBestCard(table) == null && this.rolls < 2) {
+            outCon.logKiPlayer(this.getName(), "[AI], there is no card i want...I´ll roll again!");
             return "R";
         }
 
-        outCon.logKiPlayer(this.getName(),"[AI], i will choose a card now!");
+        outCon.logKiPlayer(this.getName(), "[AI], i will choose a card now!");
         //nothing left to do, possibly end round
         return "C";
     }
@@ -106,13 +109,14 @@ public class MediumAI extends Player{
      * Sets isActive according to the AIs action
      * AI chose a card --> isActive = false;
      * AI wasn't able to choose a card --> isActive = false
+     *
      * @param table the current playing field
      * @return true if card was chosen, false if no card was chosen
-     * */
+     */
     @Override
-    public boolean chooseCard(Table table){
+    public boolean chooseCard(Table table) {
         //check if the AI has to end its turn because it has no options to pick a card
-        if(checkEndRound(table)){
+        if (checkEndRound(table)) {
             log(this.name + "[AI], there is no card you could choose!");
             Card placeholder = new Card(CardColor.RED, 420);
             Action action6 = new Action(Moves.SKIPPED, placeholder, this);
@@ -138,15 +142,15 @@ public class MediumAI extends Player{
     /**
      * Function to let the AI choose wich of its highest cards it wants to drop
      * Medium AI chooses the card color with the least occurrences in its hand
-     * */
+     */
     @Override
-    public boolean selectHighCard(){
+    public boolean selectHighCard() {
 
         log(this.name + "[AI], you finished the round! Choose a card to drop!");
 
         //check if the AI is able to drop a card
-        if(this.cards.size() == 0){
-            outCon.logKiPlayer(this.getName(),"[AI], i have no cards to drop after this round!");
+        if (this.cards.size() == 0) {
+            outCon.logKiPlayer(this.getName(), "[AI], i have no cards to drop after this round!");
             return false;
         }
 
@@ -169,8 +173,8 @@ public class MediumAI extends Player{
         }
 
         //AI has only one card to drop
-        if(maxCards.size() == 1){
-            outCon.logKiPlayer(this.getName(),"[AI], i only have one card to drop...");
+        if (maxCards.size() == 1) {
+            outCon.logKiPlayer(this.getName(), "[AI], i only have one card to drop...");
             this.cards.remove(maxCards.get(0));
             return true;
         }
@@ -181,15 +185,15 @@ public class MediumAI extends Player{
         int i = 0;
         int count = this.cards.size();
         //try to find the card with the least occurrences
-        for(Card mxC : maxCards) {
+        for (Card mxC : maxCards) {
             for (Card c : this.cards) {
                 //increase i if there is a card with the same color as the current high card in the players hand
-                if (c.getColor() == mxC.getColor()){
+                if (c.getColor() == mxC.getColor()) {
                     i++;
                 }
             }
             //check if there is a card with lower count than the one before
-            if(i < count){
+            if (i < count) {
                 count = i;
                 //reset i
                 i = 0;
@@ -200,8 +204,8 @@ public class MediumAI extends Player{
         Action action4 = new Action(Moves.DROPPEDCARD, dropCard, this);
         MoveHistory.addNewAction(action4);
         //remove the card from the AIs hand
-        for(int d = 0; d < this.cards.size(); d++){
-            if(this.cards.get(d).getColor() == dropCard.getColor() && this.cards.get(d).getValue() == dropCard.getValue()){
+        for (int d = 0; d < this.cards.size(); d++) {
+            if (this.cards.get(d).getColor() == dropCard.getColor() && this.cards.get(d).getValue() == dropCard.getValue()) {
                 this.cards.remove(d);
                 break;
             }
@@ -213,9 +217,9 @@ public class MediumAI extends Player{
     /**
      * Function to let the AI choose to draw a luck card
      * Medium AI will never draw or use a luck card
-     * */
+     */
     @Override
-    public boolean drawLuckCard(Table table, Player[] players){
+    public boolean drawLuckCard(Table table, Player[] players) {
         outCon.logKiPlayer(this.getName(), "[AI], i would never waste points for a luck card!");
         return false;
     }
@@ -224,23 +228,23 @@ public class MediumAI extends Player{
      * Function to determine the best card to draw with the current diceCount
      *
      * @return best possible card, null if there is no card
-     * */
-    private Card getBestCard(Table table){
+     */
+    private Card getBestCard(Table table) {
 
         //Each position is representing a color of a card
         ArrayList<ArrayList<Card>> allColors = new ArrayList<>();
 
         //populate each color position with an arrayList
-        for(int i=0; i<8; i++){
+        for (int i = 0; i < 8; i++) {
             allColors.add(new ArrayList<>());
         }
 
         //iterate over each card on the table
-        for(int x=0; x < 4; x++){
-            for(int y=0; y < 4; y++){
+        for (int x = 0; x < 4; x++) {
+            for (int y = 0; y < 4; y++) {
                 //check the card in current position
-                Card card = table.checkCard(x,y);
-                if(card != null){
+                Card card = table.checkCard(x, y);
+                if (card != null) {
                     //add card to specific color array
                     allColors.get(card.getColor().getValue()).add(card);
                 }
@@ -259,9 +263,9 @@ public class MediumAI extends Player{
         allColors.sort(arrayListComparator);
 
         //go over each color array and look for the first appearance of diceCount
-        for (ArrayList<Card> cardArray : allColors){
-            for(Card c : cardArray){
-                if(c.getValue() == this.diceCount){
+        for (ArrayList<Card> cardArray : allColors) {
+            for (Card c : cardArray) {
+                if (c.getValue() == this.diceCount) {
                     return c;
                 }
             }
@@ -273,13 +277,13 @@ public class MediumAI extends Player{
     /**
      * adds previous histories of this player to arraylist history
      */
-    public void loadHistoryFromFile(){
-        TextfileAdapter textfileAdapter=new TextfileAdapter();
-        ArrayList<String> historiesFromFile=textfileAdapter.getFileInput("src/main/java/entities/playerHistories.txt");
+    public void loadHistoryFromFile() {
+        TextfileAdapter textfileAdapter = new TextfileAdapter();
+        ArrayList<String> historiesFromFile = textfileAdapter.getFileInput("src/main/java/entities/playerHistories.txt");
 
-        for(String entry:historiesFromFile){
-            String[] a=entry.split(",");
-            if(a[0].equals("AILevel2")){
+        for (String entry : historiesFromFile) {
+            String[] a = entry.split(",");
+            if (a[0].equals("AILevel2")) {
                 this.history.add(entry);
             }
         }

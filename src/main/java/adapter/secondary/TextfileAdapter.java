@@ -7,20 +7,21 @@ import java.util.ArrayList;
 
 /**
  * Secondary adapter to get and store information from/in a file
- * */
+ */
 public class TextfileAdapter implements Files {
 
     private OutputConsole outCon = new OutputConsole();
 
     /**
      * Function to get input from a file
+     *
      * @param filename path of the file to be read
      * @return ArrayList\<String\> of the contents
-     * */
+     */
     @Override
     public ArrayList<String> getFileInput(String filename) {
 
-        ArrayList<String> input=new ArrayList<>();
+        ArrayList<String> input = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(filename));
 
@@ -33,7 +34,7 @@ public class TextfileAdapter implements Files {
 
         } catch (FileNotFoundException e) {
             outCon.errorSelfMessage(filename + "was not found.");
-        }catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return input;
@@ -41,9 +42,10 @@ public class TextfileAdapter implements Files {
 
     /**
      * Function to save information to a file
+     *
      * @param filename location where information should be saved
      * @param contents contents to be stored in the file
-     * */
+     */
     @Override
     public void saveToFile(String filename, ArrayList<String> contents) {
         try {

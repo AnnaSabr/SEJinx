@@ -18,40 +18,40 @@ public class TestEasyKI {
     @BeforeEach
     void setUp() {
         this.table = new Table(true);
-        this.ki = new EasyKI("Hans", 0, false,false);
+        this.ki = new EasyKI("Hans", 0, false, false);
     }
 
 
     @Test
-    public void chooseActionNoRoll(){
-        assertEquals("R",ki.chooseAction(table));
+    public void chooseActionNoRoll() {
+        assertEquals("R", ki.chooseAction(table));
     }
 
     @Test
-    public void chooseActionWithRoll(){
+    public void chooseActionWithRoll() {
         ki.setRolls(1);
         ki.setDiceCount(5);
-        assertEquals("C",ki.chooseAction(table));
+        assertEquals("C", ki.chooseAction(table));
     }
 
     @Test
-    public void chooseCard(){
+    public void chooseCard() {
         ki.setDiceCount(5);
         assertTrue(ki.chooseCard(table));
         ArrayList<Card> hand = ki.getCards();
-        assertEquals(CardColor.GREEN,hand.get(0).getColor());
-        assertEquals(5,hand.get(0).getValue());
+        assertEquals(CardColor.GREEN, hand.get(0).getColor());
+        assertEquals(5, hand.get(0).getValue());
     }
 
     @Test
-    public void selectHighCardFalse(){
+    public void selectHighCardFalse() {
         assertFalse(ki.selectHighCard());
     }
 
 
     @Test
-    public void drawLuckCard(){
-        assertFalse(ki.drawLuckCard(table,null));
+    public void drawLuckCard() {
+        assertFalse(ki.drawLuckCard(table, null));
     }
 
 }

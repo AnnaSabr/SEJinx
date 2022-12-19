@@ -19,13 +19,13 @@ class MediumAITest {
     @BeforeEach
     void setUp() {
         this.table = new Table(true);
-        this.ai = new MediumAI("Hans", 200, false,false);
+        this.ai = new MediumAI("Hans", 200, false, false);
     }
 
     @Test
     void chooseAction() {
         //AI didn't roll yet, so it should roll
-        assertEquals("R",ai.chooseAction(table));
+        assertEquals("R", ai.chooseAction(table));
     }
 
     @Test
@@ -63,7 +63,7 @@ class MediumAITest {
         ArrayList<Card> hand = ai.getCards();
         //best card the Ai chose should be the 5/BLUE
         assertEquals(CardColor.BLUE, hand.get(0).getColor());
-        assertEquals(5,hand.get(0).getValue());
+        assertEquals(5, hand.get(0).getValue());
     }
 
     @Test
@@ -76,7 +76,7 @@ class MediumAITest {
     void selectHighCard_specificCard() {
 
         ArrayList<Card> dummy = new ArrayList<>();
-        dummy.add(new Card(CardColor.GREEN,3));
+        dummy.add(new Card(CardColor.GREEN, 3));
         dummy.add(new Card(CardColor.GREEN, 3));
         dummy.add(new Card(CardColor.RED, 2));
         dummy.add(new Card(CardColor.RED, 3));
@@ -91,11 +91,11 @@ class MediumAITest {
         ArrayList<Card> hand = ai.getCards();
 
         //the yellow card should have been removed
-        for(Card c : hand){
-            if(c.getColor() == CardColor.YELLOW && c.getValue() == 6){
+        for (Card c : hand) {
+            if (c.getColor() == CardColor.YELLOW && c.getValue() == 6) {
                 System.out.println("FAIL");
                 fail();
-            }else{
+            } else {
                 assert true;
             }
         }
@@ -104,7 +104,7 @@ class MediumAITest {
     @Test
     void selectHighCard_onlyOneCard() {
         ArrayList<Card> dummy = new ArrayList<>();
-        dummy.add(new Card(CardColor.GREEN,3));
+        dummy.add(new Card(CardColor.GREEN, 3));
 
         ai.setCards(dummy);
         assertTrue(ai.selectHighCard());

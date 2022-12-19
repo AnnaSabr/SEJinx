@@ -16,7 +16,7 @@ public class Round {
     private Player active;
     private ArrayList<String> highscores;
 
-    private int playerCount =0;
+    private int playerCount = 0;
     private Round before;
     private Round behind;
 
@@ -24,8 +24,8 @@ public class Round {
     /**
      * Overloaded constructor to allow usage as DTO between presenter and view
      * !Set players and table manually!
-     * */
-    public Round(){
+     */
+    public Round() {
 
     }
 
@@ -34,7 +34,7 @@ public class Round {
         this.tableStatus = tableStatus;
         this.before = null;
         this.behind = null;
-        this.highscores=new ArrayList<>();
+        this.highscores = new ArrayList<>();
     }
 
     /**
@@ -71,6 +71,7 @@ public class Round {
 
     /**
      * List with the players from this Round
+     *
      * @return all players from this Round
      */
     public ArrayList<Player> getAllPlayers() {
@@ -86,13 +87,12 @@ public class Round {
 
     /**
      * @param table to be set as active
-     * */
-    public void setTableStatus(Table table){
+     */
+    public void setTableStatus(Table table) {
         this.tableStatus = table;
     }
 
     /**
-     *
      * @return Count of Players in the Round
      */
     public int getPlayerCount() {
@@ -101,7 +101,6 @@ public class Round {
     }
 
     /**
-     *
      * @return activ Player in this Round
      */
     public Player getActive() {
@@ -109,7 +108,6 @@ public class Round {
     }
 
     /**
-     *
      * @param active Player wich played this round
      */
     public void setActive(Player active) {
@@ -117,7 +115,6 @@ public class Round {
     }
 
     /**
-     *
      * @return ArrayList with highscores
      */
     public ArrayList<String> getHighscores() {
@@ -125,7 +122,6 @@ public class Round {
     }
 
     /**
-     *
      * @param highscores ArrayList to save in Round objcet
      */
     public void setHighscores(ArrayList<String> highscores) {

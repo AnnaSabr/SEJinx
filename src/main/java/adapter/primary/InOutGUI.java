@@ -1,4 +1,5 @@
 package adapter.primary;
+
 import actions.ReUnDo.Round;
 import actions.ReUnDo.cards.Card;
 import entities.GUI;
@@ -10,24 +11,24 @@ import ports.outbound.MessageOutput;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class InOutGUI implements MessageOutput,MessageInput{
+public class InOutGUI implements MessageOutput, MessageInput {
     private GUI gui;
 
     private Round model;
 
-    public InOutGUI(GUI gui){
-        this.gui=gui;
+    public InOutGUI(GUI gui) {
+        this.gui = gui;
         this.model = new Round();
     }
 
     @Override
     public void historyOutput(String[] text) {
         gui.historyWindow(text);
-        try{
+        try {
 
-            Thread.sleep(20000);}
-        catch (Exception e){
-            gui.showAdvice("Nothing to show","Error");
+            Thread.sleep(20000);
+        } catch (Exception e) {
+            gui.showAdvice("Nothing to show", "Error");
         }
     }
 
@@ -43,7 +44,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public void logKiPlayer(String name, String text) {
-        gui.showAdvice(name+text, "[KI]" + name );
+        gui.showAdvice(name + text, "[KI]" + name);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     /**
      * Updates the model with the new representation of the table
-     * */
+     */
     @Override
     public void tablePicture(Table table, Round current) {
         current.setTableStatus(table);
@@ -78,7 +79,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public String inputAnything() {
-        gui.showAdvice("Next Move","MANUAL");
+        gui.showAdvice("Next Move", "MANUAL");
         return "";
     }
 
@@ -95,28 +96,28 @@ public class InOutGUI implements MessageOutput,MessageInput{
     @Override
     public int inputINTPlayerInitialization(String question) {
         gui.inputNumber(question);
-        int players =gui.getInputNumber(question,0,5);
+        int players = gui.getInputNumber(question, 0, 5);
         return players;
     }
 
     @Override
     public String inputName(String question) {
         gui.getProfileName(question);
-        String name=gui.returnProfile(question);
+        String name = gui.returnProfile(question);
         return name;
     }
 
     @Override
     public String inputLevel() {
-        String[]ki=gui.AIsettings();
-        String ready=ki[0]+","+ki[1];
+        String[] ki = gui.AIsettings();
+        String ready = ki[0] + "," + ki[1];
         return ready;
     }
 
     @Override
     public String inputPasswort(String question) {
         gui.getProfileName(question);
-        String passwort=gui.returnProfile(question);
+        String passwort = gui.returnProfile(question);
         return passwort;
     }
 
@@ -126,14 +127,14 @@ public class InOutGUI implements MessageOutput,MessageInput{
     }
 
     @Override
-    public int luckCardInput(){
+    public int luckCardInput() {
         return gui.getChosenLuckcard();
     }
 
     @Override
     public int inputINTDrawLuckCard(Player p) {
         model.setActive(p);
-        gui.updateGUI(model,new String[]{"Select a card to drop for a luck card!"});
+        gui.updateGUI(model, new String[]{"Select a card to drop for a luck card!"});
         return gui.pickCardFromHandToDrop();
     }
 
@@ -151,9 +152,10 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     /**
      * To input a coordinate
+     *
      * @return coordinate as string (x,y)
-     * */
-    public String inputMultipleCoords(String question){
+     */
+    public String inputMultipleCoords(String question) {
 
         String coords = "";
 
@@ -165,7 +167,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
         before.setBehind(model.getBehind());
         before.setBefore(model.getBefore());
 
-        while(true) {
+        while (true) {
             String action = gui.actionChosen(before, new String[]{"Select multiple cards you wish to draw!"});
             String tempCoords = "";
             if ("C".equals(action)) {
@@ -176,10 +178,10 @@ public class InOutGUI implements MessageOutput,MessageInput{
                 before.getTableStatus().getField()[x][y] = null;
             } else {
                 if (coords.equals("")) {
-                    gui.updateGUI(model,new String[]{"Bla"});
+                    gui.updateGUI(model, new String[]{"Bla"});
                     return "0";
-                }else{
-                    gui.updateGUI(model,new String[]{"Bla"});
+                } else {
+                    gui.updateGUI(model, new String[]{"Bla"});
                     return coords.substring(0, coords.length() - 1);
                 }
             }
@@ -189,8 +191,8 @@ public class InOutGUI implements MessageOutput,MessageInput{
     @Override
     public String yesNo(String text) {
         gui.yesOrNo(text);
-        boolean yesNo=gui.returningYesOrNO(text);
-        if (yesNo){
+        boolean yesNo = gui.returningYesOrNO(text);
+        if (yesNo) {
             return "y";
         }
         return "n";
@@ -198,10 +200,10 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     /**
      * Function to display config feedback on console
-     * */
+     */
     @Override
-    public void configJinxMessage(String text){
-        gui.showAdvice(text,"JINX");
+    public void configJinxMessage(String text) {
+        gui.showAdvice(text, "JINX");
     }
 
     @Override
@@ -212,7 +214,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
     /**
      * Function to display simple text
      * !Not used in GUI!
-     * */
+     */
     @Override
     public void simpleText(String text) {
         System.out.println(text);
@@ -220,10 +222,11 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     /**
      * Function to display a message with a manual delay
+     *
      * @param text should be like [ENTER] - Next move
-     * */
-    public void manualMessage(String text){
-        gui.showAdvice("Next Move","MANUAL");
+     */
+    public void manualMessage(String text) {
+        gui.showAdvice("Next Move", "MANUAL");
     }
 
 }

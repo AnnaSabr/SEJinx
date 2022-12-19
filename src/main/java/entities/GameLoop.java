@@ -50,11 +50,11 @@ public class GameLoop {
     int cP;
     int kiCount;
     Storage storageObject;
-    ArrayList<String> profiles=new ArrayList<>();
-    ArrayList<String> availableProfiles=new ArrayList<>();
+    ArrayList<String> profiles = new ArrayList<>();
+    ArrayList<String> availableProfiles = new ArrayList<>();
     boolean db;
-    DBConnector connector=DBConnector.getInstance();
-    TextfileAdapter textfileAdapter=new TextfileAdapter();
+    DBConnector connector = DBConnector.getInstance();
+    TextfileAdapter textfileAdapter = new TextfileAdapter();
     private MessageOutput outCon;
     private MessageInput inCon;
     boolean showGui;
@@ -65,14 +65,14 @@ public class GameLoop {
     /**
      * Constructor of the game loop, used to configure the game
      *
-     * @param rff should the stack be loaded from file
+     * @param rff           should the stack be loaded from file
      * @param manualNextMsg does the player control the game himself
-     * @param sleepTime time between messages
-     * @param dataFromDB should game be loaded from database
-     * @param showGui should a gui be used or the console
-     * */
+     * @param sleepTime     time between messages
+     * @param dataFromDB    should game be loaded from database
+     * @param showGui       should a gui be used or the console
+     */
     public GameLoop(boolean rff, boolean manualNextMsg, int sleepTime, boolean dataFromDB, boolean showGui) {
-        this.rff=rff;
+        this.rff = rff;
         this.table = new Table(rff);
         this.highscores = new ArrayList<>();
         this.getHighscore();
@@ -83,19 +83,19 @@ public class GameLoop {
         this.currentRound = 1;
         this.moves = new MoveHistory();
         this.storageObject = new Storage();
-        this.db=dataFromDB;
-        this.showGui= showGui;
-        this.manipulated=false;
+        this.db = dataFromDB;
+        this.showGui = showGui;
+        this.manipulated = false;
 
-        if(showGui){
-            gui=new GUI(false);
-            this.inOut= new InOutGUI(gui);
+        if (showGui) {
+            gui = new GUI(false);
+            this.inOut = new InOutGUI(gui);
             this.outCon = this.inOut;
             this.inCon = this.inOut;
             this.course = new Course(inOut);
-        } else{
-            this.outCon= new OutputConsole();
-            this.inCon= new InputConsole();
+        } else {
+            this.outCon = new OutputConsole();
+            this.inCon = new InputConsole();
             this.course = new Course(null);
         }
 
@@ -123,7 +123,7 @@ public class GameLoop {
      * Function to initialize everything needed
      */
     private void init() {
-        if(!db){
+        if (!db) {
             this.getProfilesFromFile();
         }
         int playerCount;
@@ -137,7 +137,7 @@ public class GameLoop {
                     // set size of players to user specified value
                     this.players = new Player[playerCount];
 
-                    String kiInvolved =inCon.yesNo("Please tell us if you like to modifier any player into an AI: y/n");
+                    String kiInvolved = inCon.yesNo("Please tell us if you like to modifier any player into an AI: y/n");
 
                     if (kiInvolved.equals("y")) {
                         initKI();
@@ -207,7 +207,7 @@ public class GameLoop {
                             if (chosenOne == null) {
                                 break;
                             }
-                            Action act= new Action(Moves.USEDLUCKYCARD,chosenOne,currentPlayer);
+                            Action act = new Action(Moves.USEDLUCKYCARD, chosenOne, currentPlayer);
                             MoveHistory.addNewAction(act);
                             //switch over all possible card types
                             switch (chosenOne.getCardType()) {
@@ -245,62 +245,61 @@ public class GameLoop {
                             Round changed = course.jump();
                             if (!changed.equals(course.getTail())) {
                                 manipulate(changed);
-                                this.manipulated=true;
+                                this.manipulated = true;
 
                             }
                         }
                         case "A" -> currentPlayer.getHelp(this.table);
                         case "Z" -> {
-                            if (!this.manipulated){
+                            if (!this.manipulated) {
                                 showActions();
-                            }
-                            else{
+                            } else {
                                 outCon.simpleMessage("You manipulated the Game, there is no way to show you any old Actions. Your course will be renewed");
                                 this.course.getTail().setBefore(this.course.getHead());
                                 this.course.getHead().setBehind(this.course.getTail());
-                                manipulated=false;
+                                manipulated = false;
                             }
                         }
 
                         case "S" -> {
-                                try {
-                                    storageObject.setActionHistory(MoveHistory.toSave());
-                                    storageObject.setRoundHistory(course.toSave());
-                                    DBConnector dbConnector = DBConnector.getInstance();
+                            try {
+                                storageObject.setActionHistory(MoveHistory.toSave());
+                                storageObject.setRoundHistory(course.toSave());
+                                DBConnector dbConnector = DBConnector.getInstance();
 
-                                    boolean saved = dbConnector.createSpeicher(storageObject);
+                                boolean saved = dbConnector.createSpeicher(storageObject);
 
-                                    if(saved){
-                                        log("Your game was saved, you can load it any time!");
-                                    }else{
-                                        outCon.errorSelfMessage("Saving failed - Sorry!");
-                                    }
-                                }catch (Exception e){
-                                    outCon.errorSelfMessage("Saving failed - You will need to make a move first!");
+                                if (saved) {
+                                    log("Your game was saved, you can load it any time!");
+                                } else {
+                                    outCon.errorSelfMessage("Saving failed - Sorry!");
                                 }
+                            } catch (Exception e) {
+                                outCon.errorSelfMessage("Saving failed - You will need to make a move first!");
+                            }
                         }
-                        case "X" ->{
+                        case "X" -> {
 
                             DBConnector dbConnector = DBConnector.getInstance();
 
                             Integer[] saveObject = dbConnector.getSpeicherList();
 
                             //no saveObject present
-                            if(saveObject == null){
+                            if (saveObject == null) {
                                 log("You have no saved games!");
                                 break;
                             }
 
                             log("You can choose one of the following save states! Choose 0 to stop the selection");
                             //present player with selection of save states
-                            for(int i = 0; i < saveObject.length; i++){
+                            for (int i = 0; i < saveObject.length; i++) {
                                 log("Speicherstand " + saveObject[i] + " - " + (i + 1));
                             }
 
                             //let player choose a save state
-                            int input = currentPlayer.getPlayerInputINT(0,saveObject.length);
+                            int input = currentPlayer.getPlayerInputINT(0, saveObject.length);
 
-                            if(input == 0){
+                            if (input == 0) {
                                 break;
                             }
 
@@ -350,45 +349,45 @@ public class GameLoop {
         //all 3 rounds ended, calculate score here
         this.addCurrentHighscores();
         this.saveHighscores();
-        if(!db){
+        if (!db) {
             this.savingHistoryToFile();
-        }else{
-            Player[] enemies=new Player[this.players.length-1];
-            String[] enemyNames=new String[enemies.length];
-            for(Player p:this.players){
-                String myName=p.getName();
-                if(p instanceof EasyKI){
+        } else {
+            Player[] enemies = new Player[this.players.length - 1];
+            String[] enemyNames = new String[enemies.length];
+            for (Player p : this.players) {
+                String myName = p.getName();
+                if (p instanceof EasyKI) {
                     p.setName("AILevel1");
                 } else if (p instanceof MediumAI) {
                     p.setName("AILevel2");
                 } else if (p instanceof AIPLayer3) {
                     p.setName("AILevel3");
                 }
-                int b=0;
+                int b = 0;
                 //temporarily change enemy AI's name for database
-                for(Player enemy:this.players){
-                    if(!p.equals(enemy)){
-                        enemyNames[b]=enemy.name;
-                        if(enemy instanceof EasyKI){
-                            enemy.name="AILevel1";
+                for (Player enemy : this.players) {
+                    if (!p.equals(enemy)) {
+                        enemyNames[b] = enemy.name;
+                        if (enemy instanceof EasyKI) {
+                            enemy.name = "AILevel1";
                         } else if (enemy instanceof MediumAI) {
-                            enemy.name="AILevel2";
+                            enemy.name = "AILevel2";
                         } else if (enemy instanceof AIPLayer3) {
-                            enemy.name="AILevel3";
+                            enemy.name = "AILevel3";
                         }
-                        enemies[b]=enemy;
+                        enemies[b] = enemy;
                         b++;
                     }
                 }
-                PlayerHistory playerHistory=new PlayerHistory(p,p.usedCards.size(),this.getDate(),enemies);
+                PlayerHistory playerHistory = new PlayerHistory(p, p.usedCards.size(), this.getDate(), enemies);
                 this.connector.createHistory(playerHistory);
-                for(int a=0; a<enemies.length;a++){
-                    enemies[a].name=enemyNames[a];
+                for (int a = 0; a < enemies.length; a++) {
+                    enemies[a].name = enemyNames[a];
                 }
-                p.name=myName;
+                p.name = myName;
             }
-            for(Player p:this.players){
-                log("Histories of "+p.name);
+            for (Player p : this.players) {
+                log("Histories of " + p.name);
                 p.showHistory();
             }
         }
@@ -397,22 +396,20 @@ public class GameLoop {
 
     /**
      * Function to display all past actions of this game
-     * */
+     */
     public void showActions() {
         outCon.simpleMessage("\n\nBisher gespielte Zuege:");
         Action begin = MoveHistory.getHead().getBehind();
         while (!begin.equals(MoveHistory.getTail())) {
-            if (begin.getCard()!=null){
-                if (begin.getCard().getValue()==420){
-                    outCon.simpleMessage("Spieler: " + begin.getActivePlayer().getName() + ",   Zug: " + begin.getMove()+"\n");
-                }
-                else{
-                    outCon.simpleMessage("Spieler: " + begin.getActivePlayer().getName() + ",   Zug: " + begin.getMove() + ",   Karte: " + begin.getCard()+"\n");
+            if (begin.getCard() != null) {
+                if (begin.getCard().getValue() == 420) {
+                    outCon.simpleMessage("Spieler: " + begin.getActivePlayer().getName() + ",   Zug: " + begin.getMove() + "\n");
+                } else {
+                    outCon.simpleMessage("Spieler: " + begin.getActivePlayer().getName() + ",   Zug: " + begin.getMove() + ",   Karte: " + begin.getCard() + "\n");
                 }
 
-            }
-            else{
-                outCon.simpleMessage("Spieler: " + begin.getActivePlayer().getName() + ",   Zug: " + begin.getMove() + ",   Karte: " + begin.getLuckCard()+"\n");
+            } else {
+                outCon.simpleMessage("Spieler: " + begin.getActivePlayer().getName() + ",   Zug: " + begin.getMove() + ",   Karte: " + begin.getLuckCard() + "\n");
             }
             begin = begin.getBehind();
         }
@@ -431,18 +428,18 @@ public class GameLoop {
         tableStatus.setCardStack(table.getCardStack());
         tableStatus.setLuckStack(table.getLuckStack());
 
-        ArrayList<Player> allPlayerStatus= new ArrayList<>();
-        Player ak= new Player(active.getName(),sleepTime,manualNextMsg,db);
+        ArrayList<Player> allPlayerStatus = new ArrayList<>();
+        Player ak = new Player(active.getName(), sleepTime, manualNextMsg, db);
         ak.setCards(active.getCards());
         ak.setLuckCards(active.getLuckCards());
-        for (int i=cP; i<players.length; i++){
-            Player dummy= new Player(players[i].getName(),sleepTime,manualNextMsg,db);
+        for (int i = cP; i < players.length; i++) {
+            Player dummy = new Player(players[i].getName(), sleepTime, manualNextMsg, db);
             dummy.setCards(players[i].getCards());
             dummy.setLuckCards(players[i].getLuckCards());
             allPlayerStatus.add(dummy);
         }
-        for (int i=0; i<cP; i++){
-            Player dummy= new Player(players[i].getName(),sleepTime,manualNextMsg,db);
+        for (int i = 0; i < cP; i++) {
+            Player dummy = new Player(players[i].getName(), sleepTime, manualNextMsg, db);
             dummy.setCards(players[i].getCards());
             dummy.setLuckCards(players[i].getLuckCards());
             allPlayerStatus.add(dummy);
@@ -456,15 +453,16 @@ public class GameLoop {
 
     /**
      * Overwrites all important information of the current game with a new game
+     *
      * @param oldGame Game that should be loaded
      */
     public void load(Storage oldGame) {
         this.course = storageObject.HistoryToLoad();
 
-        int playerCount= storageObject.getLastRound().getPlayerCount();
-        this.players= new Player[playerCount];
-        for (int i=0; i<playerCount; i++){
-            this.players[i]= storageObject.getLastRound().getAllPlayers().get(i);
+        int playerCount = storageObject.getLastRound().getPlayerCount();
+        this.players = new Player[playerCount];
+        for (int i = 0; i < playerCount; i++) {
+            this.players[i] = storageObject.getLastRound().getAllPlayers().get(i);
             this.players[i].registerOutput(outCon);
             this.players[i].registerInput(inCon);
         }
@@ -505,6 +503,7 @@ public class GameLoop {
 
     /**
      * Function to remove cards from player hand if round ends
+     *
      * @param p player to be checked for duplicates in his hand
      */
     private void checkPlayerHand(Player p) {
@@ -525,6 +524,7 @@ public class GameLoop {
 
     /**
      * Function to easily log a msg on the console
+     *
      * @param msg message to be logged
      */
     private void log(String msg) {
@@ -551,11 +551,11 @@ public class GameLoop {
 
         //create as many players as needed
         for (int i = kiCount; i < players.length; i++) {
-            String name=this.chooseProfile();
-            Player p=new Player(name,sleepTime,manualNextMsg,db);
+            String name = this.chooseProfile();
+            Player p = new Player(name, sleepTime, manualNextMsg, db);
             p.registerInput(inCon);
             p.registerOutput(outCon);
-            if(db){
+            if (db) {
                 p.loadHistoryFromDB();
             }
             players[i] = p;
@@ -568,7 +568,7 @@ public class GameLoop {
      * loads data from Highscore file
      */
     private void getHighscore() {
-        this.highscores=this.textfileAdapter.getFileInput("src/main/java/entities/highscore.txt");
+        this.highscores = this.textfileAdapter.getFileInput("src/main/java/entities/highscore.txt");
     }
 
 
@@ -588,7 +588,7 @@ public class GameLoop {
      * saves high scores in textfile
      */
     private void saveHighscores() {
-        this.textfileAdapter.saveToFile("src/main/java/entities/highscore.txt",this.highscores);
+        this.textfileAdapter.saveToFile("src/main/java/entities/highscore.txt", this.highscores);
     }
 
     /**
@@ -614,7 +614,7 @@ public class GameLoop {
                     newHighscore.add(nameAndScore[0] + " " + nameAndScore[1]);
                 }
             }
-            if(this.highscores.size()==0){
+            if (this.highscores.size() == 0) {
                 newHighscore.add(player.getName() + " " + player.getScore());
             }
             this.highscores = newHighscore;
@@ -660,23 +660,20 @@ public class GameLoop {
         String name = "";
         String level = "";
         while (true) {
-            String ki=inCon.inputLevel();
-            String[] kiPart=ki.split(",");
-            name=kiPart[1];
-            level=kiPart[0];
-            if (level.equals("easy")){
-                k = new EasyKI(name,sleepTime,manualNextMsg,db);
+            String ki = inCon.inputLevel();
+            String[] kiPart = ki.split(",");
+            name = kiPart[1];
+            level = kiPart[0];
+            if (level.equals("easy")) {
+                k = new EasyKI(name, sleepTime, manualNextMsg, db);
                 break;
-            }
-            else if (level.equals("medium")){
-                k = new MediumAI(name,sleepTime,manualNextMsg,db);
+            } else if (level.equals("medium")) {
+                k = new MediumAI(name, sleepTime, manualNextMsg, db);
                 break;
-            }
-            else if (level.equals("hard")){
-                k = new AIPLayer3(name,sleepTime,manualNextMsg,db);
+            } else if (level.equals("hard")) {
+                k = new AIPLayer3(name, sleepTime, manualNextMsg, db);
                 break;
-            }
-            else{
+            } else {
                 outCon.errorSelfMessage("Something is wrong.");
             }
         }
@@ -689,23 +686,23 @@ public class GameLoop {
     }
 
     /**
-     *  loads existing profiles from textfile
+     * loads existing profiles from textfile
      */
-    public void getProfilesFromFile(){
-        this.profiles=this.textfileAdapter.getFileInput("src/main/java/entities/userProfiles.txt");
+    public void getProfilesFromFile() {
+        this.profiles = this.textfileAdapter.getFileInput("src/main/java/entities/userProfiles.txt");
     }
 
     /**
      * check if the password is valid
      */
-    public boolean matchPasswordToProfile(String name, String entry){
-        for(String oneLine : this.profiles){
-            String[] line=oneLine.split(",");
-            if(line[0].equals(name)){
-                if(this.validatePassword(line[1],entry)){
+    public boolean matchPasswordToProfile(String name, String entry) {
+        for (String oneLine : this.profiles) {
+            String[] line = oneLine.split(",");
+            if (line[0].equals(name)) {
+                if (this.validatePassword(line[1], entry)) {
                     outCon.simpleMessage("Correct!");
                     return true;
-                }else{
+                } else {
                     outCon.simpleMessage("Wrong password!");
                     return false;
                 }
@@ -716,101 +713,102 @@ public class GameLoop {
 
     /**
      * chooses profile for player from db or file
+     *
      * @return name of profile
      */
-    public String chooseProfile(){
-        String choosePr=inCon.yesNo("Would you like to choose a profile? y/n");
+    public String chooseProfile() {
+        String choosePr = inCon.yesNo("Would you like to choose a profile? y/n");
 
-        if(choosePr.equals("y")){
-            String name=inCon.inputName("Which profile do you want?").replaceAll(" ","");
-            if(name.equals("AILevel1")||name.equals("AILevel2")||name.equals("AILevel3")){
+        if (choosePr.equals("y")) {
+            String name = inCon.inputName("Which profile do you want?").replaceAll(" ", "");
+            if (name.equals("AILevel1") || name.equals("AILevel2") || name.equals("AILevel3")) {
                 this.log("This is the AI's profile! You may not use it.");
                 return chooseProfile();
             }
-            if(db){
+            if (db) {
                 //if player exists
-                if(this.connector.checkPlayer(name)){
+                if (this.connector.checkPlayer(name)) {
                     //check if profile is taken
-                    for(Player player:this.players){
-                        if(player==null){
+                    for (Player player : this.players) {
+                        if (player == null) {
                             break;
-                        }else{
-                            if(player.name.equals(name)){
+                        } else {
+                            if (player.name.equals(name)) {
                                 this.log("This profile is taken already");
                                 return this.chooseProfile();
                             }
                         }
                     }
                     //if profile was not taken yet, but is already available
-                    for(String entry:this.availableProfiles){
-                        if(entry.equals(name)){
+                    for (String entry : this.availableProfiles) {
+                        if (entry.equals(name)) {
                             this.log("No log-in required.");
                             return name;
                         }
                     }
-                    String enteredPassword=inCon.inputPasswort("Enter your password!");
-                    if(this.connector.playerLogin(name,enteredPassword)){
+                    String enteredPassword = inCon.inputPasswort("Enter your password!");
+                    if (this.connector.playerLogin(name, enteredPassword)) {
                         this.log("Correct!");
                         this.availableProfiles.add(name);
                         return name;
-                    }else{
+                    } else {
                         this.log("Your password is wrong.");
                         return chooseProfile();
                     }
-                }else{
+                } else {
                     this.log("Profile not found.");
                     return this.chooseProfile();
                 }
-            }else{
+            } else {
                 //TODO add GUI
                 //log in to profile from textfile
-                if(this.findProfileFromFile(name)){
-                    if(this.accessProfileFromFile(name)){
+                if (this.findProfileFromFile(name)) {
+                    if (this.accessProfileFromFile(name)) {
                         return name;
                     }
                     return this.chooseProfile();
-                }else{
+                } else {
                     return this.chooseProfile();
                 }
             }
-        }else{
+        } else {
             //new profile to db
-            if(db){
+            if (db) {
                 //TODO add optionpanes
-                String name="";
-                name=inCon.inputName("Please enter a name for the profile.").replaceAll(" ","");
-                if(this.connector.checkPlayer(name)){
+                String name = "";
+                name = inCon.inputName("Please enter a name for the profile.").replaceAll(" ", "");
+                if (this.connector.checkPlayer(name)) {
                     this.log("This profile already exists.");
                     return this.chooseProfile();
-                }else{
-                    String password=inCon.inputPasswort("Now enter the new password.");
-                    if(this.connector.createPlayer(name,password)){
+                } else {
+                    String password = inCon.inputPasswort("Now enter the new password.");
+                    if (this.connector.createPlayer(name, password)) {
                         return name;
-                    }else{
+                    } else {
                         this.log("Profile could not be created.");
                         return this.chooseProfile();
                     }
                 }
-            }else{
+            } else {
                 //TODO add gui
                 //new profile to textfile
-                String name="";
-                boolean a=true;
-                while(a){
-                    a=false;
+                String name = "";
+                boolean a = true;
+                while (a) {
+                    a = false;
                     name = inCon.inputName("Please choose a name for your new profile!").replaceAll(" ", "");
-                    for(String line:this.profiles){
-                        String[] strings=line.split(",");
-                        if(strings[0].equals(name)){
+                    for (String line : this.profiles) {
+                        String[] strings = line.split(",");
+                        if (strings[0].equals(name)) {
                             this.log("This already exists! Please choose a new name!");
-                            a=true;
+                            a = true;
                             break;
                         }
                     }
                 }
-                String pw=inCon.inputPasswort("Please choose a password!");
-                this.profiles.add(name+","+this.calculatePassword(pw));
-                this.availableProfiles.add(name+","+this.calculatePassword(pw));
+                String pw = inCon.inputPasswort("Please choose a password!");
+                this.profiles.add(name + "," + this.calculatePassword(pw));
+                this.availableProfiles.add(name + "," + this.calculatePassword(pw));
                 return name;
             }
         }
@@ -818,10 +816,11 @@ public class GameLoop {
 
     /**
      * enter password for chosen profile
+     *
      * @param profileName name of chosen profile
      * @return true if there is a profile and the player has access
      */
-    public boolean accessProfileFromFile(String profileName){
+    public boolean accessProfileFromFile(String profileName) {
         for (String line : this.profiles) {
             String[] name = line.split(",");
             if (name[0].equals(profileName)) {
@@ -830,7 +829,7 @@ public class GameLoop {
                 if (access) {
                     this.availableProfiles.add(line);
                     return true;
-                }else{
+                } else {
                     return false;
                 }
             }
@@ -840,10 +839,11 @@ public class GameLoop {
 
     /**
      * finds profile the player can use from textfile
+     *
      * @param newName name of profile
      * @return whether profile is available
      */
-    public boolean findProfileFromFile(String newName){
+    public boolean findProfileFromFile(String newName) {
         //TODO add optionpane
         boolean found = false;
         for (String line : this.profiles) {
@@ -868,33 +868,34 @@ public class GameLoop {
     }
 
 
-
     /**
      * calculates the password that will be saved in textfile
+     *
      * @param password password to be turned into a hash
      * @return password as hash
      */
-    public int calculatePassword(String password){
-        int val=0;
-        for(int a=0; a<password.length();a++){
-            char c=password.charAt(a);
-            val=val+c;
+    public int calculatePassword(String password) {
+        int val = 0;
+        for (int a = 0; a < password.length(); a++) {
+            char c = password.charAt(a);
+            val = val + c;
         }
-        return val%5000;
+        return val % 5000;
     }
 
     /**
      * calculates if entered password matches password in textfile
+     *
      * @param expected value for that password
-     * @param entered useres values
+     * @param entered  useres values
      * @return true if password is valid, false if not
      */
-    public boolean validatePassword(String expected,String entered){
-        int enteredVal=this.calculatePassword(entered);
-        String enter=String.valueOf(enteredVal);
-        if(enter.equals(expected)){
+    public boolean validatePassword(String expected, String entered) {
+        int enteredVal = this.calculatePassword(entered);
+        String enter = String.valueOf(enteredVal);
+        if (enter.equals(expected)) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -905,30 +906,30 @@ public class GameLoop {
      * @param player player the history is created for
      * @return the history of given player as string
      */
-    public String createHistory(Player player){
-        String history="";
-        if(player instanceof EasyKI){
-            history="AILevel1";
-        }else if(player instanceof MediumAI){
-            history="AILevel2";
-        }else if(player instanceof AIPLayer3){
-            history="AILevel3";
-        }else{
-            history=player.name;
+    public String createHistory(Player player) {
+        String history = "";
+        if (player instanceof EasyKI) {
+            history = "AILevel1";
+        } else if (player instanceof MediumAI) {
+            history = "AILevel2";
+        } else if (player instanceof AIPLayer3) {
+            history = "AILevel3";
+        } else {
+            history = player.name;
         }
         //profilename,score,amount of used luckcards, date, opponents and their scores
-        history=history+","+player.getScore()+","+player.usedCards.size()+","+this.getDate()+",";
-        for(int a=0; a<this.players.length;a++){
-            String aiLevel="";
-            if(players[a] instanceof EasyKI){
-                aiLevel=" (AILevel1)";
-            }else if(players[a] instanceof MediumAI){
-                aiLevel=" (AILevel2)";
-            }else if(players[a] instanceof AIPLayer3){
-                aiLevel=" (AILevel3)";
+        history = history + "," + player.getScore() + "," + player.usedCards.size() + "," + this.getDate() + ",";
+        for (int a = 0; a < this.players.length; a++) {
+            String aiLevel = "";
+            if (players[a] instanceof EasyKI) {
+                aiLevel = " (AILevel1)";
+            } else if (players[a] instanceof MediumAI) {
+                aiLevel = " (AILevel2)";
+            } else if (players[a] instanceof AIPLayer3) {
+                aiLevel = " (AILevel3)";
             }
-            if(this.players[a]!=player){
-                history=history+players[a].name+aiLevel+": "+players[a].getScore()+" /";
+            if (this.players[a] != player) {
+                history = history + players[a].name + aiLevel + ": " + players[a].getScore() + " /";
             }
         }
         return history;
@@ -936,45 +937,46 @@ public class GameLoop {
 
     /**
      * get date for player history
+     *
      * @return the date the history was created
      */
-    private Date getDate(){
+    private Date getDate() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-[m]m-[d]d");
         //java.util.Date currentTime = new java.util.Date();
         //String date=formatter.format(currentTime);
-        Date date=new Date(Instant.now().toEpochMilli());
+        Date date = new Date(Instant.now().toEpochMilli());
         formatter.format(date);
         return date;
     }
 
     /**
-     *  saves all new and previous histories to textfile
+     * saves all new and previous histories to textfile
      */
-    public void savingHistoryToFile(){
+    public void savingHistoryToFile() {
         //saves new histories and shows them
-        String[] histories=new String[this.players.length];
+        String[] histories = new String[this.players.length];
         //getting all current player histories
-        for(int a=0; a<this.players.length;a++){
-            histories[a]=this.createHistory(players[a]);
+        for (int a = 0; a < this.players.length; a++) {
+            histories[a] = this.createHistory(players[a]);
             //iterate player's histories to show them in order
-            boolean added=false;
-            for(int b=0;b<players[a].history.size();b++){
-                String[] playersPrevHistory=players[a].history.get(b).split(",");
-                if(Integer.parseInt(playersPrevHistory[1])<players[a].getScore()){
+            boolean added = false;
+            for (int b = 0; b < players[a].history.size(); b++) {
+                String[] playersPrevHistory = players[a].history.get(b).split(",");
+                if (Integer.parseInt(playersPrevHistory[1]) < players[a].getScore()) {
                     //add history of current round, in order by score
-                    players[a].history.add(b,histories[a]);
-                    added=true;
+                    players[a].history.add(b, histories[a]);
+                    added = true;
                     break;
                 }
             }
-            if(!added){
+            if (!added) {
                 players[a].history.add(histories[a]);
             }
             players[a].showHistory();
         }
         //get profiles and histories
-        ArrayList<String> content= this.textfileAdapter.getFileInput("src/main/java/entities/userProfiles.txt");
-        ArrayList<String> prevHistory=this.textfileAdapter.getFileInput("src/main/java/entities/playerHistories.txt");
+        ArrayList<String> content = this.textfileAdapter.getFileInput("src/main/java/entities/userProfiles.txt");
+        ArrayList<String> prevHistory = this.textfileAdapter.getFileInput("src/main/java/entities/playerHistories.txt");
 
         //add all histories of this round
         for (String h : histories) {
@@ -1005,21 +1007,21 @@ public class GameLoop {
                 prevHistory.add(h);
             }
         }
-        for(String prof:this.profiles){
-            boolean saved=false;
-            String[] a=prof.split(",");
-            for(String oldData:content){
-                if(a[0].equals(oldData.split(",")[0])){
-                    saved=true;
+        for (String prof : this.profiles) {
+            boolean saved = false;
+            String[] a = prof.split(",");
+            for (String oldData : content) {
+                if (a[0].equals(oldData.split(",")[0])) {
+                    saved = true;
                 }
             }
             //profile needs to be added to file
-            if(!saved){
-                content.add(content.size()-1,prof);
+            if (!saved) {
+                content.add(content.size() - 1, prof);
             }
         }
-        textfileAdapter.saveToFile("src/main/java/entities/userProfiles.txt",content);
-        textfileAdapter.saveToFile("src/main/java/entities/playerHistories.txt",prevHistory);
+        textfileAdapter.saveToFile("src/main/java/entities/userProfiles.txt", content);
+        textfileAdapter.saveToFile("src/main/java/entities/playerHistories.txt", prevHistory);
 
     }
 

@@ -23,7 +23,6 @@ public enum CardColor implements Cloneable {
     }
 
     /**
-     *
      * @return value of the CardColor
      */
     public int getValue() {

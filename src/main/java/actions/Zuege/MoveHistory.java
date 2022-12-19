@@ -22,7 +22,7 @@ public class MoveHistory {
      * @param newAction Action to put into History
      */
     public static void addNewAction(Action newAction) {
-        if (tail.getBefore()==null){
+        if (tail.getBefore() == null) {
             tail.setBefore(head);
             head.setBehind(tail);
         }

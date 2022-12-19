@@ -15,60 +15,60 @@ public class CardGUI extends JPanel {
     GUI gui;
     public String chosenCardCoord;
 
-    public CardGUI(Table table, GUI gui){
-        cardTableCards=table.getField();
-        this.gui=gui;
+    public CardGUI(Table table, GUI gui) {
+        cardTableCards = table.getField();
+        this.gui = gui;
     }
 
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        boolean noCards=true;
+        boolean noCards = true;
         this.setBackground(Color.CYAN);
         Graphics2D g2d = (Graphics2D) graphics;
-        for(int a=0;a<this.cardTableCards.length;a++){
-            for(int b=0;b<this.cardTableCards.length;b++){
-                if(cardTableCards[a][b]!=null){
-                    if(cardTableCards[a][b].getColor().getValue()==0){
+        for (int a = 0; a < this.cardTableCards.length; a++) {
+            for (int b = 0; b < this.cardTableCards.length; b++) {
+                if (cardTableCards[a][b] != null) {
+                    if (cardTableCards[a][b].getColor().getValue() == 0) {
                         g2d.setColor(Color.RED);
-                    } else if (cardTableCards[a][b].getColor().getValue()==1) {
+                    } else if (cardTableCards[a][b].getColor().getValue() == 1) {
                         g2d.setColor(Color.GREEN);
-                    }else if (cardTableCards[a][b].getColor().getValue()==2) {
+                    } else if (cardTableCards[a][b].getColor().getValue() == 2) {
                         g2d.setColor(Color.BLUE);
-                    }else if (cardTableCards[a][b].getColor().getValue()==3) {
+                    } else if (cardTableCards[a][b].getColor().getValue() == 3) {
                         g2d.setColor(Color.YELLOW);
-                    }else if (cardTableCards[a][b].getColor().getValue()==4) {
+                    } else if (cardTableCards[a][b].getColor().getValue() == 4) {
                         g2d.setColor(Color.PINK);
-                    }else if (cardTableCards[a][b].getColor().getValue()==5) {
+                    } else if (cardTableCards[a][b].getColor().getValue() == 5) {
                         g2d.setColor(Color.ORANGE);
-                    }else if (cardTableCards[a][b].getColor().getValue()==6) {
+                    } else if (cardTableCards[a][b].getColor().getValue() == 6) {
                         g2d.setColor(Color.GRAY);
-                    }else{
+                    } else {
                         g2d.setColor(Color.WHITE);
                     }
-                    g2d.fill(drawCardToTable(cardTableCards[a][b],b,a));
+                    g2d.fill(drawCardToTable(cardTableCards[a][b], b, a));
                     g2d.setColor(Color.BLACK);
-                    g2d.drawString(Integer.toString(cardTableCards[a][b].getValue()),40+a*80,60+b*120);
-                    noCards=false;
+                    g2d.drawString(Integer.toString(cardTableCards[a][b].getValue()), 40 + a * 80, 60 + b * 120);
+                    noCards = false;
                 }
             }
 
         }
         //if no cards are left on the table
-        if(noCards){
+        if (noCards) {
             g2d.setColor(Color.BLACK);
-            Rectangle r = new Rectangle(10,10,130,50);
+            Rectangle r = new Rectangle(10, 10, 130, 50);
             g2d.fill(r);
             g2d.setColor(Color.WHITE);
-            g2d.drawString("No cards available",20,20);
+            g2d.drawString("No cards available", 20, 20);
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent me) {
                     super.mouseClicked(me);
 
                     if (r.contains(me.getPoint())) {//check if mouse is clicked within shape
-                        gui.chosenAction="C";
-                        chosenCardCoord="1,1";
+                        gui.chosenAction = "C";
+                        chosenCardCoord = "1,1";
                         System.out.println(gui.chosenAction);
                     }
                 }
@@ -78,7 +78,6 @@ public class CardGUI extends JPanel {
     }
 
     /**
-     *
      * creates Rectangle that can be drawn on JPanel
      *
      * @param card Card that will be drawn
@@ -86,22 +85,22 @@ public class CardGUI extends JPanel {
      * @param xPos x coordinate
      * @return
      */
-    public Rectangle drawCardToTable(Card card,int yPos, int xPos){
+    public Rectangle drawCardToTable(Card card, int yPos, int xPos) {
         //calculate position of new card
-        int x=10+xPos*80;
-        int y=10+yPos*120;
-        Rectangle rectangle=new Rectangle(x,y,60,100);
+        int x = 10 + xPos * 80;
+        int y = 10 + yPos * 120;
+        Rectangle rectangle = new Rectangle(x, y, 60, 100);
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent me) {
                 super.mouseClicked(me);
 
-                    if (rectangle.contains(me.getPoint())) {//check if mouse is clicked within shape
-                        gui.chosenAction="C";
-                        chosenCardCoord=(xPos+1)+","+(yPos+1);
-                    }
+                if (rectangle.contains(me.getPoint())) {//check if mouse is clicked within shape
+                    gui.chosenAction = "C";
+                    chosenCardCoord = (xPos + 1) + "," + (yPos + 1);
                 }
+            }
         });
         return rectangle;
     }

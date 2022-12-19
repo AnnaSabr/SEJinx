@@ -5,6 +5,7 @@ import actions.ReUnDo.cards.Card;
 import actions.ReUnDo.cards.CardColor;
 import actions.ReUnDo.cards.CardType;
 import actions.ReUnDo.cards.LuckCard;
+
 import java.util.*;
 
 /**
@@ -21,8 +22,9 @@ public class Table implements Cloneable {
 
     /**
      * Constructor of a table
+     *
      * @param readFromFile true if the stacks should be loaded from a file
-     * */
+     */
     public Table(boolean readFromFile) {
         this.cardStack = new Stack<>();
         this.luckStack = new Stack<>();
@@ -222,10 +224,10 @@ public class Table implements Cloneable {
      * get card order for both stacks from config file
      */
     public void readConfig() {
-        CSVFileAdapter csvFileAdapter=new CSVFileAdapter();
-        ArrayList<String> input=csvFileAdapter.getFileInput("src/main/java/entities/configfile.csv");
+        CSVFileAdapter csvFileAdapter = new CSVFileAdapter();
+        ArrayList<String> input = csvFileAdapter.getFileInput("src/main/java/entities/configfile.csv");
 
-        String[] cardOrder=input.get(0).split(",");
+        String[] cardOrder = input.get(0).split(",");
         this.cardStack.clear();
         for (String cardName : cardOrder) {
             String[] cardInfo = cardName.split(" ");
@@ -314,6 +316,7 @@ public class Table implements Cloneable {
 
     /**
      * Sets the cards, copies cards into stack
+     *
      * @param cards stack to be set
      */
     public void setCardStack(Stack<Card> cards) {
@@ -322,6 +325,7 @@ public class Table implements Cloneable {
 
     /**
      * Sets the field, copies the cards into the field
+     *
      * @param field cards to be set
      */
     public void setField(Card[][] field) {
@@ -330,6 +334,7 @@ public class Table implements Cloneable {
 
     /**
      * Sets the luck cards, copies cards into stack
+     *
      * @param luckStack stack to be set
      */
     public void setLuckStack(Stack<LuckCard> luckStack) {

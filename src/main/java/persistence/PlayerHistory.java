@@ -7,7 +7,7 @@ import java.sql.Date;
 /**
  * Object to represent a players game history
  * Used as DTO between DBConnector and core
- * */
+ */
 public class PlayerHistory {
 
     //player data
@@ -20,12 +20,13 @@ public class PlayerHistory {
 
     /**
      * Create a new playerHistory to store in DB
-     * @param player main player linked to this history
+     *
+     * @param player        main player linked to this history
      * @param luckCardCount amount of luckcards played by player
-     * @param date date of the game
-     * @param enemys other players who participated
-     * */
-    public PlayerHistory(Player player, int luckCardCount, Date date, Player[] enemys){
+     * @param date          date of the game
+     * @param enemys        other players who participated
+     */
+    public PlayerHistory(Player player, int luckCardCount, Date date, Player[] enemys) {
         this.player = player;
         this.luckCardCount = luckCardCount;
         this.date = date;
@@ -67,8 +68,8 @@ public class PlayerHistory {
 
     /**
      * Returns true, if all important information is there
-     * */
-    public boolean isComplete(){
+     */
+    public boolean isComplete() {
         return this.date != null && this.player != null && this.enemys != null;
     }
 

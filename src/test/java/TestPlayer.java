@@ -41,18 +41,18 @@ public class TestPlayer {
 
     @BeforeEach
     public void create() {
-        player = new Player("bob", 1, false,false);
-        players= new Player[1];
+        player = new Player("bob", 1, false, false);
+        players = new Player[1];
         card = new Card(CardColor.RED, 1);
-        luckCard= new LuckCard(CardType.PLUSONE);
+        luckCard = new LuckCard(CardType.PLUSONE);
         cardsHand = new ArrayList<>();
         luckysHand = new ArrayList<>();
         table = new Table(false);
         table.setField(createField());
         fieldEmpty = null;
 
-        valueInput="1";
-        scan= new Scanner(System.in);
+        valueInput = "1";
+        scan = new Scanner(System.in);
 
     }
 
@@ -63,6 +63,7 @@ public class TestPlayer {
         player.addCard(card);
         assertTrue(player.removeCard(card));
     }
+
     /**
      * @Test public void removeCardNonExisting() {
      * player.setCards(cardStack);
@@ -76,6 +77,7 @@ public class TestPlayer {
     public void getScoreEmpty() {
         assertEquals(0, player.getScore());
     }
+
     @Test
     public void getScoreOne() {
         player.addCard(card);
@@ -83,71 +85,73 @@ public class TestPlayer {
     }
 
     /**
-    //chooseCard(Table)
-    @Test
-    public void chooseCardExists() {
-
-    }
-    @Test
-    public void chooseCardNonExisting() {
-
-    }
-    **/
+     * //chooseCard(Table)
+     *
+     * @Test public void chooseCardExists() {
+     * <p>
+     * }
+     * @Test public void chooseCardNonExisting() {
+     * <p>
+     * }
+     **/
 
 
     //drawLuckyCard
     @Test
-    public void drawLuckCardAvailable(){
-        players[0]=player;
+    public void drawLuckCardAvailable() {
+        players[0] = player;
         cardsHand.add(card);
         System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
-        scan= new Scanner(System.in);
+        scan = new Scanner(System.in);
         player.setCards(cardsHand);
-        assertTrue(player.drawLuckCard(table,players));
+        assertTrue(player.drawLuckCard(table, players));
     }
+
     @Test
-    public void drawLuckCardNotAvailable(){
-        players[0]= player;
+    public void drawLuckCardNotAvailable() {
+        players[0] = player;
         System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
-        scan= new Scanner(System.in);
+        scan = new Scanner(System.in);
         player.setCards(cardsHand);
-        assertFalse(player.drawLuckCard(table,players));
+        assertFalse(player.drawLuckCard(table, players));
     }
 
 
     //selectCard(Player[])
     @Test
-    public void selectCardAvailable(){
-        players[0]= player;
+    public void selectCardAvailable() {
+        players[0] = player;
         cardsHand.add(card);
         player.setCards(cardsHand);
         System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
-        scan= new Scanner(System.in);
+        scan = new Scanner(System.in);
         assertNotNull(player.selectCard(players));
     }
+
     @Test
-    public void selectCardNonAvailable(){
-        players[0]= player;
+    public void selectCardNonAvailable() {
+        players[0] = player;
         player.setCards(cardsHand);
-        valueInput="0";
+        valueInput = "0";
         System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
-        scan= new Scanner(System.in);
+        scan = new Scanner(System.in);
         assertNull(player.selectCard(players));
     }
 
 
     //selectHighCard()
     @Test
-    public void selectHighCardAvailable(){
+    public void selectHighCardAvailable() {
         cardsHand.add(card);
         player.setCards(cardsHand);
-        valueInput="0";
+        valueInput = "0";
         System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
-        scan= new Scanner(System.in);
+        scan = new Scanner(System.in);
         assertTrue(player.selectHighCard());
     }
+
     @Test
-    public void selectHighCardNonAvailable(){
+    public void selectHighCardNonAvailable() {
         player.setCards(cardsHand);
         assertFalse(player.selectHighCard());
     }
@@ -155,50 +159,51 @@ public class TestPlayer {
 
     //selectLuckCard(Table)
     @Test
-    public void selectLuckCardAvailable(){
+    public void selectLuckCardAvailable() {
         table.setField(field);
         luckysHand.add(luckCard);
         player.setLuckCards(luckysHand);
         System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
-        scan= new Scanner(System.in);
+        scan = new Scanner(System.in);
         assertNotNull(player.selectLuckCard(table));
     }
+
     @Test
-    public void selectLuckCardNotAvailable(){
+    public void selectLuckCardNotAvailable() {
         table.setField(field);
         player.setLuckCards(luckysHand);
         System.setIn(new ByteArrayInputStream(valueInput.getBytes()));
-        scan= new Scanner(System.in);
+        scan = new Scanner(System.in);
         assertNull(player.selectLuckCard(table));
     }
 
 
     //chooseAction()
     @Test
-    public void chooseActionValid(){
-        String input="N";
+    public void chooseActionValid() {
+        String input = "N";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
-        scan= new Scanner(System.in);
-        assertEquals(input,player.chooseAction(table));
+        scan = new Scanner(System.in);
+        assertEquals(input, player.chooseAction(table));
     }
     /**
-    @Test
-    public void chooseActionUnvalid(){
+     @Test public void chooseActionUnvalid(){
 
-    }
-    **/
+     }
+     **/
 
 
     //roll()
-    /**
-    @Test
-    public void rollPossible(){
 
-    }**/
+    /**
+     * @Test public void rollPossible(){
+     * <p>
+     * }
+     **/
     @Test
-    public void rollImpossible(){
+    public void rollImpossible() {
         player.setRolls(2);
         player.setDiceCount(5);
-        assertEquals(player.getDiceCount(),player.roll());
+        assertEquals(player.getDiceCount(), player.roll());
     }
 }

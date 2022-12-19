@@ -1,4 +1,5 @@
 package entities;
+
 import actions.Zuege.Action;
 import actions.Zuege.MoveHistory;
 import actions.Zuege.Moves;
@@ -17,8 +18,8 @@ import java.util.ArrayList;
 /**
  * Highest difficulty AI
  * Chooses cards and luck cards based on opponents
- * */
-public class AIPLayer3 extends Player{
+ */
+public class AIPLayer3 extends Player {
 
     private MessageOutput outCon;
 
@@ -27,27 +28,28 @@ public class AIPLayer3 extends Player{
      *
      * @param name name of player
      */
-    public AIPLayer3(String name,int sleepTime, boolean manualNextMsg, boolean database) {
-        super(name,sleepTime,manualNextMsg,database);
-        if(database){
-            String DBName="AILevel3";
-            String password="aipassword3";
-            if(!DBConnector.getInstance().checkPlayer("AILevel3")){
-                DBConnector.getInstance().createPlayer(DBName,password);
+    public AIPLayer3(String name, int sleepTime, boolean manualNextMsg, boolean database) {
+        super(name, sleepTime, manualNextMsg, database);
+        if (database) {
+            String DBName = "AILevel3";
+            String password = "aipassword3";
+            if (!DBConnector.getInstance().checkPlayer("AILevel3")) {
+                DBConnector.getInstance().createPlayer(DBName, password);
             }
             this.loadHistoryFromDB();
         }
-        this.outCon=new OutputConsole();
+        this.outCon = new OutputConsole();
     }
 
     /**
      * Function to let the AI choose a number between min, max to swap dice count with
-     * @param min min value to choose from
-     * @param max max value to choose from
+     *
+     * @param min  min value to choose from
+     * @param max  max value to choose from
      * @param card chosen luckCard
      * @return true if chosen, false if not
-     * */
-    public boolean mintomax(LuckCard card, int min, int max){
+     */
+    public boolean mintomax(LuckCard card, int min, int max) {
 
         //check if the card has already been used
         if (usedCards.contains(card)) {
@@ -55,7 +57,7 @@ public class AIPLayer3 extends Player{
             return false;
         }
 
-        if(min<this.diceCount&&max>this.diceCount){
+        if (min < this.diceCount && max > this.diceCount) {
             return true;
         }
 
@@ -70,13 +72,13 @@ public class AIPLayer3 extends Player{
 
     /**
      * Function to load this AIs history from the database
-     * */
-    public void loadHistoryFromDB(){
-        DBConnector connector=DBConnector.getInstance();
+     */
+    public void loadHistoryFromDB() {
+        DBConnector connector = DBConnector.getInstance();
         PlayerHistory[] playerHistories = connector.getPlayerHistory("AILevel3");
-        if(playerHistories!=null) {
+        if (playerHistories != null) {
             for (PlayerHistory ph : playerHistories) {
-                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate()+",";
+                String historyString = this.name + "," + ph.getPlayer().getScore() + "," + ph.getLuckCardCount() + "," + ph.getDate() + ",";
                 for (Player p : ph.getEnemys()) {
                     historyString = historyString + ph.getPlayer().name + ":" + ph.getPlayer().getScore() + "/";
                 }
@@ -85,41 +87,42 @@ public class AIPLayer3 extends Player{
         }
     }
 
-    boolean usecsum=true;
-    int myRound=1;
-    public String cardOnTable=null;
+    boolean usecsum = true;
+    int myRound = 1;
+    public String cardOnTable = null;
     private boolean active = true;
 
     /**
      * Overwritten function of the player
      * Handles the way the AI selects its next move
+     *
      * @param table the current table so the AI knows what is going on
-     * */
+     */
     @Override
     public String chooseAction(Table table) {
 
-        if(manualNextMsg){
+        if (manualNextMsg) {
             outCon.manualMessage("[ENTER] - Next move");
         }
         log("Your turn " + this.name + "! Eye count - " + this.diceCount);
         log(this.toString());
 
-        if(this.throwAgain){
-            this.throwAgain=false;
+        if (this.throwAgain) {
+            this.throwAgain = false;
             return "R";
         }
         //if a new round started
-        if(this.myRound!=GameLoop.currentRound){
+        if (this.myRound != GameLoop.currentRound) {
             this.myRound++;
-            this.cardOnTable=null;
-            this.diceCount=0;
-            this.rolls=0;
+            this.cardOnTable = null;
+            this.diceCount = 0;
+            this.rolls = 0;
             return chooseAction(table);
         }
         //if no card was selected
         if (this.cardOnTable == null) {
             if (this.rolls == 0) {
-                outCon.logKiPlayer(this.getName(),"First I roll the dice!");
+                outCon.logKiPlayer(this.getName(), "First I roll the dice!");
                 return "R";
             }
             CardColor[] desiredColour = new CardColor[8];
@@ -127,7 +130,7 @@ public class AIPLayer3 extends Player{
             String[] availableCards = this.findValidCards(table);
             //if player has no cards
             if (this.cards.size() == 0) {
-                outCon.logKiPlayer(this.getName(),"I will try to take a card with few other cards of that colour on the table.");
+                outCon.logKiPlayer(this.getName(), "I will try to take a card with few other cards of that colour on the table.");
                 int[] coloursOnTable = this.findAmountByColour(table);
                 int amount = 100;
                 int c = 0;
@@ -173,7 +176,7 @@ public class AIPLayer3 extends Player{
 
                 //if player already has cards
             } else {
-                outCon.logKiPlayer(this.getName(),"I already have cards. I will try to get a card of the same colour so I can keep them.");
+                outCon.logKiPlayer(this.getName(), "I already have cards. I will try to get a card of the same colour so I can keep them.");
                 //calculates value in hand by colour
                 int[] valueByColour = new int[8];
                 for (Card c : this.cards) {
@@ -240,7 +243,7 @@ public class AIPLayer3 extends Player{
                             if ((c.getColor().equals(currColour))) {
                                 this.cardOnTable = card;
                                 if (this.diceCount != c.getValue()) {
-                                    outCon.logKiPlayer(this.getName(),"I might need a luckcard to get the card i want.");
+                                    outCon.logKiPlayer(this.getName(), "I might need a luckcard to get the card i want.");
                                     return "L";
                                 }
                                 break;
@@ -254,7 +257,7 @@ public class AIPLayer3 extends Player{
             }
             //if no matching card was found, roll again
             if (cardOnTable == null && this.rolls < 2) {
-                outCon.logKiPlayer(this.getName(),"I need to roll again!");
+                outCon.logKiPlayer(this.getName(), "I need to roll again!");
                 return "R";
             }
             if (cardOnTable == null && this.rolls >= 2) {
@@ -268,103 +271,99 @@ public class AIPLayer3 extends Player{
             else if (cardOnTable != null) {
                 return "C";
             }
-        }else{
-            String[] chosenCard=this.cardOnTable.split(",");
-            Card c=table.getField()[Integer.parseInt(chosenCard[0])-1][Integer.parseInt(chosenCard[1])-1];
-            if(this.diceCount==c.getValue()){
+        } else {
+            String[] chosenCard = this.cardOnTable.split(",");
+            Card c = table.getField()[Integer.parseInt(chosenCard[0]) - 1][Integer.parseInt(chosenCard[1]) - 1];
+            if (this.diceCount == c.getValue()) {
                 return "C";
-            }else if(this.getLuckCards().size()!=0&&this.drawLuck){
+            } else if (this.getLuckCards().size() != 0 && this.drawLuck) {
                 return "L";
             }
         }
-        for(LuckCard luckCard:this.getLuckCards()){
-            if(luckCard.getCardType()==CardType.CARDSUM&&usecsum&&!this.usedCards.contains(luckCard)){
-                outCon.logKiPlayer(this.getName(),"I will try to use my cardsum card. I cannot get a card otherwise.");
+        for (LuckCard luckCard : this.getLuckCards()) {
+            if (luckCard.getCardType() == CardType.CARDSUM && usecsum && !this.usedCards.contains(luckCard)) {
+                outCon.logKiPlayer(this.getName(), "I will try to use my cardsum card. I cannot get a card otherwise.");
                 return "L";
             }
         }
         //if no card was found and player cant roll again
         String[] availableCards = this.findValidCards(table);
-            if(availableCards[0]==null){
-            this.cardOnTable="1,1";
-            for(int a = 0;table.getField().length>a;a++){
-                for(int b=0; table.getField().length>b;b++) {
-                    if(table.getField()[a][b]==null){
-                        this.cardOnTable=(a+1) + "," + (b+1);
+        if (availableCards[0] == null) {
+            this.cardOnTable = "1,1";
+            for (int a = 0; table.getField().length > a; a++) {
+                for (int b = 0; table.getField().length > b; b++) {
+                    if (table.getField()[a][b] == null) {
+                        this.cardOnTable = (a + 1) + "," + (b + 1);
                     }
                 }
             }
             return "C";
         }
-            this.rolls=0;
-            this.cardOnTable=null;
-        outCon.logKiPlayer(this.getName(),"Something is wrong, I have to start over.");
+        this.rolls = 0;
+        this.cardOnTable = null;
+        outCon.logKiPlayer(this.getName(), "Something is wrong, I have to start over.");
         return this.chooseAction(table);
     }
 
     /**
      * Function to find all valid card the AI can take from the field
+     *
      * @param table representing the current field
      * @return String[] of all possible cards
      */
-    public String[] findValidCards(Table table){
+    public String[] findValidCards(Table table) {
         boolean oneThree = false;
-        boolean fourSix=false;
-        for(LuckCard luckCard:this.getLuckCards()){
-            if(luckCard.getCardType().equals(CardType.ONETOTHREE)){
-                oneThree=true;
-            }
-            else if(luckCard.getCardType().equals(CardType.FOURTOSIX)){
-                fourSix=true;
+        boolean fourSix = false;
+        for (LuckCard luckCard : this.getLuckCards()) {
+            if (luckCard.getCardType().equals(CardType.ONETOTHREE)) {
+                oneThree = true;
+            } else if (luckCard.getCardType().equals(CardType.FOURTOSIX)) {
+                fourSix = true;
             }
         }
         String[] cards = new String[16];
         int index = 0;
         int plus = 0;
         int minus = 0;
-        for(LuckCard luckCard:this.getLuckCards()){
+        for (LuckCard luckCard : this.getLuckCards()) {
             //compareTo returns 0 if they are equal
-            if(luckCard.getCardType().compareTo(CardType.PLUSONE)==0&&!this.usedCards.contains(luckCard)){
+            if (luckCard.getCardType().compareTo(CardType.PLUSONE) == 0 && !this.usedCards.contains(luckCard)) {
                 plus++;
-            }
-            else if(luckCard.getCardType().compareTo(CardType.MINUSONE)==0&&!this.usedCards.contains(luckCard)){
+            } else if (luckCard.getCardType().compareTo(CardType.MINUSONE) == 0 && !this.usedCards.contains(luckCard)) {
                 minus++;
             }
         }
         //row, y-coordinate
         int ycoord = 1;
-        for(Card[] card:table.getField()) {
+        for (Card[] card : table.getField()) {
             //x-coordinate
             int xcoord = 1;
             for (Card c : card) {
-                if(c!=null){
-                    if(this.diceCount==c.getValue()){
-                        cards[index]=ycoord + "," + xcoord;
+                if (c != null) {
+                    if (this.diceCount == c.getValue()) {
+                        cards[index] = ycoord + "," + xcoord;
                         index++;
-                    }
-                    else if(oneThree&&c.getValue()<4){
-                            cards[index]=ycoord + "," + xcoord;
-                            index++;
-                    }
-                    else if(fourSix&&c.getValue()>3){
-                            cards[index]=ycoord + "," + xcoord;
-                            index++;
-                    }
-                    else{
-                        int a=plus;
-                        int b=minus;
+                    } else if (oneThree && c.getValue() < 4) {
+                        cards[index] = ycoord + "," + xcoord;
+                        index++;
+                    } else if (fourSix && c.getValue() > 3) {
+                        cards[index] = ycoord + "," + xcoord;
+                        index++;
+                    } else {
+                        int a = plus;
+                        int b = minus;
                         //all cards that can be taken with plusone
-                        while(a!=0){
-                            if(this.diceCount+a==c.getValue()){
-                                cards[index]=ycoord + "," + xcoord;
+                        while (a != 0) {
+                            if (this.diceCount + a == c.getValue()) {
+                                cards[index] = ycoord + "," + xcoord;
                                 index++;
                             }
                             a--;
                         }
                         //all cards that can be taken with minusone
-                        while(b!=0){
-                            if(this.diceCount-b==c.getValue()){
-                                cards[index]=ycoord + "," + xcoord;
+                        while (b != 0) {
+                            if (this.diceCount - b == c.getValue()) {
+                                cards[index] = ycoord + "," + xcoord;
                                 index++;
                             }
                             b--;
@@ -375,26 +374,27 @@ public class AIPLayer3 extends Player{
             }
             ycoord++;
         }
-        outCon.logKiPlayer(this.getName(),"These are the cards I could take:");
-        for(String card:cards){
-            if(card!=null){
-                outCon.logKiPlayer(this.getName(),card);
+        outCon.logKiPlayer(this.getName(), "These are the cards I could take:");
+        for (String card : cards) {
+            if (card != null) {
+                outCon.logKiPlayer(this.getName(), card);
             }
         }
         return cards;
     }
 
     /**
-     *  Function to get the amount of card on table counted by colour
+     * Function to get the amount of card on table counted by colour
+     *
      * @param table the current field
      * @return int[] each position representing a colour -> red, green, blue, yellow, purple, orange, grey, white
      */
-    public int[] findAmountByColour(Table table){
+    public int[] findAmountByColour(Table table) {
         int[] cardByColour = new int[8];
-        for(Card[] card:table.getField()) {
+        for (Card[] card : table.getField()) {
             for (Card c : card) {
-                if(c!=null){
-                    switch (c.getColor()){
+                if (c != null) {
+                    switch (c.getColor()) {
                         case RED -> cardByColour[0]++;
                         case GREEN -> cardByColour[1]++;
                         case BLUE -> cardByColour[2]++;
@@ -412,31 +412,33 @@ public class AIPLayer3 extends Player{
 
     /**
      * Function to get a coordinate of the card the AI chooses
+     *
      * @return the coordinate of the card the AI wants to choose
-     * */
+     */
     @Override
     public int[] getPlayerInputCoord() {
         String line = this.cardOnTable;
         String[] coordsSTR = line.split(",");
 
-        String coord=coordsSTR[0] + "," + coordsSTR[1];
+        String coord = coordsSTR[0] + "," + coordsSTR[1];
         outCon.jinxMessage("chosen: " + coord);
         int[] coordInt = new int[2];
-        coordInt[0]=Integer.parseInt(coordsSTR[0]);
-        coordInt[1]=Integer.parseInt(coordsSTR[1]);
-        this.cardOnTable=null;
+        coordInt[0] = Integer.parseInt(coordsSTR[0]);
+        coordInt[1] = Integer.parseInt(coordsSTR[1]);
+        this.cardOnTable = null;
         return coordInt;
     }
 
     /**
      * Function to select a highcard to drop after the round
+     *
      * @return true if the AI dropped a card, false if not
-     * */
+     */
     @Override
-    public boolean selectHighCard(){
+    public boolean selectHighCard() {
 
         //check if the player is able to drop a card
-        if(this.cards.size() == 0){
+        if (this.cards.size() == 0) {
             log(this.getName() + " has no cards to drop after this round!");
             return false;
         }
@@ -468,84 +470,84 @@ public class AIPLayer3 extends Player{
         //calculates value in hand by colour
         int[] valueByColour = new int[8];
         for (Card c : this.cards) {
-            switch (c.getColor()){
-                case RED -> valueByColour[0]=valueByColour[0]+c.getValue();
-                case GREEN -> valueByColour[1]=valueByColour[1]+c.getValue();
-                case BLUE -> valueByColour[2]=valueByColour[2]+c.getValue();
-                case YELLOW -> valueByColour[3]=valueByColour[3]+c.getValue();
-                case PURPLE -> valueByColour[4]=valueByColour[4]+c.getValue();
-                case ORANGE -> valueByColour[5]=valueByColour[5]+c.getValue();
-                case GREY -> valueByColour[6]=valueByColour[6]+c.getValue();
-                case WHITE -> valueByColour[7]=valueByColour[7]+c.getValue();
+            switch (c.getColor()) {
+                case RED -> valueByColour[0] = valueByColour[0] + c.getValue();
+                case GREEN -> valueByColour[1] = valueByColour[1] + c.getValue();
+                case BLUE -> valueByColour[2] = valueByColour[2] + c.getValue();
+                case YELLOW -> valueByColour[3] = valueByColour[3] + c.getValue();
+                case PURPLE -> valueByColour[4] = valueByColour[4] + c.getValue();
+                case ORANGE -> valueByColour[5] = valueByColour[5] + c.getValue();
+                case GREY -> valueByColour[6] = valueByColour[6] + c.getValue();
+                case WHITE -> valueByColour[7] = valueByColour[7] + c.getValue();
             }
         }
-        int val=-1;
-        int c=0;
+        int val = -1;
+        int c = 0;
         //order card colours by value in hand
-        for(int a=0; a<8;a++){
-            for(int b=0;b<8;b++){
-                if(valueByColour[b]>val){
-                    val=valueByColour[b];
-                    c=b;
+        for (int a = 0; a < 8; a++) {
+            for (int b = 0; b < 8; b++) {
+                if (valueByColour[b] > val) {
+                    val = valueByColour[b];
+                    c = b;
                 }
             }
-            valueByColour[c]=-2;
-            val=-1;
-            CardColor cardColor=CardColor.GREEN;
-            switch (c){
+            valueByColour[c] = -2;
+            val = -1;
+            CardColor cardColor = CardColor.GREEN;
+            switch (c) {
                 case 0:
-                    cardColor=CardColor.RED;
+                    cardColor = CardColor.RED;
                     break;
                 case 1:
-                    cardColor=CardColor.GREEN;
+                    cardColor = CardColor.GREEN;
                     break;
                 case 2:
-                    cardColor=CardColor.BLUE;
+                    cardColor = CardColor.BLUE;
                     break;
                 case 3:
-                    cardColor=CardColor.YELLOW;
+                    cardColor = CardColor.YELLOW;
                     break;
                 case 4:
-                    cardColor=CardColor.PURPLE;
+                    cardColor = CardColor.PURPLE;
                     break;
                 case 5:
-                    cardColor=CardColor.ORANGE;
+                    cardColor = CardColor.ORANGE;
                     break;
                 case 6:
-                    cardColor=CardColor.GREY;
+                    cardColor = CardColor.GREY;
                     break;
                 case 7:
-                    cardColor=CardColor.WHITE;
+                    cardColor = CardColor.WHITE;
                     break;
             }
-            Colour[c]=cardColor;
+            Colour[c] = cardColor;
         }
 
-        boolean set=false;
-        int removing=0;
-        for(int a= Colour.length-1;a>=0;a--){
-            for(int b=0;b<maxCards.size();b++){
-                if(maxCards.get(b).getColor().equals(Colour[a])){
-                    removing=b;
-                    set=true;
+        boolean set = false;
+        int removing = 0;
+        for (int a = Colour.length - 1; a >= 0; a--) {
+            for (int b = 0; b < maxCards.size(); b++) {
+                if (maxCards.get(b).getColor().equals(Colour[a])) {
+                    removing = b;
+                    set = true;
                     break;
                 }
             }
-            if(set){
+            if (set) {
                 break;
             }
         }
 
-        while(true){
-            try{
+        while (true) {
+            try {
                 Card placeholder = maxCards.get(removing);
                 Action action4 = new Action(Moves.DROPPEDCARD, placeholder, this);
                 MoveHistory.addNewAction(action4);
                 this.cards.remove(maxCards.get(removing));
-                log("Card "+removing+" was chosen.");
+                log("Card " + removing + " was chosen.");
                 return true;
-            }catch (Exception e){
-               log("Not a valid choice.");
+            } catch (Exception e) {
+                log("Not a valid choice.");
                 this.cards.remove(maxCards.get(0));
                 return true;
             }
@@ -554,227 +556,232 @@ public class AIPLayer3 extends Player{
 
     /**
      * Function to let the AI select a card to choose
+     *
      * @param players the current state of the players
      * @return the card wich was selected
-     * */
+     */
     @Override
     public Card selectCard(Player[] players) {
-        if(this.myRound==3){
-            outCon.logKiPlayer(this.getName(),"The game is over, I dont need more cards.");
+        if (this.myRound == 3) {
+            outCon.logKiPlayer(this.getName(), "The game is over, I dont need more cards.");
             return null;
         }
-        Card card1=null;
+        Card card1 = null;
         CardColor[] desiredColour = new CardColor[8];
-        boolean draw=true;
-        for(Player p:players){
+        boolean draw = true;
+        for (Player p : players) {
             //if a player has at least the same score
-            if(p.getScore()>=(this.getScore())){
-                if(p!=this){
-                    draw=false;
-                    outCon.logKiPlayer(this.getName(),"I want to keep my cards. My opponent's score is too high.");
+            if (p.getScore() >= (this.getScore())) {
+                if (p != this) {
+                    draw = false;
+                    outCon.logKiPlayer(this.getName(), "I want to keep my cards. My opponent's score is too high.");
                 }
             }
         }
-        if(draw){
+        if (draw) {
             int[] valueByColour = new int[8];
             for (Card c : this.cards) {
-                switch (c.getColor()){
-                    case RED -> valueByColour[0]=valueByColour[0]+c.getValue();
-                    case GREEN -> valueByColour[1]=valueByColour[1]+c.getValue();
-                    case BLUE -> valueByColour[2]=valueByColour[2]+c.getValue();
-                    case YELLOW -> valueByColour[3]=valueByColour[3]+c.getValue();
-                    case PURPLE -> valueByColour[4]=valueByColour[4]+c.getValue();
-                    case ORANGE -> valueByColour[5]=valueByColour[5]+c.getValue();
-                    case GREY -> valueByColour[6]=valueByColour[6]+c.getValue();
-                    case WHITE -> valueByColour[7]=valueByColour[7]+c.getValue();
+                switch (c.getColor()) {
+                    case RED -> valueByColour[0] = valueByColour[0] + c.getValue();
+                    case GREEN -> valueByColour[1] = valueByColour[1] + c.getValue();
+                    case BLUE -> valueByColour[2] = valueByColour[2] + c.getValue();
+                    case YELLOW -> valueByColour[3] = valueByColour[3] + c.getValue();
+                    case PURPLE -> valueByColour[4] = valueByColour[4] + c.getValue();
+                    case ORANGE -> valueByColour[5] = valueByColour[5] + c.getValue();
+                    case GREY -> valueByColour[6] = valueByColour[6] + c.getValue();
+                    case WHITE -> valueByColour[7] = valueByColour[7] + c.getValue();
                 }
             }
-            int val=-1;
-            int c=0;
+            int val = -1;
+            int c = 0;
             //order card colours by value in hand
-            for(int a=0; a<8;a++){
-                for(int b=0;b<8;b++){
-                    if(valueByColour[b]>val){
-                        val=valueByColour[b];
-                        c=b;
+            for (int a = 0; a < 8; a++) {
+                for (int b = 0; b < 8; b++) {
+                    if (valueByColour[b] > val) {
+                        val = valueByColour[b];
+                        c = b;
                     }
                 }
-                valueByColour[c]=-2;
-                val=-1;
-                CardColor cardColor=CardColor.GREEN;
-                switch (c){
+                valueByColour[c] = -2;
+                val = -1;
+                CardColor cardColor = CardColor.GREEN;
+                switch (c) {
                     case 0:
-                        cardColor=CardColor.RED;
+                        cardColor = CardColor.RED;
                         break;
                     case 1:
-                        cardColor=CardColor.GREEN;
+                        cardColor = CardColor.GREEN;
                         break;
                     case 2:
-                        cardColor=CardColor.BLUE;
+                        cardColor = CardColor.BLUE;
                         break;
                     case 3:
-                        cardColor=CardColor.YELLOW;
+                        cardColor = CardColor.YELLOW;
                         break;
                     case 4:
-                        cardColor=CardColor.PURPLE;
+                        cardColor = CardColor.PURPLE;
                         break;
                     case 5:
-                        cardColor=CardColor.ORANGE;
+                        cardColor = CardColor.ORANGE;
                         break;
                     case 6:
-                        cardColor=CardColor.GREY;
+                        cardColor = CardColor.GREY;
                         break;
                     case 7:
-                        cardColor=CardColor.WHITE;
+                        cardColor = CardColor.WHITE;
                         break;
                 }
-                desiredColour[a]=cardColor;
+                desiredColour[a] = cardColor;
             }
-            ArrayList<Card> smallCards=new ArrayList<>();
-            for(int a=1; a<7;a++){
-                for(Card card:this.cards){
-                    if(card.getValue()==a){
+            ArrayList<Card> smallCards = new ArrayList<>();
+            for (int a = 1; a < 7; a++) {
+                for (Card card : this.cards) {
+                    if (card.getValue() == a) {
                         smallCards.add(card);
                     }
                 }
-                if(!smallCards.isEmpty()){
+                if (!smallCards.isEmpty()) {
                     break;
                 }
             }
-            CardColor[] order=new CardColor[8];
-            int index=0;
-            for(int a=desiredColour.length-1;a>=0;a--){
-                order[index]=desiredColour[a];
+            CardColor[] order = new CardColor[8];
+            int index = 0;
+            for (int a = desiredColour.length - 1; a >= 0; a--) {
+                order[index] = desiredColour[a];
                 index++;
             }
-            for(CardColor color:order){
-                for(Card card:smallCards){
-                    if(card.getColor().equals(color)){
-                        card1=card;
+            for (CardColor color : order) {
+                for (Card card : smallCards) {
+                    if (card.getColor().equals(color)) {
+                        card1 = card;
                         break;
                     }
                 }
-                if(card1!=null){
+                if (card1 != null) {
                     break;
                 }
             }
         }
-        if(card1!=null){
-            outCon.logKiPlayer(this.getName(),"I will trade " + card1.getColor() + " " + card1.getValue() + ". My score is good enough compared to my opponents.");
+        if (card1 != null) {
+            outCon.logKiPlayer(this.getName(), "I will trade " + card1.getColor() + " " + card1.getValue() + ". My score is good enough compared to my opponents.");
         }
         return card1;
     }
 
-    boolean throwAgain=false;
+    boolean throwAgain = false;
+
     /**
      * Function to let the AI choose a luck card after the round
+     *
      * @param table so the AI can evaluate the best luck card to pick
      * @return LuckCard to be picked
-     * */
+     */
     @Override
     public LuckCard selectLuckCard(Table table) {
         //check if player has luck cards
-        if(this.getLuckCards().size() == 0){
+        if (this.getLuckCards().size() == 0) {
             log(this.getName() + ", you dont have any luck cards!");
             return null;
         }
         //EXTRATHROW
-        if(this.cardOnTable==null&&this.rolls>=2){
-            for(LuckCard luckCard:this.getLuckCards()){
-                if(luckCard.getCardType()==CardType.EXTRATHROW&&!this.usedCards.contains(luckCard)){
-                    outCon.logKiPlayer(this.getName(),"I want to throw again. I will use my luckcard!");
-                    throwAgain=true;
+        if (this.cardOnTable == null && this.rolls >= 2) {
+            for (LuckCard luckCard : this.getLuckCards()) {
+                if (luckCard.getCardType() == CardType.EXTRATHROW && !this.usedCards.contains(luckCard)) {
+                    outCon.logKiPlayer(this.getName(), "I want to throw again. I will use my luckcard!");
+                    throwAgain = true;
                     return luckCard;
                 }
             }
-        }
-        else if(this.cardOnTable!=null){
+        } else if (this.cardOnTable != null) {
             String line = this.cardOnTable;
             String[] coordsSTR = line.split(",");
-            String coord=coordsSTR[0] + "," + coordsSTR[1];
+            String coord = coordsSTR[0] + "," + coordsSTR[1];
             int[] coordInt = new int[2];
-            coordInt[0]=Integer.parseInt(coordsSTR[0]);
-            coordInt[1]=Integer.parseInt(coordsSTR[1]);
-            Card c = table.getField()[coordInt[0]-1][coordInt[1]-1];
-            int minus=0;
-            for(LuckCard l:this.getLuckCards()){
-                if(l.getCardType().equals(CardType.MINUSONE)&&!this.usedCards.contains(l)){
+            coordInt[0] = Integer.parseInt(coordsSTR[0]);
+            coordInt[1] = Integer.parseInt(coordsSTR[1]);
+            Card c = table.getField()[coordInt[0] - 1][coordInt[1] - 1];
+            int minus = 0;
+            for (LuckCard l : this.getLuckCards()) {
+                if (l.getCardType().equals(CardType.MINUSONE) && !this.usedCards.contains(l)) {
                     minus++;
                 }
             }
-            int plus=0;
-            for(LuckCard l:this.getLuckCards()){
-                if(l.getCardType().equals(CardType.PLUSONE)&&!this.usedCards.contains(l)){
+            int plus = 0;
+            for (LuckCard l : this.getLuckCards()) {
+                if (l.getCardType().equals(CardType.PLUSONE) && !this.usedCards.contains(l)) {
                     plus++;
                 }
             }
-            for(int a=minus; a>0; a--){
-                if(c.getValue()==this.diceCount-a){
+            for (int a = minus; a > 0; a--) {
+                if (c.getValue() == this.diceCount - a) {
                     //MINUSONE
-                    for(LuckCard luckCard:this.getLuckCards()) {
-                        if (luckCard.getCardType() == CardType.MINUSONE&&!this.usedCards.contains(luckCard)) {
-                            outCon.logKiPlayer(this.getName(),"I need a smaller dice count. I will use my luckcard!");
+                    for (LuckCard luckCard : this.getLuckCards()) {
+                        if (luckCard.getCardType() == CardType.MINUSONE && !this.usedCards.contains(luckCard)) {
+                            outCon.logKiPlayer(this.getName(), "I need a smaller dice count. I will use my luckcard!");
                             return luckCard;
                         }
-                    }    }
-            }
-            for(int a=plus; a>0; a--){
-                if (c.getValue()==this.diceCount+a) {
-                    //PLUSONE
-                    for(LuckCard luckCard:this.getLuckCards()) {
-                        if (luckCard.getCardType() == CardType.PLUSONE&&!this.usedCards.contains(luckCard)) {
-                            outCon.logKiPlayer(this.getName(),"I need a bigger dice count. I will use my luckcard!");
-                            return luckCard;
-                        }
-                    }    }
-            }
-            if(c.getValue()>3&&this.diceCount!=c.getValue()){
-                for(LuckCard luckCard:this.getLuckCards()){
-                    if(luckCard.getCardType()==CardType.FOURTOSIX&&!this.usedCards.contains(luckCard)){
-                        outCon.logKiPlayer(this.getName(),"I will use my 4to6 card");
-                        return luckCard;
                     }
                 }
             }
-            else if(c.getValue()<4&&this.diceCount!=c.getValue()){
-                for(LuckCard luckCard:this.getLuckCards()){
-                    if(luckCard.getCardType()==CardType.ONETOTHREE&&!this.usedCards.contains(luckCard)){
-                        outCon.logKiPlayer(this.getName(),"I will use my 1to3 card");
+            for (int a = plus; a > 0; a--) {
+                if (c.getValue() == this.diceCount + a) {
+                    //PLUSONE
+                    for (LuckCard luckCard : this.getLuckCards()) {
+                        if (luckCard.getCardType() == CardType.PLUSONE && !this.usedCards.contains(luckCard)) {
+                            outCon.logKiPlayer(this.getName(), "I need a bigger dice count. I will use my luckcard!");
+                            return luckCard;
+                        }
+                    }
+                }
+            }
+            if (c.getValue() > 3 && this.diceCount != c.getValue()) {
+                for (LuckCard luckCard : this.getLuckCards()) {
+                    if (luckCard.getCardType() == CardType.FOURTOSIX && !this.usedCards.contains(luckCard)) {
+                        outCon.logKiPlayer(this.getName(), "I will use my 4to6 card");
+                        return luckCard;
+                    }
+                }
+            } else if (c.getValue() < 4 && this.diceCount != c.getValue()) {
+                for (LuckCard luckCard : this.getLuckCards()) {
+                    if (luckCard.getCardType() == CardType.ONETOTHREE && !this.usedCards.contains(luckCard)) {
+                        outCon.logKiPlayer(this.getName(), "I will use my 1to3 card");
                         return luckCard;
                     }
                 }
             }
         }
 
-        for(LuckCard luckCard:this.getLuckCards()){
-            if(luckCard.getCardType()==CardType.CARDSUM&&!this.usedCards.contains(luckCard)){
-                outCon.logKiPlayer(this.getName(),"I will use my cardsum card");
+        for (LuckCard luckCard : this.getLuckCards()) {
+            if (luckCard.getCardType() == CardType.CARDSUM && !this.usedCards.contains(luckCard)) {
+                outCon.logKiPlayer(this.getName(), "I will use my cardsum card");
                 return luckCard;
-                }
             }
-        drawLuck=false;
+        }
+        drawLuck = false;
         return null;
     }
 
     /**
      * Function to register a new output adapter
+     *
      * @param output adapter to be used
-     * */
+     */
     @Override
-    public void registerOutput(MessageOutput output){
+    public void registerOutput(MessageOutput output) {
         this.outCon = output;
     }
 
-    boolean drawLuck=true;
+    boolean drawLuck = true;
 
     /**
      * Function to return a number chosen by the AI
+     *
      * @param min the min range of that number
      * @param max the max range of that number
      * @return diceCount if between min and max, min otherwise
-     * */
-    public int playerInputNumberInRange(int min, int max){
-        if(min<this.diceCount&&max>this.diceCount){
+     */
+    public int playerInputNumberInRange(int min, int max) {
+        if (min < this.diceCount && max > this.diceCount) {
             return this.diceCount;
         }
         return min;
@@ -782,91 +789,92 @@ public class AIPLayer3 extends Player{
 
     /**
      * Function to let the AI choose multiple card from the field if it plays the luck card
+     *
      * @param table the current table
      * @return coordinates of chosen card as string (x;y,x;y,...)
-     * */
+     */
     @Override
     public String getPlayerInputMultipleCoordinates(Table table) {
         ArrayList<Card> cardsToTake = new ArrayList<>();
-        String coordinates="";
-        for(Card[] row:table.getField()){
-            for(Card card:row){
-                if(card!=null){
-                    if(card.getValue()<this.diceCount){
+        String coordinates = "";
+        for (Card[] row : table.getField()) {
+            for (Card card : row) {
+                if (card != null) {
+                    if (card.getValue() < this.diceCount) {
                         cardsToTake.add(card);
                     }
                 }
             }
         }
-        ArrayList<Card> cardByVal= new ArrayList<>();
-        for(int a=diceCount-1;a>0;a--){
-            for(Card card:cardsToTake){
-                if(card.getValue()==a){
+        ArrayList<Card> cardByVal = new ArrayList<>();
+        for (int a = diceCount - 1; a > 0; a--) {
+            for (Card card : cardsToTake) {
+                if (card.getValue() == a) {
                     cardByVal.add(card);
                 }
             }
         }
-        Card card1=null;
-        Card card2=null;
-        for(int a=0; a<cardByVal.size();a++){
-            for(int b=0; b<cardByVal.size();b++){
-                if(a==b){
+        Card card1 = null;
+        Card card2 = null;
+        for (int a = 0; a < cardByVal.size(); a++) {
+            for (int b = 0; b < cardByVal.size(); b++) {
+                if (a == b) {
                     b++;
-                }
-                else{
-                    if(cardByVal.get(a).getValue()+cardByVal.get(b).getValue()==this.diceCount){
-                        card1=cardByVal.get(a);
-                        card2=cardByVal.get(b);
+                } else {
+                    if (cardByVal.get(a).getValue() + cardByVal.get(b).getValue() == this.diceCount) {
+                        card1 = cardByVal.get(a);
+                        card2 = cardByVal.get(b);
                         break;
                     }
                 }
             }
-            if(card1!=null){
+            if (card1 != null) {
                 break;
             }
         }
-        if(card1==null||card2==null){
-            usecsum=false;
-            outCon.logKiPlayer(this.getName(),"My Luckcard is not helping me here! I have to try something different");
+        if (card1 == null || card2 == null) {
+            usecsum = false;
+            outCon.logKiPlayer(this.getName(), "My Luckcard is not helping me here! I have to try something different");
             return "0";
         }
-        String coordinate1="";
-        String coordinate2="";
-        int y=0;
-        int x=0;
-        for(Card[] row:table.getField()){
+        String coordinate1 = "";
+        String coordinate2 = "";
+        int y = 0;
+        int x = 0;
+        for (Card[] row : table.getField()) {
             y++;
-            for(Card card:row){
+            for (Card card : row) {
                 x++;
-                if(card==card1){
-                    coordinate1=x+","+y;
-                } else if (card==card2) {
-                    coordinate2=x+","+y;
+                if (card == card1) {
+                    coordinate1 = x + "," + y;
+                } else if (card == card2) {
+                    coordinate2 = x + "," + y;
                 }
             }
         }
-        coordinates=coordinate1+";"+coordinate2;
-        usecsum=false;
+        coordinates = coordinate1 + ";" + coordinate2;
+        usecsum = false;
         return coordinates;
     }
 
-    public void setRolls(int newValue){
-        this.rolls=newValue;
+    public void setRolls(int newValue) {
+        this.rolls = newValue;
     }
-    public void setDiceCount(int newCount){
-        this.diceCount=newCount;
+
+    public void setDiceCount(int newCount) {
+        this.diceCount = newCount;
     }
 
     /**
      * adds previous histories of this player to arraylist history
      */
-    public void loadHistoryFromFile(){
-        TextfileAdapter textfileAdapter=new TextfileAdapter();
-        ArrayList<String> historiesFromFile=textfileAdapter.getFileInput("src/main/java/entities/playerHistories.txt");
+    public void loadHistoryFromFile() {
+        TextfileAdapter textfileAdapter = new TextfileAdapter();
+        ArrayList<String> historiesFromFile = textfileAdapter.getFileInput("src/main/java/entities/playerHistories.txt");
 
-        for(String entry:historiesFromFile){
-            String[] a=entry.split(",");
-            if(a[0].equals("AILevel3")){
+        for (String entry : historiesFromFile) {
+            String[] a = entry.split(",");
+            if (a[0].equals("AILevel3")) {
                 this.history.add(entry);
             }
         }
