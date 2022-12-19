@@ -10,6 +10,7 @@ import actions.ReUnDo.cards.CardType;
 import actions.ReUnDo.cards.LuckCard;
 import persistence.DBConnector;
 import persistence.PlayerHistory;
+import ports.outbound.MessageOutput;
 
 import java.util.ArrayList;
 
@@ -19,7 +20,7 @@ import java.util.ArrayList;
  * */
 public class AIPLayer3 extends Player{
 
-    private OutputConsole outCon;
+    private MessageOutput outCon;
 
     /**
      * Constructor for a new AIplayer with level 3
@@ -718,6 +719,15 @@ public class AIPLayer3 extends Player{
             }
         drawLuck=false;
         return null;
+    }
+
+    /**
+     * Function to register a new output adapter
+     * @param output adapter to be used
+     * */
+    @Override
+    public void registerOutput(MessageOutput output){
+        this.outCon = output;
     }
 
     boolean drawLuck=true;

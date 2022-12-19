@@ -8,6 +8,8 @@ import adapter.secondary.TextfileAdapter;
 import actions.ReUnDo.cards.Card;
 import persistence.DBConnector;
 import persistence.PlayerHistory;
+import ports.outbound.MessageOutput;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -17,7 +19,7 @@ import java.util.Comparator;
  * */
 public class MediumAI extends Player{
 
-    private OutputConsole outCon;
+    private MessageOutput outCon;
     /**
      * Constructor for a new player
      *
@@ -49,6 +51,15 @@ public class MediumAI extends Player{
                 this.history.add(historyString);
             }
         }
+    }
+
+    /**
+     * Function to register a new output adapter
+     * @param output adapter to be used
+     * */
+    @Override
+    public void registerOutput(MessageOutput output){
+        this.outCon = output;
     }
 
     /**

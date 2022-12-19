@@ -212,7 +212,6 @@ public class GameLoop {
                             //switch over all possible card types
                             switch (chosenOne.getCardType()) {
                                 // let the player change his diceCount to a set value
-
                                 case ONETOTHREE:
                                     currentPlayer.mintomax(chosenOne, 1, 3);
                                     // let the player change his diceCount to a set value

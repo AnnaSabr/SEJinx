@@ -32,7 +32,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public void logKiPlayer(String name, String text) {
-        System.out.println(name + " " + text);
+        gui.showAdvice(name+text, "[KI]" + name );
     }
 
     @Override
@@ -62,11 +62,12 @@ public class InOutGUI implements MessageOutput,MessageInput{
     public void tablePicture(Table table, Round current) {
         current.setTableStatus(table);
         this.model = current;
-        gui.updateGUI(this.model, new String[]{"Updated"});
+        gui.updateGUI(this.model, new String[]{"Make your next move!"});
     }
 
     @Override
     public String inputAnything() {
+        gui.showAdvice("Next Move","MANUAL");
         return "";
     }
 

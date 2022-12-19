@@ -9,13 +9,16 @@ import actions.ReUnDo.cards.Card;
 import actions.ReUnDo.cards.CardColor;
 import persistence.DBConnector;
 import persistence.PlayerHistory;
+import ports.inbound.MessageInput;
+import ports.outbound.MessageOutput;
+
 import java.util.ArrayList;
 /**
  * Class to define the first Level KI easy
  */
 public class EasyKI extends Player{
 
-    private OutputConsole outCon;
+    private MessageOutput outCon;
 
     /**
      * Constructor for a new Easy AI
@@ -37,6 +40,14 @@ public class EasyKI extends Player{
         this.outCon=new OutputConsole();
     }
 
+    /**
+     * Function to register a new output adapter
+     * @param output adapter to be used
+     * */
+    @Override
+    public void registerOutput(MessageOutput output){
+        this.outCon = output;
+    }
 
     /**
      * Function to load an AI from the database
