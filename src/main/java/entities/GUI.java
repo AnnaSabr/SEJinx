@@ -692,8 +692,8 @@ public class GUI {
      *
      * @param advice Advice for the player
      */
-    public void showAdvice(String advice){
-        JOptionPane.showOptionDialog(null, advice,"Help",JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
+    public void showAdvice(String advice, String title){
+        JOptionPane.showOptionDialog(null, advice,title,JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,null,null);
     }
 
 

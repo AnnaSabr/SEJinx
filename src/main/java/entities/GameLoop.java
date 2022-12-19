@@ -172,6 +172,10 @@ public class GameLoop {
         // Run the loop for 3 Rounds maximum
         while (currentRound <= 3) {
             roundOver = false;
+
+            //display the current round
+            log("Round: " + currentRound);
+
             //Round is only over if a player cant choose a card anymore
             while (!roundOver) {
                 // set the next player
@@ -183,10 +187,9 @@ public class GameLoop {
                 // Update history to set round object to correct instance of current game
                 historyUpdate(currentPlayer);
 
+
                 // Let the player perform certain actions until he is done
                 while (currentPlayer.isActive()) {
-                    //display the current round
-                    log("Round: " + currentRound);
                     //display the field
                     outCon.tablePicture(this.table, this.course.getTail().getBefore());
 
@@ -680,6 +683,8 @@ public class GameLoop {
         }
         outCon.simpleMessage("You created: KI: " + k.getName() + "  Level: " + k.getClass().getSimpleName());
         this.kiCount++;
+        k.registerInput(inCon);
+        k.registerOutput(outCon);
         return k;
     }
 

@@ -64,4 +64,10 @@ public interface MessageOutput {
     * */
    void simpleText(String text);
 
+   /**
+    * Function to display a help message
+    * @param text help message to be displayed
+    * */
+   void helpMessage(String text);
+   
 }

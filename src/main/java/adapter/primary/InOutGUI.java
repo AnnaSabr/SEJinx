@@ -22,12 +22,17 @@ public class InOutGUI implements MessageOutput,MessageInput{
 
     @Override
     public void simpleMessage(String text) {
-        gui.showAdvice(text);
+        gui.showAdvice(text, "JINX");
+    }
+
+    @Override
+    public void helpMessage(String text) {
+        gui.showAdvice(text, "ADVISOR");
     }
 
     @Override
     public void logKiPlayer(String name, String text) {
-        System.out.println("NOT IMPLEMENTED");
+        System.out.println(name + " " + text);
     }
 
     @Override
@@ -184,7 +189,7 @@ public class InOutGUI implements MessageOutput,MessageInput{
      * */
     @Override
     public void configJinxMessage(String text){
-        gui.showAdvice(text);
+        gui.showAdvice(text,"JINX");
     }
 
     @Override

@@ -1013,10 +1013,10 @@ public class Player implements Cloneable{
     /**
      * prints advice for player on console
      *
-     * @param msg
+     * @param msg helper message to be displayed
      */
     private void adviceLog(String msg) {
-        output.simpleMessage("[Advisor]" + msg);
+        output.helpMessage(msg);
     }
 
     /**

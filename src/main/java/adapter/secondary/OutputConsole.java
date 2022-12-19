@@ -89,4 +89,12 @@ public class OutputConsole implements MessageOutput {
     public void simpleText(String text) {
         System.out.println(text);
     }
+
+    /**
+     * Function to display a help message
+     * @param text help message to be displayed
+     * */
+    public void helpMessage(String text){
+        System.out.println("[ADVISOR] " + text);
+    }
 }
