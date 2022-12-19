@@ -104,8 +104,8 @@ public class InOutGUI implements MessageOutput,MessageInput{
     }
 
     @Override
-    public int inputINT() {
-        return gui.pickCardFromHandToDrop();
+    public int inputINT(int min, int max) {
+        return gui.getInputNumber("Input a Number", min, max);
     }
 
     @Override
@@ -130,6 +130,43 @@ public class InOutGUI implements MessageOutput,MessageInput{
     @Override
     public String inputCoord(String question) {
         return gui.tableGui.chosenCardCoord;
+    }
+
+    /**
+     * To input a coordinate
+     * @return coordinate as string (x,y)
+     * */
+    public String inputMultipleCoords(String question){
+
+        String coords = "";
+
+        Round before = new Round();
+
+        before.setTableStatus(model.getTableStatus());
+        before.setActive(model.getActive());
+        before.setHighscores(model.getHighscores());
+        before.setBehind(model.getBehind());
+        before.setBefore(model.getBefore());
+
+        while(true) {
+            String action = gui.actionChosen(before, new String[]{"Select multiple cards you wish to draw!"});
+            String tempCoords = "";
+            if ("C".equals(action)) {
+                coords = coords + gui.getChosenCardCoord() + ";";
+                tempCoords = gui.getChosenCardCoord();
+                int x = Integer.parseInt(tempCoords.split(",")[0]) - 1;
+                int y = Integer.parseInt(tempCoords.split(",")[1]) - 1;
+                before.getTableStatus().getField()[x][y] = null;
+            } else {
+                if (coords.equals("")) {
+                    gui.updateGUI(model,new String[]{"Bla"});
+                    return "0";
+                }else{
+                    gui.updateGUI(model,new String[]{"Bla"});
+                    return coords.substring(0, coords.length() - 1);
+                }
+            }
+        }
     }
 
     @Override

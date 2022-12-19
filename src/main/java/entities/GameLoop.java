@@ -7,6 +7,7 @@ import java.sql.Date;
 
 import actions.ReUnDo.Round;
 import actions.ReUnDo.Course;
+import actions.ReUnDo.cards.CardType;
 import actions.Zuege.Action;
 import actions.Zuege.Moves;
 import actions.Zuege.MoveHistory;
@@ -304,6 +305,8 @@ public class GameLoop {
                             storageObject = dbConnector.getSpeicher(saveObject[input - 1]);
 
                             load(storageObject);
+
+                            historyUpdate(currentPlayer);
                         }
                         case "P" -> {
                             currentPlayer.showHistory();
@@ -459,7 +462,9 @@ public class GameLoop {
         int playerCount= storageObject.getLastRound().getPlayerCount();
         this.players= new Player[playerCount];
         for (int i=0; i<playerCount; i++){
-            this.players[i]= storageObject.getLastRound().getAllPlayers().get(i+1);
+            this.players[i]= storageObject.getLastRound().getAllPlayers().get(i);
+            this.players[i].registerOutput(outCon);
+            this.players[i].registerInput(inCon);
         }
 
         manipulate(storageObject.getLastRound());
@@ -555,7 +560,6 @@ public class GameLoop {
         }
         //set the first player
         currentPlayer = players[0];
-
     }
 
     /**

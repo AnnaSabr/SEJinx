@@ -45,7 +45,7 @@ public class InputConsole implements MessageInput {
      * @return integer entered from player
      * */
     @Override
-    public int inputINT() {
+    public int inputINT(int min, int max) {
         Scanner sc = new Scanner(System.in);
         int inputINT=sc.nextInt();
         return inputINT;
@@ -170,12 +170,20 @@ public class InputConsole implements MessageInput {
 
     @Override
     public int inputINTDrawLuckCard(Player p) {
-        return inputINT();
+        return inputINT(0,p.getCards().size());
     }
 
     @Override
     public int luckCardInput(){
-        return inputINT();
+        return inputINT(0,100);
     }
 
+    /**
+     * To input a coordinate
+     * @return coordinate as string (x,y)
+     * */
+    @Override
+    public String inputMultipleCoords(String question){
+        return inputCoord(question);
+    }
 }

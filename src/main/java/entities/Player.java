@@ -115,10 +115,10 @@ public class Player implements Cloneable{
     }
 
     /**
-     * Cloned eine ArrayListe
+     * Clones an ArrayList
      *
-     * @param old Arraylist die Kopiert werden soll
-     * @return geclonte Liste
+     * @param old Arraylist to be copied
+     * @return cloned arrayList
      */
     public static ArrayList<Card> copyC(ArrayList<Card> old) {
         if (old == null) {
@@ -569,19 +569,19 @@ public class Player implements Cloneable{
 
         //check if the card has already been used
         if (usedCards.contains(lC)) {
-            log("You have already played that card!");
+            output.configJinxMessage("You have already played that card!");
             return false;
         }
 
-        log("Which number do you wish to replace your eye count with? [" + min + "," + max + "] Enter 0 to abort!");
+        output.configJinxMessage("Which number do you wish to replace your eye count with? [" + min + "," + max + "] Enter 0 to abort!");
 
-        int input = this.playerInputNumberInRange(min, max);
+        int inputs = input.inputINT(min, max);
 
-        if (input == 0) {
+        if (inputs == 0) {
             return false;
         } else {
             //set diceCount to the input
-            this.diceCount = input;
+            this.diceCount = inputs;
 
             //remove the card from the players hand --> single use
             removeLuckCard(lC);
@@ -599,7 +599,7 @@ public class Player implements Cloneable{
      * @return number input of player
      * */
     public int playerInputNumberInRange(int min, int max) {
-        int line = input.inputINT();
+        int line = input.inputINT(min, max);
         System.out.println("playerInputNumberInRange: " + line);
         try {
             int newDiceCount = line;
@@ -631,7 +631,7 @@ public class Player implements Cloneable{
 
         //check if the player already played that card
         if (usedCards.contains(lC)) {
-            log(name + ", you have already played that card!");
+            output.configJinxMessage(name + ", you have already played that card!");
             return false;
         }
 
@@ -666,7 +666,7 @@ public class Player implements Cloneable{
 
         //check if the player already played that card
         if (usedCards.contains(lC)) {
-            log(name + ", you have already played that card!");
+            output.configJinxMessage(name + ", you have already played that card!");
             return false;
         }
 
@@ -694,13 +694,13 @@ public class Player implements Cloneable{
 
         //check if the addition makes sense
         if (this.diceCount >= 6) {
-            log(name + ", this action wouldnt make much sense!");
+            output.configJinxMessage(name + ", this action wouldnt make much sense!");
             return false;
         }
 
         //check if the player already played that card
         if (usedCards.contains(lC)) {
-            log(name + ", you have already played that card!");
+            output.configJinxMessage(name + ", you have already played that card!");
             return false;
         }
 
@@ -729,7 +729,7 @@ public class Player implements Cloneable{
 
         //check if the player already played that card
         if (usedCards.contains(lC)) {
-            log(name + ", you have already played that card!");
+            output.configJinxMessage(name + ", you have already played that card!");
             return false;
         }
 
@@ -738,14 +738,14 @@ public class Player implements Cloneable{
         log("Enter all cards you want to select like this: y,x;y,x;y,x;...;y,x");
         log("Enter 0 if u dont want to choose any cards!");
 
-        String input = this.getPlayerInputMultipleCoordinates(table);
+        String inputs = this.getPlayerInputMultipleCoordinates(table);
 
-        if (input.equals("0")) {
+        if (inputs.equals("0")) {
             log(name + ", you stopped the card selection!");
             return false;
         }
 
-        int[][] coords = parseCoordinateInput(input);
+        int[][] coords = parseCoordinateInput(inputs);
         ArrayList<Card> selectedCards = new ArrayList<>();
 
         int sum = 0;
@@ -758,7 +758,7 @@ public class Player implements Cloneable{
                 }
             }
             if (sum != diceCount) {
-                log(name + ", this combination equals " + sum + ", however you need to match " + this.diceCount);
+                output.configJinxMessage(name + ", this combination equals " + sum + ", however you need to match " + this.diceCount);
                 // sum doesn't match, put all cards back on the table
                 int z = 0;
                 for (Card c : selectedCards) {
@@ -779,7 +779,7 @@ public class Player implements Cloneable{
                 return true;
             }
         } else {
-            log(name + ", you entered a wrong format!");
+            output.configJinxMessage(name + ", you entered a wrong format!");
             return false;
         }
     }
@@ -881,12 +881,16 @@ public class Player implements Cloneable{
      * @return
      */
     public String getPlayerInputMultipleCoordinates(Table table) {
-        String line = input.inputCoord("");
+        String line = input.inputMultipleCoords("");
         if ((!line.equals("0"))) {
             String[] coord = line.split(";");
             for (String c : coord) {
                 try {
-                    if (!(Integer.parseInt(String.valueOf(c.charAt(0))) <= 4 && Integer.parseInt(String.valueOf(c.charAt(0))) > 0 && String.valueOf(c.charAt(1)) == "," && Integer.parseInt(String.valueOf(c.charAt(2))) <= 4) && Integer.parseInt(String.valueOf(c.charAt(2))) > 0) {
+                    System.out.println("[DEBUG] - " + c);
+                    String[] coordSingle = c.split(",");
+                    int x = Integer.parseInt(coordSingle[0]);
+                    int y = Integer.parseInt(coordSingle[1]);
+                    if(!((x <= 4 && x > 0) && (y <= 4 && y > 0))){
                         log("Enter valid coordinates or type 0");
                         return this.getPlayerInputMultipleCoordinates(table);
                     }
@@ -908,7 +912,7 @@ public class Player implements Cloneable{
     public int getPlayerInputINT(int min, int max) {
         while (true) {
             try {
-                int ret = input.inputINT();
+                int ret = input.inputINT(min, max);
                 if (ret > max || ret < min) {
                     log("Choose a number in the specified range!" + "[" + min + "," + max + "]");
                 } else {

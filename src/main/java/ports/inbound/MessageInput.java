@@ -56,13 +56,19 @@ public interface MessageInput {
      *
      * @return Player input
      */
-    int inputINT();
+    int inputINT(int min, int max);
 
     /**
      * To input a coordinate
      * @return coordinate as string (x,y)
      * */
     String inputCoord(String question);
+
+    /**
+     * To input a coordinate
+     * @return coordinate as string (x,y)
+     * */
+    String inputMultipleCoords(String question);
 
     /**
      *
